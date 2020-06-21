@@ -98,17 +98,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'DSTBundesliga.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -173,3 +162,21 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 
 if os.getenv('DEV', 0) == '1':
     from local_settings import *
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'mydatabase',
+        }
+    }
+else:
+    # Database
+    # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {
+                'read_default_file': os.getenv('DB_OPTIONS_FILE'),
+            },
+        }
+    }
