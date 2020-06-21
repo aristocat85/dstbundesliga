@@ -1,16 +1,20 @@
-{% load cms_tags sekizai_tags menu_tags %}
+{% load cms_tags sekizai_tags menu_tags static %}
 <html>
     <head>
         <title>{% page_attribute "page_title" %}</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'DSTBundesliga/base.css' %}">
         {% render_block "css" %}
     </head>
     <body>
         <header>
             {% cms_toolbar %}
-            <ul>
-                {% show_menu 0 100 100 100 %}
-            </ul>
-            <img src="{{ MEDIA_URL }}/dst_header.png" />
+            <nav>
+                <ul>
+                    {% show_menu 0 100 100 100 %}
+                </ul>
+            </nav>
+
+            <img src="media/images/dst_header.png" width="100%"/>
         </header>
         <div id="content">
             {% block content %}

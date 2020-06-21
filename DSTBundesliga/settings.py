@@ -104,10 +104,8 @@ WSGI_APPLICATION = 'DSTBundesliga.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-	'OPTIONS': {
-		'read_default_file': os.getenv('DB_OPTIONS_FILE'),
-	},
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
@@ -169,3 +167,9 @@ THUMBNAIL_PROCESSORS = (
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+
+
+if os.getenv('DEV', 0) == '1':
+    from local_settings import *

@@ -1,0 +1,28 @@
+body {
+    background-color: rgb(224,224,224);
+    font-size: 17px;
+    margin: 0px;
+}
+
+header {
+    background-color: rgb(32,32,32);
+    width: 100%;
+}
+
+nav > ul > li > a {
+    color: white;
+    text-decoration: none;
+    padding: 1em 1.25em;
+    border: none;
+    display: block;
+}
+
+nav > ul {
+    list-style: none;
+    padding: 0 0.25rem;
+    margin: 0px;
+}
+
+nav > ul > li {
+    font-size: 1.0625rem;
+}
