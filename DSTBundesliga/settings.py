@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 from dotenv import load_dotenv
-load_dotenv()
-
+load_dotenv('../.env')
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -111,7 +110,6 @@ DATABASES = {
 	},
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

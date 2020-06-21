@@ -1,0 +1,21 @@
+{% load cms_tags sekizai_tags menu_tags %}
+<html>
+    <head>
+        <title>{% page_attribute "page_title" %}</title>
+        {% render_block "css" %}
+    </head>
+    <body>
+        <header>
+            {% cms_toolbar %}
+            <ul>
+                {% show_menu 0 100 100 100 %}
+            </ul>
+            <img src="{{ MEDIA_URL }}/dst_header.png" />
+        </header>
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+        {% render_block "js" %}
+    </body>
+</html>
