@@ -18,9 +18,11 @@ from django.urls import path, re_path
 from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
+from DSTBundesliga.views import login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')), # new
     re_path(r'^', include('cms.urls')),
 ]
 

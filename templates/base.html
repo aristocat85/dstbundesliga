@@ -11,10 +11,15 @@
             <nav>
                 <ul>
                     {% show_menu 0 100 100 100 %}
+                    {% if user.is_authenticated %}
+                        <li><a href="/accounts/logout/">Logout</a></li>
+                    {% else %}
+                        <li><a href="/accounts/login/">Login</a></li>
+                    {% endif %}
                 </ul>
             </nav>
 
-            <img src="media/images/dst_header.png" width="100%"/>
+            <img src="/media/images/dst_header.png" width="100%"/>
         </header>
         <div id="content">
             {% block content %}
