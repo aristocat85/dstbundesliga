@@ -2,15 +2,19 @@
 <html>
     <head>
         <title>{% page_attribute "page_title" %}</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'DSTBundesliga/base.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
         {% render_block "css" %}
     </head>
     <body>
+    <div class="header-spacer">
+
+    </div>
         <header>
             {% cms_toolbar %}
             <nav>
                 <ul>
                     {% show_menu 0 100 100 100 %}
+                        <li><a href="/leagues">Die Ligen</a></li>
                     {% if user.is_authenticated %}
                         <li><a href="/accounts/logout/">Logout</a></li>
                     {% else %}
@@ -21,7 +25,7 @@
 
             <img src="/media/images/dst_header.png" width="100%"/>
         </header>
-        <div id="content">
+        <div class="content">
             {% block content %}
             {% endblock %}
         </div>

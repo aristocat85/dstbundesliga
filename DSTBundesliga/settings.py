@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     'djangocms_googlemap',
     'djangocms_snippet',
     'djangocms_style',
+    'django_tables2',
+    'DSTBundesliga.apps.leagues'
 ]
 
 MIDDLEWARE = [
@@ -182,3 +184,12 @@ else:
             },
         }
     }
+
+
+LEAGUES = {
+    '562932747744407552': {
+        'level': 4
+    }
+}
+
+

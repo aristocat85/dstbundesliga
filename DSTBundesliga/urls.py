@@ -23,6 +23,7 @@ from DSTBundesliga.views import login
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')), # new
+    path('leagues/', include('DSTBundesliga.apps.leagues.urls')),
     re_path(r'^', include('cms.urls')),
 ]
 

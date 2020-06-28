@@ -1,0 +1,10 @@
+{% extends 'tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+<div class="ui container league-container">
+    <h2 class="league-name">Down! Set! Talk! - Fantasy Football Bundesliga</h2>
+    {% render_table table %}
+</div>
+{% endblock %}

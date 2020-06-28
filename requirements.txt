@@ -1,0 +1,13 @@
+django
+django-cms
+django-filer
+djangocms-text-ckeditor
+djangocms-link
+djangocms-file
+djangocms-picture
+djangocms-video
+djangocms-googlemap
+djangocms-snippet
+djangocms-style
+jsonfield
+django-tables2

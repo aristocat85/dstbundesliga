@@ -1,0 +1,166 @@
+body {
+    background-color: rgb(224, 224, 224);
+    font-size: 17px;
+    margin: 0px;
+    font-family: Raleway, Arial, Helvetica;
+}
+
+
+@media only screen and (min-width: 40em) {
+    .content {
+        padding: 1.5rem;
+    }
+}
+
+@media only screen and (min-width: 25em) {
+    .content {
+        padding: 1rem;
+    }
+}
+
+.league-container {
+    background-color: black;
+    padding: 1em;
+}
+
+.league-title {
+    color: white;
+    text-decoration: none;
+}
+
+td {
+    color: white;
+}
+
+.owner_name {
+    color: white;
+}
+
+.league-name {
+    color: white;
+}
+
+.avatar {
+    border-radius: 50%;
+    border: 1px solid #8c8c8c;
+}
+
+header {
+    background-color: rgb(32, 32, 32);
+    width: 100%;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 1em 1.25em;
+    border: none;
+    display: block;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0 0.25rem;
+    margin: 0px;
+    display: flex;
+}
+
+nav ul li {
+    font-size: 1.0625rem;
+}
+
+form {
+    border: 3px solid #f1f1f1;
+}
+
+/* Full-width inputs */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: rgb(32, 32, 32);
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+    opacity: 0.8;
+}
+
+.header-spacer {
+    padding-top: 1.25rem;
+    padding-bottom: 1.5rem;
+    background-color: white;
+}
+
+/* raleway-regular - latin-ext_latin */
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Raleway'), local('Raleway-Regular'),
+    url('../fonts/raleway-v12-latin-ext_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../fonts/raleway-v12-latin-ext_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* raleway-italic - latin-ext_latin */
+@font-face {
+    font-family: 'Raleway';
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Raleway Italic'), local('Raleway-Italic'),
+    url('../fonts/raleway-v12-latin-ext_latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../fonts/raleway-v12-latin-ext_latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* raleway-700 - latin-ext_latin */
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: local('Raleway Bold'), local('Raleway-Bold'),
+    url('../fonts/raleway-v12-latin-ext_latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../fonts/raleway-v12-latin-ext_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* raleway-700italic - latin-ext_latin */
+@font-face {
+    font-family: 'Raleway';
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: local('Raleway Bold Italic'), local('Raleway-BoldItalic'),
+    url('../fonts/raleway-v12-latin-ext_latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../fonts/raleway-v12-latin-ext_latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* quicksand-regular - latin-ext_latin */
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Quicksand Regular'), local('Quicksand-Regular'),
+    url('../fonts/quicksand-v7-latin-ext_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../fonts/quicksand-v7-latin-ext_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* quicksand-700 - latin-ext_latin */
+@font-face {
+    font-family: 'Quicksand';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: local('Quicksand Bold'), local('Quicksand-Bold'),
+    url('../fonts/quicksand-v7-latin-ext_latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */ url('../fonts/quicksand-v7-latin-ext_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
