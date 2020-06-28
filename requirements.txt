@@ -11,3 +11,4 @@ djangocms-snippet
 djangocms-style
 jsonfield
 django-tables2
+sleeper-api-wrapper
