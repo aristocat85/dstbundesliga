@@ -16,17 +16,17 @@ def update_league(league_id, league_data):
     league, _ = League.objects.update_or_create(sleeper_id=league_id, defaults={
         "total_rosters": league_data.get("total_rosters"),
         "status": league_data.get("status"),
-        "sport":  league_data.get("sport"),
-        "settings":  league_data.get("settings"),
-        "season_type":  league_data.get("season_type"),
-        "season":  league_data.get("season"),
-        "scoring_settings":  league_data.get("scoring_settings"),
-        "roster_positions":  league_data.get("roster_positions"),
-        "previous_league_id":  league_data.get("previous_league_id"),
-        "sleeper_name":  league_data.get("name"),
-        "sleeper_id":  league_data.get("league_id"),
-        "draft_id":  league_data.get("draft_id"),
-        "avatar_id":  league_data.get("avatar"),
+        "sport": league_data.get("sport"),
+        "settings": league_data.get("settings"),
+        "season_type": league_data.get("season_type"),
+        "season": league_data.get("season"),
+        "scoring_settings": league_data.get("scoring_settings"),
+        "roster_positions": league_data.get("roster_positions"),
+        "previous_league_id": league_data.get("previous_league_id"),
+        "sleeper_name": league_data.get("name"),
+        "sleeper_id": league_data.get("league_id"),
+        "draft_id": league_data.get("draft_id"),
+        "avatar_id": league_data.get("avatar"),
         "level": settings.LEAGUES.get(league_id, {}).get('level')
     })
 
@@ -56,15 +56,17 @@ def update_dst_players_for_league(league_id, player_data):
 def update_or_create_roster(league_id, roster_data, dst_player_data):
     owner_id = roster_data.get("owner_id")
 
-    roster, _ = Roster.objects.update_or_create(roster_id=roster_data.get("roster_id"), defaults={
-        "name": dst_player_data.get(owner_id, {}).get("metadata", {}).get("team_name"),
-        "starters": roster_data.get("starters"),
-        "settings": roster_data.get("settings"),
-        "reserve": roster_data.get("reserve"),
-        "players": roster_data.get("players"),
-        "owner": DSTPlayer.objects.filter(sleeper_id=owner_id).first(),
-        "league": League.objects.get(sleeper_id=league_id)
-    })
+    roster, _ = Roster.objects.update_or_create(roster_id=roster_data.get("roster_id"),
+                                                league=League.objects.get(sleeper_id=league_id),
+                                                defaults={
+                                                    "name": dst_player_data.get(owner_id, {}).get("metadata", {}).get(
+                                                        "team_name"),
+                                                    "starters": roster_data.get("starters"),
+                                                    "settings": roster_data.get("settings"),
+                                                    "reserve": roster_data.get("reserve"),
+                                                    "players": roster_data.get("players"),
+                                                    "owner": DSTPlayer.objects.filter(sleeper_id=owner_id).first()
+                                                })
 
     roster.save()
 
