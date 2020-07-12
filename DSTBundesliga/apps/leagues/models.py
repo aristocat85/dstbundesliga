@@ -5,6 +5,7 @@ from jsonfield import JSONField
 
 class League(models.Model):
     level = models.IntegerField(default=0)
+    region = models.CharField(max_length=30, null=True)
 
     #Sleeper Data
     total_rosters = models.IntegerField(default=12)
@@ -58,6 +59,16 @@ class Roster(models.Model):
     #Sleeper Data
     name = models.CharField(max_length=100, null=True)
     starters = models.CharField(max_length=100)
+    wins = models.IntegerField(default=0)
+    waiver_position = models.IntegerField(default=1)
+    waiver_budget_used = models.IntegerField(default=0)
+    total_moves = models.IntegerField(default=0)
+    ties = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
+    fpts_decimal = models.IntegerField(default=0)
+    fpts_against_decimal = models.IntegerField(default=0)
+    fpts_against = models.IntegerField(default=0)
+    fpts = models.IntegerField(default=0)
     settings = JSONField()
     roster_id = models.IntegerField()
     reserve = models.CharField(max_length=100)

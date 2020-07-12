@@ -2,33 +2,54 @@
 <html>
     <head>
         <title>{% page_attribute "page_title" %}</title>
+
+        <link rel="apple-touch-icon" sizes="57x57" href="/media/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/media/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/media/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/media/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/media/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/media/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/media/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/media/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/media/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/media/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/media/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/media/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/media/favicon/favicon-16x16.png">
+        <link rel="manifest" href="/media/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/media/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
         <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
-        {% render_block "css" %}
+        {% block css %}
+
+        {% endblock %}
     </head>
     <body>
-    <div class="header-spacer">
-
-    </div>
-        <header>
+        <div class="main">
             {% cms_toolbar %}
+            <header>
+                <div class="logo-container"><img class="logo" src="/media/images/dst_bl_logo.png" alt="Home"></div>
+                <div class="header-container"><img src="/media/images/dst_header.png" alt="Down! Set! Talk! Fantasy Football Bundesliga"></div>
+            </header>
             <nav>
                 <ul>
-                    {% show_menu 0 100 100 100 %}
-                        <li><a href="/leagues">Die Ligen</a></li>
-                    {% if user.is_authenticated %}
-                        <li><a href="/accounts/logout/">Logout</a></li>
-                    {% else %}
-                        <li><a href="/accounts/login/">Login</a></li>
-                    {% endif %}
+                    <li><a href="/">Startseite</a></li>
+                    <li><a href="/leagues/level/1">Bundesliga</a></li>
+                    <li><a href="/leagues/level/2">2. Bundesliga</a></li>
+                    <li><a href="/leagues/level/3">Divisionsliga</a></li>
+                    <li><a href="/leagues/level/4">Regionalliga</a></li>
+                    <li class="right"><a class="border-left" href="/leagues/my-league">Meine Liga</a></li>
                 </ul>
             </nav>
 
-            <img src="/media/images/dst_header.png" width="100%"/>
-        </header>
-        <div class="content">
-            {% block content %}
-            {% endblock %}
+            <div class="content">
+                {% block content %}
+                {% endblock %}
+            </div>
         </div>
-        {% render_block "js" %}
+        {% block js %}
+        {% endblock %}
     </body>
 </html>

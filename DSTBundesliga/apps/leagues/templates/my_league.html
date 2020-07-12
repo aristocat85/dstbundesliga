@@ -1,0 +1,50 @@
+{% extends 'tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+{% if my_league %}
+    <div class="ui container league-container">
+        <div class="league-title-container">
+            <h2 class="league-title">{{ title }}</h2>
+        </div>
+
+        {% render_table table %}
+    </div>
+{% else %}
+    <span>Du hast noch keine Liga ausgewählt.</span>
+{% endif %}
+<div class="ui container my-league-container">
+    <form>
+        <p>Wähle deine Liga:</p>
+        <p>
+            <label>Liga:
+                <select name="Ligen" size="10" id="my-league-selector">
+                    <option label="Keine Liga">---------</option>
+                    {% for level in levels %}
+                        <optgroup label="{{ level.title }}">
+                            {% for league in level.leagues %}
+                                <option label="{{ league.sleeper_name }}" value="{{ league.sleeper_id }}">{{ league.sleeper_name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </label>
+        </p>
+        <button onclick="setMyLeague()">Speichern</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    const setMyLeague = function() {
+        let selector = document.getElementById("my-league-selector");
+        let my_league = selector.options[selector.selectedIndex].value;
+        if(my_league != null) {
+            document.cookie = "my_league=" + my_league;
+        }
+    }
+</script>
+{% endblock %}
