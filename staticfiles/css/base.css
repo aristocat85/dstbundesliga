@@ -203,6 +203,14 @@ div.avatar {
     background: none;
 }
 
+.button-container {
+    margin-top: 5px;
+}
+
+.my-league-container {
+    max-width: 240px;
+}
+
 form {
     border: 3px solid #f1f1f1;
 }

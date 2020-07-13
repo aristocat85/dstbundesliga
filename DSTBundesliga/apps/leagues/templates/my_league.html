@@ -3,48 +3,54 @@
 {% load render_table from django_tables2 %}
 
 {% block content %}
-{% if my_league %}
-    <div class="ui container league-container">
-        <div class="league-title-container">
-            <h2 class="league-title">{{ title }}</h2>
-        </div>
 
-        {% render_table table %}
+<div class="ui container league-container">
+    {% if my_league %}
+    <div class="league-title-container">
+        <h2 class="league-title">{{ title }}</h2>
     </div>
-{% else %}
-    <span>Du hast noch keine Liga ausgewählt.</span>
-{% endif %}
-<div class="ui container my-league-container">
-    <form>
-        <p>Wähle deine Liga:</p>
-        <p>
-            <label>Liga:
-                <select name="Ligen" size="10" id="my-league-selector">
-                    <option label="Keine Liga">---------</option>
-                    {% for level in levels %}
-                        <optgroup label="{{ level.title }}">
-                            {% for league in level.leagues %}
-                                <option label="{{ league.sleeper_name }}" value="{{ league.sleeper_id }}">{{ league.sleeper_name }}</option>
-                            {% endfor %}
-                        </optgroup>
-                    {% endfor %}
-                </select>
-            </label>
-        </p>
-        <button onclick="setMyLeague()">Speichern</button>
-    </form>
+    {% render_table table %}
+    {% else %}
+    <div>Du hast noch keine Liga ausgewählt.</div>
+    {% endif %}
+</div>
+
+<div class="ui container ">
+    <div class="my-league-container">
+        <div class="ui fluid search selection dropdown">
+            <input type="hidden" name="my_league" id="my-league-selector">
+            <i class="dropdown icon"></i>
+            <div class="default text">Wähle deine Liga:</div>
+            <div class="menu">
+                {% for level in levels %}
+                {% for league in level.leagues %}
+                <div class="item" data-value="{{ league.sleeper_id }}">{{ league.sleeper_name }}</div>
+                {% endfor %}
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="ui container button-container">
+            <button class="ui secondary button my-league-button" onclick="setMyLeague()">Speichern</button>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block js %}
 {{ block.super }}
 <script type="text/javascript">
-    const setMyLeague = function() {
+    const setMyLeague = function () {
         let selector = document.getElementById("my-league-selector");
-        let my_league = selector.options[selector.selectedIndex].value;
-        if(my_league != null) {
+        let my_league = selector.value;
+        if (my_league != null) {
             document.cookie = "my_league=" + my_league;
+            window.location.reload();
         }
-    }
+    };
+
+    $(function () {
+        $('.ui.dropdown').dropdown();
+    });
 </script>
 {% endblock %}
