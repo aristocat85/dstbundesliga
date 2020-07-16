@@ -160,6 +160,7 @@ THUMBNAIL_PROCESSORS = (
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.expanduser("~/html/static/")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+ADMIN_MEDIA_PREFIX = "/static/admin/"
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
