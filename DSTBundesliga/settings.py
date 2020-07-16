@@ -143,7 +143,7 @@ CMS_TEMPLATES = [
 CMS_PERMISSION = True
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.expanduser("~/html/media/")
 
 THUMBNAIL_HIGH_RESOLUTION = True
 
@@ -158,7 +158,7 @@ THUMBNAIL_PROCESSORS = (
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_ROOT = os.path.expanduser("~/html/static/")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 
 LOGIN_REDIRECT_URL = '/'
@@ -166,6 +166,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 if os.getenv('DEV', 0) == '1':
     from local_settings import *
+
+    STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
     DATABASES = {
         'default': {
