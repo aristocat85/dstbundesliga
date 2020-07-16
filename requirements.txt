@@ -11,4 +11,5 @@ djangocms-snippet
 djangocms-style
 jsonfield
 django-tables2
+django-cookie-law
 sleeper-api-wrapper

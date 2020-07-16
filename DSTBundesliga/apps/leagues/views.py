@@ -1,16 +1,9 @@
 import django_tables2 as tables
 from django.shortcuts import render
 
+from DSTBundesliga.apps.leagues.config import LEVEL_MAP
 from DSTBundesliga.apps.leagues.models import League, Roster
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable
-
-
-LEVEL_MAP = {
-    1: "Bundesliga",
-    2: "2. Bundesliga",
-    3: "Divisionsliga",
-    4: "Regionalliga"
-}
 
 
 class LeagueView(tables.SingleTableView):
@@ -31,8 +24,10 @@ def roster_list(request, league_id):
     })
 
 
-def level_detail(request, level):
+def level_detail(request, level, region=None):
     league_objects = League.objects.filter(level=level).order_by('sleeper_name')
+    if region:
+        league_objects = league_objects.filter(region=region)
     leagues = [{
         "title": league.sleeper_name,
         "table": RosterTable(Roster.objects.filter(league=league))

@@ -6,7 +6,7 @@
 <div class="ui container leagues-container">
     {% for league in leagues %}
         <div class="league-spacer">
-            <div class="ui container league-container">
+            <div class="ui container league-container league-level-{{ league.level }}-container">
                 <div class="league-title-container">
                     <h2 class="league-title">{{ league.title }}</h2>
                 </div>

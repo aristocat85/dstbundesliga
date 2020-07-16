@@ -1,4 +1,4 @@
-{% load cms_tags sekizai_tags menu_tags static %}
+{% load cms_tags sekizai_tags menu_tags static cookielaw_tags %}
 <html>
     <head>
         <title>{% page_attribute "page_title" %}</title>
@@ -23,6 +23,7 @@
 
         {% block css %}
             <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+            <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css">
         {% endblock %}
     </head>
     <body>
@@ -32,23 +33,33 @@
                 <div class="logo-container"><img class="logo" src="/media/images/dst_bl_logo.png" alt="Home"></div>
                 <div class="header-container"><img src="/media/images/dst_header.png" alt="Down! Set! Talk! Fantasy Football Bundesliga"></div>
             </header>
-            <nav>
-                <ul>
-                    <li><a href="/">Startseite</a></li>
-                    <li><a href="/leagues/level/1">Bundesliga</a></li>
-                    <li><a href="/leagues/level/2">2. Bundesliga</a></li>
-                    <li><a href="/leagues/level/3">Divisionsliga</a></li>
-                    <li><a href="/leagues/level/4">Regionalliga</a></li>
-                    <li class="right"><a class="border-left" href="/leagues/my-league">Meine Liga</a></li>
-                </ul>
+            <nav id="top-nav" class="ui sticky">
+                {% show_menu 0 100 100 100 'menu.html' %}
             </nav>
 
             <div class="content">
                 {% block content %}
                 {% endblock %}
             </div>
+            <footer>
+                {% cookielaw_banner  %}
+                <ul>
+                    <li class="right"><a href="/impressum">Impressum & Datenschutz</a></li>
+                    <li class="right"><a href="/regelwerk">Regelwerk</a></li>
+                    <li class="right"><a href="http://downsettalk.de/">DOWN,SET,TALK!</a></li>
+                </ul>
+            </footer>
         </div>
         {% block js %}
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.js"></script>
+        <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
+        <script>
+            $(function () {
+                $('.ui.sticky').sticky({context: $('.content')});
+                $('nav .ui.dropdown').dropdown({on: 'hover'});
+            });
+        </script>
         {% endblock %}
     </body>
 </html>

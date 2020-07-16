@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['dstffbl.uber.space']
 
@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'djangocms_snippet',
     'djangocms_style',
     'django_tables2',
+    'cookielaw',
     'DSTBundesliga.apps.leagues'
 ]
 
@@ -91,7 +92,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'sekizai.context_processors.sekizai',
                 'cms.context_processors.cms_settings',
-                'django.template.context_processors.i18n'
+                'django.template.context_processors.i18n',
             ],
         },
     },
