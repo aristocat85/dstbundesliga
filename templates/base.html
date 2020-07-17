@@ -56,7 +56,7 @@
         <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
         <script>
             $(function () {
-                $('.ui.sticky').sticky({context: $('.content')});
+                $('nav').sticky();
                 $('nav .ui.dropdown').dropdown({on: 'hover'});
             });
         </script>
