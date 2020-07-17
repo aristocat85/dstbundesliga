@@ -3,6 +3,8 @@ body {
     font-size: 17px;
     margin: 0px;
     font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
 }
 
 .main {
@@ -271,6 +273,18 @@ div.avatar {
 
 .my-league-container {
     max-width: 240px;
+}
+
+.legend-container ul {
+    list-style: none;
+    align-items: center;
+}
+
+.legend-explain {
+    margin-left: 10px;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: normal;
 }
 
 form {
