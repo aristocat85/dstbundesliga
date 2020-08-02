@@ -22,14 +22,14 @@
         <meta name="theme-color" content="#ffffff">
         {% render_block "css" %}
         {% block css %}
-            <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
             <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css">
+            <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
         {% endblock %}
     </head>
     <body>
         <div class="main">
             {% cms_toolbar %}
-            <header>
+            <header class="logo-header">
                 <div class="logo-container"><img class="logo" src="/media/images/dst_bl_logo.png" alt="Home"></div>
                 <div class="header-container"><img src="/media/images/dst_header.png" alt="Down! Set! Talk! Fantasy Football Bundesliga"></div>
             </header>
