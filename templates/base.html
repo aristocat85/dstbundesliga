@@ -20,7 +20,7 @@
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="/media/favicon/ms-icon-144x144.png">
         <meta name="theme-color" content="#ffffff">
-
+        {% render_block "css" %}
         {% block css %}
             <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
             <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css">
@@ -50,6 +50,7 @@
                 </ul>
             </footer>
         </div>
+        {% render_block js %}
         {% block js %}
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.js"></script>
