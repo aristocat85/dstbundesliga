@@ -3,6 +3,7 @@ my.cnf
 static/
 DSTBundesliga.iml
 mydatabase
+*.pyc
 
 
 # Created by .ignore support plugin (hsz.mobi)
