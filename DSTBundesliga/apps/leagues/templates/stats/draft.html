@@ -1,0 +1,42 @@
+{% extends 'tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+
+<div class="ui container stats-container">
+    <div class="stats-title-container">
+        <h2 class="stats-title">Draft Stats</h2>
+    </div>
+    <div class="ui segment">
+        <div class="ui black progress" data-percent="{{ drafts_done_percent }}">
+            <div class="bar" style="transition-duration: 300ms; width: {{ drafts_done_percent }}%;">
+                <div class="progress"></div>
+            </div>
+            <div class="label">{{ drafts_done}} / {{ drafts_overall }} Drafts abgeschlossen</div>
+        </div>
+    </div>
+    <div class="ui segment center aligned">
+        Hier folgen bald aktuelle Draft-Statistiken zur Down, Set, Talk! Fantasy Football Bundesliga
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
+    const setMyLeague = function () {
+        let selector = document.getElementById("my-league-selector");
+        let my_league = selector.value;
+        if (my_league != null) {
+            document.cookie = "my_league=" + my_league;
+            window.location.reload();
+        }
+    };
+
+    $(function () {
+        $('.my-league-container .ui.dropdown').dropdown();
+    });
+</script>
+{% endblock %}

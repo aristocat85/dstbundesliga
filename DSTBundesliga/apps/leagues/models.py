@@ -37,22 +37,34 @@ class Team(models.Model):
 
 
 class Player(models.Model):
+    PLAYER = 1
+    TEAM = 2
+    TYPES = [
+        (PLAYER, 'Player'),
+        (TEAM, 'Team')
+    ]
+
+    type = models.IntegerField(choices=TYPES, default=PLAYER)
     #Sleeper Data
-    sleeper_id = models.IntegerField()
-    hashtag = models.CharField(max_length=50)
-    depth_chart_position = models.IntegerField()
-    status = models.CharField(max_length=20)
-    fantasy_positions = models.CharField(max_length=50)
-    number = models.IntegerField()
-    last_name = models.CharField(max_length=50)
-    first_name = models.CharField(max_length=50)
-    weight = models.IntegerField()
-    position = models.CharField(max_length=50)
+    sleeper_id = models.CharField(max_length=10, db_index=True, unique=True)
+    last_name = models.CharField(max_length=50, default='')
+    first_name = models.CharField(max_length=50, default='')
+    fantasy_positions = models.CharField(max_length=50, default='')
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
-    height = models.CharField(max_length=10)
-    age = models.IntegerField()
-    espn_id = models.CharField(max_length=50)
-    yahoo_id = models.CharField(max_length=50)
+    hashtag = models.CharField(max_length=50, null=True)
+    depth_chart_position = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=20, null=True)
+    number = models.IntegerField(default=0)
+    weight = models.IntegerField(default=0)
+    position = models.CharField(max_length=50, null=True)
+    height = models.CharField(max_length=10, null=True)
+    age = models.IntegerField(default=0)
+    espn_id = models.CharField(max_length=50, null=True)
+    yahoo_id = models.CharField(max_length=50, null=True)
+
+    @property
+    def name(self):
+        return "{first_name} {last_name}".format(first_name=self.first_name, last_name=self.last_name)
 
 
 class Roster(models.Model):
@@ -95,18 +107,18 @@ class Draft(models.Model):
     #Sleeper Data
     draft_type = models.CharField(max_length=20)
     status = models.CharField(max_length=20)
-    start_time = models.DateTimeField()
+    start_time = models.DateTimeField(blank=True, null=True)
     settings = JSONField()
     season_type = models.CharField(max_length=20)
     season = models.IntegerField()
     metadata = JSONField()
     league = models.ForeignKey(League, on_delete=models.CASCADE)
-    last_picked = models.DateTimeField()
-    last_message_time = models.DateTimeField()
-    last_message_id = models.CharField(max_length=50)
+    last_picked = models.DateTimeField(null=True)
+    last_message_time = models.DateTimeField(null=True)
+    last_message_id = models.CharField(max_length=50, null=True)
     draft_id = models.CharField(max_length=50)
-    draft_order = JSONField()
-    slot_to_roster_id = JSONField()
+    draft_order = JSONField(blank=True, null=True)
+    slot_to_roster_id = JSONField(blank=True, null=True)
 
 
 class Pick(models.Model):

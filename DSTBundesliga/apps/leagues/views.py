@@ -2,7 +2,7 @@ import django_tables2 as tables
 from django.shortcuts import render
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP
-from DSTBundesliga.apps.leagues.models import League, Roster
+from DSTBundesliga.apps.leagues.models import League, Roster, Draft
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable
 
 
@@ -57,3 +57,15 @@ def my_league(request):
         context["table"] = table
 
     return render(request, "my_league.html", context)
+
+
+def draft_stats(request):
+    drafts_done = Draft.objects.filter(status='completed').count()
+    drafts_overall = League.objects.all().count()
+    drafts_done_percent = drafts_done / drafts_overall * 100
+
+    return render(request, "stats/draft.html", {
+        "drafts_done": drafts_done,
+        "drafts_overall": drafts_overall,
+        "drafts_done_percent": drafts_done_percent,
+    })

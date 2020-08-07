@@ -27,6 +27,11 @@ class LeaguesMenu(Menu):
                     counter += 1
                     nodes.append(NavigationNode(region, reverse('region-detail', kwargs={"level": level, "region": region}), counter, parent_id=level_node.id))
 
+        # Stats
+        counter += 1
+        nodes.append(NavigationNode("Stats", reverse('draft-stats'), counter))
+
+        # My League
         counter += 1
         nodes.append(NavigationNode("Meine Liga", reverse('my-league'), counter, attr={'li_class': 'right border-left'}))
 

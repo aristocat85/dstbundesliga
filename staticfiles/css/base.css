@@ -46,7 +46,6 @@ body {
 
 nav {
     background: #000D2B;
-    display: flex;
 }
 
 nav div a {
@@ -173,7 +172,16 @@ footer ul li {
     padding: 10px;
 }
 
+.stats-container {
+    background-color: white;
+    padding: 10px;
+}
+
 .league-container table {
+    width: 100%;
+}
+
+.stats-container table {
     width: 100%;
 }
 
@@ -183,6 +191,11 @@ footer ul li {
 }
 
 .league-title-container {
+    background: #102F4D;
+    padding: 1em;
+}
+
+.stats-title-container {
     background: #102F4D;
     padding: 1em;
 }
@@ -198,7 +211,19 @@ footer ul li {
     align-items: center;
     margin: 0px;
     color: #FFFFFF;
+}
 
+.stats-title {
+    text-decoration: none;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+    margin: 0px;
+    color: #FFFFFF;
 }
 
 table {
@@ -245,7 +270,20 @@ td.playoff-indicator, td.team-manager, td.wins, td.losses, td.ties, td.points {
     padding-left: 25px;
 }
 
+th.playoff-indicator, th.player, th.wins, th.losses, th.ties, th.points {
+    padding-left: 25px;
+}
+
+td.playoff-indicator, td.player, td.wins, td.losses, td.ties, td.points {
+    padding-left: 25px;
+}
+
 div.owner_name {
+    display: flex;
+    padding-left: 7px;
+}
+
+div.player_name {
     display: flex;
     padding-left: 7px;
 }
@@ -256,6 +294,17 @@ div.team-manager {
 }
 
 div.team-manager div {
+    float: left;
+    justify-content: center;
+    align-items: center;
+}
+
+div.player {
+    display: flex;
+    overflow: auto;
+}
+
+div.player div {
     float: left;
     justify-content: center;
     align-items: center;
