@@ -18,9 +18,13 @@ from django.urls import path, re_path
 from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
-from DSTBundesliga.views import login
+
+from DSTBundesliga.apps.leagues import views
+
+admin.autodiscover()
 
 urlpatterns = [
+    path('', views.home, name='home'),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')), # new
     path('leagues/', include('DSTBundesliga.apps.leagues.urls')),

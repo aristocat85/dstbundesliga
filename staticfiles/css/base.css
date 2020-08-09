@@ -147,8 +147,20 @@ footer ul li {
         padding: 1.5rem;
     }
 
-    .league-spacer {
+    .dst-spacer-25 {
+        width: 25%;
+    }
+
+    .dst-spacer-50 {
         width: 50%;
+    }
+
+    .dst-spacer-75 {
+        width: 75%;
+    }
+
+    .dst-spacer-100 {
+        width: 100%;
     }
 }
 
@@ -157,12 +169,12 @@ footer ul li {
         padding: 1rem;
     }
 
-    .league-spacer {
+    dst-spacer-25, .dst-spacer-50, dst-spacer-75, .dst-spacer-100 {
         width: 100%;
     }
 }
 
-.league-spacer {
+.dst-spacer {
     display: block;
     float: left;
 }
@@ -172,7 +184,12 @@ footer ul li {
     padding: 10px;
 }
 
-.stats-container {
+.stat-container {
+    background-color: white;
+    padding: 10px;
+}
+
+.home-container {
     background-color: white;
     padding: 10px;
 }
@@ -181,13 +198,18 @@ footer ul li {
     width: 100%;
 }
 
-.stats-container table {
+.stat-container table {
     width: 100%;
 }
 
 .table-container {
     display: block;
     width: 100%;
+}
+
+.title-container {
+    background: #102F4D;
+    padding: 1em;
 }
 
 .league-title-container {
@@ -226,6 +248,26 @@ footer ul li {
     color: #FFFFFF;
 }
 
+h2.title {
+    text-decoration: none;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+    margin: 0px;
+    color: #FFFFFF;
+}
+
+.news-date {
+    float: right;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
 table {
     border-spacing: unset;
 
@@ -254,7 +296,7 @@ td {
     text-align: center;
 }
 
-tr:nth-child(6) td {
+.league-container tr:nth-child(6) td {
     border-bottom: 2px solid #102F4D;
 }
 
@@ -310,10 +352,22 @@ div.player div {
     align-items: center;
 }
 
+.table-container .league {
+    text-align: left;
+}
+
 div.avatar {
     border-radius: 50%;
     border: 1px solid #C4C4C4;
     background: none;
+}
+
+td.league {
+    height: 40px;
+}
+
+td.date {
+    white-space: nowrap;
 }
 
 .button-container {
@@ -334,6 +388,33 @@ div.avatar {
     font-family: Quicksand;
     font-style: normal;
     font-weight: normal;
+}
+
+.position-selector {
+    width: 100%;
+    display: flex;
+    border-bottom: 1px solid #000D2B;
+}
+
+.position-selection-container {
+    padding: 10px !important;
+    float: left;
+    font-size: 14px;
+}
+
+.position-selector .position-selection {
+    padding: 6px 12px;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+.position-selector .position-selection.selected {
+    background-color: #102F4D;
+    color: white;
+}
+
+.position-selector .position-selection:hover {
+    box-shadow: inset 0 0 100px 100px rgba(190, 190, 190, 0.5);
 }
 
 form {

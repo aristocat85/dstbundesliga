@@ -9,4 +9,5 @@ urlpatterns = [
     path('level/<int:level>/<str:region>/', views.level_detail, name='region-detail'),
     path('my-league/', views.my_league, name='my-league'),
     path('stats/draft/', views.draft_stats, name='draft-stats'),
+    path('stats/draft/<str:position>/', views.draft_stats, name='draft-stats'),
 ]

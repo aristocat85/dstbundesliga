@@ -131,3 +131,14 @@ class Pick(models.Model):
     draft_slot = models.IntegerField(default=1)
     pick_no = models.IntegerField(default=1)
     metadata = JSONField()
+
+
+class News(models.Model):
+
+    class Meta:
+        verbose_name_plural = "News"
+
+    title = models.TextField()
+    content = models.TextField()
+    date = models.DateTimeField(auto_now=True)
+

@@ -1,4 +1,5 @@
 from datetime import datetime
+from pytz import timezone
 
 import sleeper_wrapper
 
@@ -120,7 +121,7 @@ def guess_region(name):
 def update_or_create_draft(league_id, draft_data):
     start_time = draft_data.get('start_time')
     if start_time:
-        start_time = datetime.fromtimestamp(start_time / 1000)
+        start_time = datetime.fromtimestamp(start_time / 1000, tz=timezone('Europe/Berlin'))
 
     draft, _ = Draft.objects.update_or_create(
         draft_id=draft_data.get('draft_id'),
@@ -133,8 +134,8 @@ def update_or_create_draft(league_id, draft_data):
             "season_type": draft_data.get('season_type', ''),
             "season": draft_data.get('season', 0),
             "metadata": draft_data.get('metadata', {}),
-            "last_picked": datetime.fromtimestamp(draft_data.get('last_picked') / 1000),
-            "last_message_time": datetime.fromtimestamp(draft_data.get('last_message_time') / 1000),
+            "last_picked": datetime.fromtimestamp(draft_data.get('last_picked') / 1000, tz=timezone('Europe/Berlin')),
+            "last_message_time": datetime.fromtimestamp(draft_data.get('last_message_time') / 1000, tz=timezone('Europe/Berlin')),
             "last_message_id": draft_data.get('last_message_id'),
             "draft_order": draft_data.get('draft_order')
         }
@@ -190,6 +191,7 @@ def update_picks_for_draft(draft_id, picks_data):
 
 def update_everything():
     update_players()
+    update_drafts()
     update_leagues()
 
 
@@ -204,6 +206,9 @@ def update_leagues():
         roster_data = get_roster_data(league_id)
         update_rosters_for_league(league_id, roster_data, dst_player_data)
 
+
+def update_drafts():
+    for league_id in settings.LEAGUES.keys():
         drafts_data = get_draft_data(league_id)
         drafts = update_drafts_for_league(league_id, drafts_data)
 

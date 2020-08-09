@@ -29,7 +29,7 @@ class LeaguesMenu(Menu):
 
         # Stats
         counter += 1
-        nodes.append(NavigationNode("Stats", reverse('draft-stats'), counter))
+        nodes.append(NavigationNode("Draft", reverse('draft-stats'), counter))
 
         # My League
         counter += 1

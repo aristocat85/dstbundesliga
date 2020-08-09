@@ -1,0 +1,37 @@
+{% extends 'tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+
+<div class="ui container">
+    <div class="dst-spacer dst-spacer-75">
+        <div class="ui container home-container">
+            <div class="title-container">
+                <h2 class="title">Neuigkeiten</h2>
+            </div>
+            {% for news in news_list %}
+            <div class="ui segment">
+                <h2 class="ui header">
+                    <img class="ui image" src="/media/images/dst_logo_96.png">
+                    <div class="content news-title">
+                        {{ news.title }}
+                    </div>
+                </h2>
+                <div class="news-date">{{ news.date }}</div>
+                <div class="news-content">{{ news.content }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="dst-spacer dst-spacer-25">
+        <div class="ui container stat-container">
+            <div class="stats-title-container">
+                <h2 class="stats-title">Upcoming Drafts</h2>
+            </div>
+            {% render_table next_drafts_table %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

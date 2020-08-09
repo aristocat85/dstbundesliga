@@ -4,10 +4,9 @@
 
 {% block content %}
 
+
 <div class="ui container stats-container">
-    <div class="stats-title-container">
-        <h2 class="stats-title">Draft Stats</h2>
-    </div>
+    <h1 class="ui header">Draft Stats</h1>
     <div class="ui segment">
         <div class="ui black progress" data-percent="{{ drafts_done_percent }}">
             <div class="bar" style="transition-duration: 300ms; width: {{ drafts_done_percent }}%;">
@@ -16,27 +15,33 @@
             <div class="label">{{ drafts_done}} / {{ drafts_overall }} Drafts abgeschlossen</div>
         </div>
     </div>
-    <div class="ui segment center aligned">
-        Hier folgen bald aktuelle Draft-Statistiken zur Down, Set, Talk! Fantasy Football Bundesliga
+</div>
+<div class="ui container stats-container">
+    <div class="dst-spacer dst-spacer-75">
+        <div class="ui container stat-container">
+            <div class="stats-title-container">
+                <h2 class="stats-title">Average DST Draft Position</h2>
+            </div>
+            <div>
+                <div class="position-selector">
+                    {% for pos in positions %}
+                    <div class="position-selection-container">
+                        <a href="/leagues/stats/draft/{{ pos.position }}" class="position-selection{% if pos.position == selected_position %} selected{% endif %}">{{ pos.title }}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% render_table adp_table %}
+        </div>
+    </div>
+    <div class="dst-spacer dst-spacer-25">
+        <div class="ui container stat-container">
+            <div class="stats-title-container">
+                <h2 class="stats-title">Upcoming Drafts</h2>
+            </div>
+            {% render_table next_drafts_table %}
+        </div>
     </div>
 </div>
 
-{% endblock %}
-
-{% block js %}
-{{ block.super }}
-<script type="text/javascript">
-    const setMyLeague = function () {
-        let selector = document.getElementById("my-league-selector");
-        let my_league = selector.value;
-        if (my_league != null) {
-            document.cookie = "my_league=" + my_league;
-            window.location.reload();
-        }
-    };
-
-    $(function () {
-        $('.my-league-container .ui.dropdown').dropdown();
-    });
-</script>
 {% endblock %}
