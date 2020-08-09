@@ -1,4 +1,4 @@
-{% extends 'tables_base.html' %}
+{% extends 'leagues/tables_base.html' %}
 
 {% load render_table from django_tables2 %}
 
@@ -10,7 +10,7 @@
         <h2 class="league-title">{{ title }}</h2>
     </div>
     {% render_table table %}
-    {% include "legend.html" %}
+    {% include "leagues/legend.html" %}
     {% else %}
         <div>Du hast noch keine Liga ausgewählt.</div>
     {% endif %}

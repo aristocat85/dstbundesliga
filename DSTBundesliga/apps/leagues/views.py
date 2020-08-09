@@ -10,7 +10,7 @@ from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsAD
 class LeagueView(tables.SingleTableView):
     table_class = LeagueTable
     queryset = League.objects.all().order_by('level', 'sleeper_name')
-    template_name = "league_list.html"
+    template_name = "leagues/league_list.html"
 
 
 def roster_list(request, league_id):
@@ -19,7 +19,7 @@ def roster_list(request, league_id):
     title = league.sleeper_name
     table = RosterTable(Roster.objects.filter(league=league))
 
-    return render(request, "roster_list.html", {
+    return render(request, "leagues/roster_list.html", {
         "title": title,
         "table": table
     })
@@ -34,7 +34,7 @@ def level_detail(request, level, region=None):
         "table": RosterTable(Roster.objects.filter(league=league))
     } for league in league_objects]
 
-    return render(request, "level_detail.html", {
+    return render(request, "leagues/level_detail.html", {
         "leagues": leagues
     })
 
@@ -57,7 +57,7 @@ def my_league(request):
         context["title"] = title
         context["table"] = table
 
-    return render(request, "my_league.html", context)
+    return render(request, "leagues/my_league.html", context)
 
 
 def draft_stats(request, position=None):
@@ -102,7 +102,7 @@ def home(request):
 
     news = News.objects.all().order_by('-date')[:3]
 
-    return render(request, "home.html", {
+    return render(request, "leagues/home.html", {
         "next_drafts_table": next_drafts_table,
         "news_list": news
     })
