@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'djangocms_style',
     'django_tables2',
     'cookielaw',
+    'tinymce',
     'DSTBundesliga.apps.leagues'
 ]
 

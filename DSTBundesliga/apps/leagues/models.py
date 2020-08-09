@@ -1,6 +1,7 @@
 from django.db import models
 
 from jsonfield import JSONField
+from tinymce.models import HTMLField
 
 
 class League(models.Model):
@@ -139,6 +140,6 @@ class News(models.Model):
         verbose_name_plural = "News"
 
     title = models.TextField()
-    content = models.TextField()
+    content = HTMLField()
     date = models.DateTimeField(auto_now=True)
 
