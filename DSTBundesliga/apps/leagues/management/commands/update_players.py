@@ -1,10 +1,10 @@
 from django.core.management import BaseCommand
 
-from DSTBundesliga.apps.leagues.services import update_leagues
+from DSTBundesliga.apps.leagues.services import update_players
 
 
 class Command(BaseCommand):
     help = 'Updates all Leagues from Sleeper-API'
 
     def handle(self, *args, **options):
-        update_leagues()
+        update_players()

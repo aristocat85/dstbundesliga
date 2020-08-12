@@ -1,4 +1,8 @@
+import csv
+
 from datetime import datetime
+
+from attr import dataclass
 from pytz import timezone
 
 import sleeper_wrapper
@@ -13,8 +17,8 @@ def get_league_data(league_id):
     return league_service.get_league()
 
 
-def update_league(league_id, league_data):
-    league, _ = League.objects.update_or_create(sleeper_id=league_id, defaults={
+def update_league(league_setting, league_data):
+    league, _ = League.objects.update_or_create(sleeper_id=league_setting.id, defaults={
         "total_rosters": league_data.get("total_rosters"),
         "status": league_data.get("status"),
         "sport": league_data.get("sport"),
@@ -27,10 +31,14 @@ def update_league(league_id, league_data):
         "sleeper_name": league_data.get("name"),
         "draft_id": league_data.get("draft_id"),
         "avatar_id": league_data.get("avatar"),
-        "level": settings.LEAGUES.get(league_id, {}).get('level'),
+        "level": league_setting.level,
         "region": guess_region(league_data.get("name"))
     })
     return league
+
+
+def delete_old_leagues(league_settings):
+    League.objects.exclude(sleeper_id__in=[l.id for l in league_settings]).delete()
 
 
 def update_or_create_dst_player(league_id, player_data):
@@ -114,8 +122,27 @@ def guess_region(name):
         return "Süd"
     elif "West" in name:
         return "West"
+    elif "CFFC" in name:
+        return "CFFC"
+    elif "AFFC" in name:
+        return "AFFC"
     else:
         return None
+
+
+def guess_level(name):
+    if "2. Bundesliga" in name:
+        return 2
+    elif "Bundesliga" in name:
+        return 1
+    elif "Conference" in name:
+        return 3
+    elif "Divisionsliga" in name:
+        return 4
+    elif "Regionalliga" in name:
+        return 5
+    else:
+        return 6
 
 
 def update_or_create_draft(league_id, draft_data):
@@ -196,21 +223,24 @@ def update_everything():
 
 
 def update_leagues():
-    for league_id in settings.LEAGUES.keys():
-        league_data = get_league_data(league_id)
-        update_league(league_id, league_data)
+    league_settings = get_league_settings()
+    for league in league_settings:
+        league_data = get_league_data(league.id)
+        update_league(league, league_data)
 
-        dst_player_data = get_dst_player_data(league_id)
-        update_dst_players_for_league(league_id, dst_player_data)
+        dst_player_data = get_dst_player_data(league.id)
+        update_dst_players_for_league(league.id, dst_player_data)
 
-        roster_data = get_roster_data(league_id)
-        update_rosters_for_league(league_id, roster_data, dst_player_data)
+        roster_data = get_roster_data(league.id)
+        update_rosters_for_league(league.id, roster_data, dst_player_data)
+
+    delete_old_leagues(league_settings)
 
 
 def update_drafts():
-    for league_id in settings.LEAGUES.keys():
-        drafts_data = get_draft_data(league_id)
-        drafts = update_drafts_for_league(league_id, drafts_data)
+    for league in get_league_settings():
+        drafts_data = get_draft_data(league.id)
+        drafts = update_drafts_for_league(league.id, drafts_data)
 
         for draft in drafts:
             picks_data = get_pick_data(draft.draft_id)
@@ -264,3 +294,26 @@ def update_players():
         players.append(update_or_create_player(player_id, player_data))
 
     return players
+
+
+@dataclass
+class LeagueSetting:
+    id: str
+    name: str
+    level: int
+    region: str
+
+
+def get_league_settings(filepath=settings.DEFAULT_LEAGUE_SETTINGS_PATH):
+    with open(filepath, encoding='utf-8') as leagues_csv:
+        leagues_reader = csv.DictReader(leagues_csv, delimiter=';')
+        settings = [
+            LeagueSetting(id=row.get('Ligakennung Sleeper'),
+                          name=row.get('Name der Liga'),
+                          level=guess_level(row.get('Name der Liga')),
+                          region=guess_region(row.get('Name der Liga')))
+            for row in leagues_reader
+        ]
+
+        return settings
+
