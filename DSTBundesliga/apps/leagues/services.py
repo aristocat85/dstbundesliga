@@ -218,8 +218,8 @@ def update_picks_for_draft(draft_id, picks_data):
 
 def update_everything():
     update_players()
-    update_drafts()
     update_leagues()
+    update_drafts()
 
 
 def update_leagues():
