@@ -39,7 +39,8 @@ def level_detail(request, level, conference=None, region=None):
 
     leagues = [{
         "title": league.sleeper_name,
-        "table": RosterTable(Roster.objects.filter(league=league))
+        "table": RosterTable(Roster.objects.filter(league=league)),
+        "conference": league.conference or ""
     } for league in league_objects]
 
     return render(request, "leagues/level_detail.html", {
@@ -62,9 +63,14 @@ def my_league(request):
         league = all_leagues.get(sleeper_id=my_league_id)
         title = league.sleeper_name
         table = RosterTable(Roster.objects.filter(league=league))
+
+        header_logo = LOGO_MAP.get(league.level).get(league.conference)
+
         context["my_league"] = my_league_id
         context["title"] = title
         context["table"] = table
+        context["conference"] = league.conference or ""
+        context["header_logo"] = header_logo
 
     return render(request, "leagues/my_league.html", context)
 

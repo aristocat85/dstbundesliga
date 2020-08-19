@@ -78,20 +78,56 @@ nav div.ui.dropdown .menu>.item {
     padding: 0 0.25rem !important;
 }
 
+#top-nav .AFFC div.menu {
+    background-color: #9F2220;
+}
+
+#top-nav .CFFC div.menu {
+    background-color: #426BAE;
+}
+#top-nav .AFFC div.item {
+    background-color: #9F2220;
+}
+
+#top-nav .CFFC div.item {
+    background-color: #426BAE;
+}
+
+
+
 nav div.dropdown div a {
-    color: black !important;
+    color: black;
 }
 
-nav > div.selected {
-    background-color: rgba(196, 196, 196, 0.63) !important;
+nav div.selected {
+    /*background-color: rgba(196, 196, 196, 0.63) !important;*/
+    box-shadow: inset 0 0 100px 100px rgba(196, 196, 196, 0.63) !important;
 }
 
-nav > div:hover {
-    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.2);
+nav div:hover {
+    box-shadow: inset 0 0 100px 100px rgba(196, 196, 196, 0.43) !important;
+}
+
+#top-nav .AFFC.selected {
+    background-color: #9F2220;
+    box-shadow: none !important;
+}
+
+#top-nav .CFFC.selected {
+    background-color: #426BAE;
+    box-shadow: none !important;
+}
+
+#top-nav .AFFC.selected:hover {
+    box-shadow: inset 0 0 100px 100px rgba(196, 196, 196, 0.43) !important;
+}
+
+#top-nav .CFFC.selected:hover {
+    box-shadow: inset 0 0 100px 100px rgba(196, 196, 196, 0.43) !important;
 }
 
 nav div.item:hover {
-    box-shadow: inset 0 0 0 99999px rgba(125,125,125,0.2) !important;
+    /* box-shadow: inset 0 0 0 99999px rgba(125,125,125,0.2) !important; */
 }
 
 /* Bugfix for bouncing Navbar */
@@ -202,6 +238,10 @@ footer ul li {
     width: 100%;
 }
 
+.stat-container td {
+    padding: 5px 0;
+}
+
 .table-container {
     display: block;
     width: 100%;
@@ -215,6 +255,14 @@ footer ul li {
 .league-title-container {
     background: #102F4D;
     padding: 1em;
+}
+
+.league-title-container.AFFC {
+    background-color: #9F2220;
+}
+
+.league-title-container.CFFC {
+    background-color: #426BAE;
 }
 
 .stats-title-container {
@@ -529,3 +577,17 @@ button:hover {
 #CookielawBanner button {
     width: 150px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

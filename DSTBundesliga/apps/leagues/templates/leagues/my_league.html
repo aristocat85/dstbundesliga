@@ -6,7 +6,7 @@
 
 <div class="ui container league-container">
     {% if my_league %}
-    <div class="league-title-container">
+    <div class="league-title-container {{ conference }}">
         <h2 class="league-title">{{ title }}</h2>
     </div>
     {% render_table table %}

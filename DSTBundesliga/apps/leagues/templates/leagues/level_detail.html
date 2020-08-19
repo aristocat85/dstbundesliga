@@ -7,7 +7,7 @@
     {% for league in leagues %}
         <div class="dst-spacer dst-spacer-50">
             <div class="ui container league-container">
-                <div class="league-title-container">
+                <div class="league-title-container {{ league.conference }}">
                     <h2 class="league-title">{{ league.title }}</h2>
                 </div>
                 {% render_table league.table %}

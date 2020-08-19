@@ -121,7 +121,6 @@ class Pick(models.Model):
     metadata = JSONField()
 
 
-
 class News(models.Model):
 
     class Meta:
