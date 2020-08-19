@@ -3,11 +3,14 @@ import csv
 from datetime import datetime
 
 from attr import dataclass
+from django.db.models import Count, Avg
 from pytz import timezone
 
 import sleeper_wrapper
 
 from django.conf import settings
+from requests import HTTPError
+from urllib3.exceptions import HTTPError
 
 from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team
 
@@ -32,7 +35,8 @@ def update_league(league_setting, league_data):
         "draft_id": league_data.get("draft_id"),
         "avatar_id": league_data.get("avatar"),
         "level": league_setting.level,
-        "region": guess_region(league_data.get("name"))
+        "conference": league_setting.conference,
+        "region": league_setting.region
     })
     return league
 
@@ -122,7 +126,12 @@ def guess_region(name):
         return "Süd"
     elif "West" in name:
         return "West"
-    elif "CFFC" in name:
+    else:
+        return None
+
+
+def guess_conference(name):
+    if "CFFC" in name:
         return "CFFC"
     elif "AFFC" in name:
         return "AFFC"
@@ -135,11 +144,11 @@ def guess_level(name):
         return 2
     elif "Bundesliga" in name:
         return 1
-    elif "Conference" in name:
+    elif "ConfL" in name or "Conference" in name:
         return 3
     elif "Divisionsliga" in name:
         return 4
-    elif "Regionalliga" in name:
+    elif "RL" in name or "Regionalliga" in name:
         return 5
     else:
         return 6
@@ -186,21 +195,24 @@ def update_drafts_for_league(league_id, drafts_data):
 
 
 def update_or_create_pick(draft_id, pick_data):
-    pick, _ = Pick.objects.update_or_create(
-        draf=Draft.objects.get(draft_id=draft_id),
-        defaults={
-            "player": Player.objects.get(sleeper_id=pick_data.get('player_id')),
-            "user": DSTPlayer.objects.get(sleeper_id=pick_data.get('picked_by')),
-            "roster": Roster.objects.get(roster_id=pick_data.get('roster_id')),
-            "round": pick_data.get('round', 1),
-            "draft_slot": pick_data.get('draft_slot', 1),
-            "pick_no": pick_data.get('pick_no', 1),
-            "metadata": pick_data.get('metadata', {}),
-        }
-    )
+    try:
+        pick, _ = Pick.objects.update_or_create(
+            draft=Draft.objects.get(draft_id=draft_id),
+            pick_no=pick_data.get('pick_no'),
+            defaults={
+                "player": Player.objects.get(sleeper_id=pick_data.get('player_id')),
+                "owner": DSTPlayer.objects.get(sleeper_id=pick_data.get('picked_by')),
+                "roster": Roster.objects.get(roster_id=pick_data.get('roster_id'), owner__sleeper_id=pick_data.get('picked_by')),
+                "round": pick_data.get('round', 1),
+                "draft_slot": pick_data.get('draft_slot', 1),
+                "metadata": pick_data.get('metadata', {})
+            }
+        )
+        pick.save()
+        return pick
 
-    pick.save()
-    return pick
+    except Roster.DoesNotExist as e:
+        print("Draft: ", draft_id, "Roster: ", pick_data.get('roster_id'), "Picked by: ", pick_data.get('picked_by'))
 
 
 def get_pick_data(draft_id):
@@ -216,6 +228,16 @@ def update_picks_for_draft(draft_id, picks_data):
     return picks
 
 
+def update_draft_stats():
+    # Alle Picks mit mindestens 5 Picks je Spieler, sortiert nach Differenz zwischen adp und pick_no
+    # Relevante Spieler:
+    relevant_players = Pick.objects.all().values('player__id').annotate(pick_count=Count('player__id')).filter(pick_count__gte=5).values_list('player_id', flat=True)
+    relevant_picks = Pick.objects.filter(player__id__in=relevant_players)
+    for pick in relevant_picks.annotate(adp=Avg('pick_no')):
+        pass
+
+
+
 def update_everything():
     update_players()
     update_leagues()
@@ -225,15 +247,21 @@ def update_everything():
 def update_leagues():
     league_settings = get_league_settings()
     for league in league_settings:
+        print("Updating League {league}".format(league=league.name))
         league_data = get_league_data(league.id)
-        update_league(league, league_data)
+        try:
+            update_league(league, league_data)
 
-        dst_player_data = get_dst_player_data(league.id)
-        update_dst_players_for_league(league.id, dst_player_data)
+            dst_player_data = get_dst_player_data(league.id)
+            update_dst_players_for_league(league.id, dst_player_data)
 
-        roster_data = get_roster_data(league.id)
-        update_rosters_for_league(league.id, roster_data, dst_player_data)
+            roster_data = get_roster_data(league.id)
+            update_rosters_for_league(league.id, roster_data, dst_player_data)
 
+        except AttributeError as e:
+            print(league.id, league_data.response)
+
+    print("Deleting old leagues")
     delete_old_leagues(league_settings)
 
 
@@ -301,16 +329,18 @@ class LeagueSetting:
     id: str
     name: str
     level: int
+    conference: str
     region: str
 
 
 def get_league_settings(filepath=settings.DEFAULT_LEAGUE_SETTINGS_PATH):
-    with open(filepath, encoding='utf-8') as leagues_csv:
+    with open(filepath, encoding='iso-8859-1') as leagues_csv:
         leagues_reader = csv.DictReader(leagues_csv, delimiter=';')
         settings = [
             LeagueSetting(id=row.get('Ligakennung Sleeper'),
                           name=row.get('Name der Liga'),
                           level=guess_level(row.get('Name der Liga')),
+                          conference=guess_conference(row.get('Name der Liga')),
                           region=guess_region(row.get('Name der Liga')))
             for row in leagues_reader
         ]

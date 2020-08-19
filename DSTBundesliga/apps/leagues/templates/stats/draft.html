@@ -42,6 +42,22 @@
             {% render_table next_drafts_table %}
         </div>
     </div>
+    <div class="dst-spacer dst-spacer-50">
+        <div class="ui container stat-container">
+            <div class="stats-title-container">
+                <h2 class="stats-title">Top 5 Upset-Picks</h2>
+            </div>
+            {% render_table upset_table %}
+        </div>
+    </div>
+    <div class="dst-spacer dst-spacer-50">
+        <div class="ui container stat-container">
+            <div class="stats-title-container">
+                <h2 class="stats-title">Top 5 Steal-Picks</h2>
+            </div>
+            {% render_table steal_table %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}

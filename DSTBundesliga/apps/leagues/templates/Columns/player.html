@@ -1,5 +1,4 @@
 <div class="player">
-    <div class="avatar"
-         style="background: url('https://sleepercdn.com/content/nfl/players/thumb/{{ record.player.sleeper_id }}.jpg') center center / cover rgb(239, 239, 239); width: 40px; height: 40px; flex: 0 0 40px;"></div>
-    <div class="player_name">{{ record.player.first_name }}&nbsp;{{ record.player.last_name }}, {{ record.player.team.abbr | default_if_none:"-" }}</div>
+    <div class="player_name">{{ record.first_name }}&nbsp;{{ record.last_name }}, {{ record.team.abbr | default_if_none:"-" }}</div>
 </div>
+

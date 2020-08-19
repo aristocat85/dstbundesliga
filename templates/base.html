@@ -30,7 +30,7 @@
         <div class="main">
             {% cms_toolbar %}
             <header class="logo-header">
-                <div class="logo-container"><img class="logo" src="/media/images/dst_bl_logo.png" alt="Home"></div>
+                <div class="logo-container"><img class="logo" src="/media/images/{{ header_logo | default:'dst_bl_logo' }}.png" alt="Home"></div>
                 <div class="header-container"><img src="/media/images/dst_header.png" alt="Down! Set! Talk! Fantasy Football Bundesliga"></div>
             </header>
             <nav id="top-nav" class="ui sticky">

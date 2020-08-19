@@ -2,7 +2,7 @@ import itertools
 
 import django_tables2 as tables
 
-from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft
+from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft, Player
 
 
 class LeagueTable(tables.Table):
@@ -39,14 +39,14 @@ class DraftsADPTable(tables.Table):
 
     class Meta:
         empty_text = "Es haben noch keine Drafts stattgefunden"
-        model = Pick
+        model = Player
         orderable = False
         fields = ['ranking', 'player', 'pos', 'adp']
 
     ranking = tables.Column(verbose_name='Platz', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
     player = tables.TemplateColumn(verbose_name='Spieler', template_name="Columns/player.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
-    pos = tables.Column(verbose_name='Position', accessor="player__position", attrs={"td": {"class": "position"}, "th": {"class": "position"}})
-    adp = tables.Column(verbose_name='Ø-Pick', attrs={"td": {"class": "adp"}, "th": {"class": "adp"}})
+    pos = tables.Column(verbose_name='Position', accessor="position", attrs={"td": {"class": "position"}, "th": {"class": "position"}})
+    adp = tables.Column(verbose_name='ADP', attrs={"td": {"class": "adp"}, "th": {"class": "adp"}})
 
     def render_ranking(self):
         self.ranking = getattr(self, 'ranking', itertools.count(start=1))
@@ -63,4 +63,23 @@ class NextDraftsTable(tables.Table):
 
     league = tables.Column(verbose_name='Liga', accessor="league__sleeper_name", attrs={"td": {"class": "league"}, "th": {"class": "league"}})
     date = tables.DateTimeColumn(verbose_name='Datum', accessor="start_time", format='d.m. H:i', attrs={"td": {"class": "date"}, "th": {"class": "date"}})
+
+
+class UpsetAndStealPickTable(tables.Table):
+
+    class Meta:
+        empty_text = "Es haben noch nicht ausreichend Drafts stattgefunden"
+        model = Pick
+        orderable = False
+        fields = ['ranking', 'player', 'pick_no', 'adp', 'picked_by']
+
+    ranking = tables.Column(verbose_name='Platz', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
+    player = tables.TemplateColumn(verbose_name='Spieler', template_name="Columns/player_pick.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
+    pick_no = tables.Column(verbose_name='Picked at', attrs={"td": {"class": "pick_no"}, "th": {"class": "pick_no"}})
+    adp = tables.Column(verbose_name='ADP', attrs={"td": {"class": "adp"}, "th": {"class": "adp"}})
+    picked_by = tables.TemplateColumn(verbose_name='Team Manager', template_name="Columns/team_manager.html", empty_values=(), attrs={"td": {"class": "team-manager"}, "th": {"class": "team-manager"}})
+
+    def render_ranking(self):
+        self.ranking = getattr(self, 'ranking', itertools.count(start=1))
+        return next(self.ranking)
 

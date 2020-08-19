@@ -192,4 +192,4 @@ else:
         }
     }
 
-DEFAULT_LEAGUE_SETTINGS_PATH = "leagues.csv"
+DEFAULT_LEAGUE_SETTINGS_PATH = "Ligaübersicht.csv"

@@ -6,6 +6,7 @@ from tinymce.models import HTMLField
 
 class League(models.Model):
     level = models.IntegerField(default=0)
+    conference = models.CharField(max_length=30, null=True)
     region = models.CharField(max_length=30, null=True)
 
     #Sleeper Data
@@ -84,24 +85,10 @@ class Roster(models.Model):
     fpts = models.IntegerField(default=0)
     settings = JSONField()
     roster_id = models.IntegerField()
-    reserve = models.CharField(max_length=100)
-    players = models.CharField(max_length=255)
+    reserve = models.CharField(max_length=100, null=True)
+    players = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
-
-    @property
-    def avatar_id(self):
-        if self.owner:
-            return self.owner.avatar_id
-        else:
-            return None
-
-    @property
-    def owner_name(self):
-        if self.owner:
-            return self.owner.display_name
-        else:
-            return None
 
 
 class Draft(models.Model):
@@ -125,13 +112,14 @@ class Draft(models.Model):
 class Pick(models.Model):
     #Sleeper Data
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    user = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE)
+    owner = models.ForeignKey(DSTPlayer, related_name="picks", on_delete=models.CASCADE, null=True)
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
     draft = models.ForeignKey(Draft, on_delete=models.CASCADE)
     round = models.IntegerField(default=1)
     draft_slot = models.IntegerField(default=1)
     pick_no = models.IntegerField(default=1)
     metadata = JSONField()
+
 
 
 class News(models.Model):
