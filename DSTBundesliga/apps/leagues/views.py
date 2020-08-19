@@ -70,7 +70,7 @@ def my_league(request):
 
 
 def draft_stats(request, position=None):
-    drafts_done = Draft.objects.filter(status='completed').count()
+    drafts_done = Draft.objects.filter(status='complete').count()
     drafts_overall = League.objects.all().count()
     drafts_done_percent = drafts_done / drafts_overall * 100
 
@@ -83,7 +83,7 @@ def draft_stats(request, position=None):
     adp_table = DraftsADPTable(players.exclude(adp=None).order_by('adp')[:200])
 
     drafts = Draft.objects.all()
-    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(status='completed').order_by('start_time')[:10])
+    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(status='complete').order_by('start_time')[:10])
 
     adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 10, output_field=IntegerField())
     upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=5).annotate(adp_diff=adp_diff)
