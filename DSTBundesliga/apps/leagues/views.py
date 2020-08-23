@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count
+from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min
 from django.shortcuts import render
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
@@ -26,16 +26,21 @@ def roster_list(request, league_id):
     })
 
 
-def level_detail(request, level, conference=None, region=None):
-    league_objects = League.objects.filter(level=level).order_by('sleeper_name')
+def level_detail(request, level=None, conference=None, region=None):
+    league_objects = League.objects.all().order_by('sleeper_name')
+    header_logo = None
+
+    if level:
+        league_objects = league_objects.filter(level=level)
+        header_logo = LOGO_MAP.get(level).get(conference)
 
     if conference:
         league_objects = league_objects.filter(conference=conference)
 
     if region:
+        if region == "Sued":
+            region = 'Süd'
         league_objects = league_objects.filter(region=region)
-
-    header_logo = LOGO_MAP.get(level).get(conference)
 
     leagues = [{
         "title": league.sleeper_name,
@@ -81,7 +86,7 @@ def draft_stats(request, position=None):
     drafts_done_percent = drafts_done / drafts_overall * 100
 
     picks = Pick.objects.all()
-    players = Player.objects.annotate(adp=Avg("pick__pick_no"))
+    players = Player.objects.annotate(adp=Avg("pick__pick_no"), highest_pick=Min('pick__pick_no'), lowest_pick=Min('pick__pick_no'))
 
     if position:
         players = players.filter(position=position)
@@ -89,7 +94,7 @@ def draft_stats(request, position=None):
     adp_table = DraftsADPTable(players.exclude(adp=None).order_by('adp')[:200])
 
     drafts = Draft.objects.all()
-    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(status='complete').order_by('start_time')[:10])
+    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(status='complete').order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
 
     adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 10, output_field=IntegerField())
     upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=5).annotate(adp_diff=adp_diff)
@@ -121,7 +126,7 @@ def draft_stats(request, position=None):
 
 def home(request):
     drafts = Draft.objects.all()
-    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).order_by('start_time')[:10])
+    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(status='complete').order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
 
     news = News.objects.all().order_by('-date')[:3]
 

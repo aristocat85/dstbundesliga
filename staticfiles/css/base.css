@@ -49,7 +49,7 @@ nav {
 }
 
 nav div a {
-    color: white !important;
+    color: white;
     text-decoration: none;
     padding: 1em 1.25em;
     border: none;
@@ -60,14 +60,21 @@ nav div a {
     font-size: 18px;
 }
 
+nav div a:hover {
+    color: white;
+}
+
 nav div {
     background: #000D2B;
-    border: 2px solid #000D2B;
     float: left;
     padding: 0 0.25rem;
     line-height: 22px;
     align-items: center;
     text-align: center;
+}
+
+nav .first-menu-row {
+    border: 2px transparent;
 }
 
 nav div.dropdown div {
@@ -93,29 +100,64 @@ nav div.ui.dropdown .menu>.item {
     background-color: #426BAE;
 }
 
+.cffc-menu-row {
+    background-color: #426BAE;
+    border: 2px #FFFFFF ;
+    border-style: solid none;
+}
 
+.cffc-menu-row .item.cffc {
+    background-color: #426BAE;
+}
+
+.affc-menu-row {
+    background-color: #9F2220;
+    border: 2px #FFFFFF ;
+    border-style: solid none;
+}
+
+.affc-menu-row .item.affc {
+    background-color: #9F2220;
+}
+
+.regional-menu-row {
+    background-color: #C4C4C4;
+    border: none;
+}
+
+.regional-menu-node {
+    background-color: #C4C4C4;
+    color: black;
+}
+
+.regional-menu-node  a {
+    color: black !important;
+}
+
+.menu-row {
+    width: 100%;
+}
+
+.hidden_one.hidden_two.hidden_three {
+    display: none;
+}
 
 nav div.dropdown div a {
     color: black;
 }
 
-nav div.selected {
+nav div.item.selected {
     /*background-color: rgba(196, 196, 196, 0.63) !important;*/
     box-shadow: inset 0 0 100px 100px rgba(196, 196, 196, 0.63) !important;
 }
 
-nav div:hover {
+nav div.item.regional-menu-node:hover {
+    /*background-color: rgba(196, 196, 196, 0.63) !important;*/
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.75) !important;
+}
+
+nav div.item:hover {
     box-shadow: inset 0 0 100px 100px rgba(196, 196, 196, 0.43) !important;
-}
-
-#top-nav .AFFC.selected {
-    background-color: #9F2220;
-    box-shadow: none !important;
-}
-
-#top-nav .CFFC.selected {
-    background-color: #426BAE;
-    box-shadow: none !important;
 }
 
 #top-nav .AFFC.selected:hover {
@@ -129,6 +171,86 @@ nav div:hover {
 nav div.item:hover {
     /* box-shadow: inset 0 0 0 99999px rgba(125,125,125,0.2) !important; */
 }
+
+.breadcrumb {
+    width: 100%;
+    background-color: #C4C4C4;
+    border: 2px #FFFFFF ;
+    border-style: solid none;
+    padding-left: 2px;
+    list-style: none;
+    margin: 0;
+    overflow: hidden;
+}
+
+.breadcrumb.cffc {
+    background-color: #426BAE;
+}
+
+.breadcrumb.affc {
+    background-color: #9F2220;
+}
+
+.breadcrumb li {
+    float: left;
+    padding: 0 0.25rem;
+}
+.breadcrumb li a, .breadcrumb li span {
+    text-decoration: none;
+    padding: 1em 0 1em 2.5em;
+    position: relative;
+    float: left;
+    color: white !important;
+    border: none;
+    display: block;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.breadcrumb li:first-child a {
+    padding: 1em 1.25em;
+}
+
+.breadcrumb li a::after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 30px solid #C4C4C4;
+    border-top: 50px solid transparent; /* Go big on the size, and let overflow hide */
+    border-bottom: 50px solid transparent;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 99%;
+    z-index: 2;
+}
+.breadcrumb.AFFC li a::after {
+    border-left: 30px solid #9F2220;
+}
+
+.breadcrumb.CFFC li a::after {
+    border-left: 30px solid #426BAE;
+}
+
+.breadcrumb li a::before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+
 
 /* Bugfix for bouncing Navbar */
 .fixed + .content {

@@ -34,10 +34,63 @@
                 <div class="header-container"><img src="/media/images/dst_header.png" alt="Down! Set! Talk! Fantasy Football Bundesliga"></div>
             </header>
             <nav id="top-nav" class="ui sticky">
-                {% show_menu 0 100 100 100 'leagues/menu.html' %}
+                <div class="menu-row first-menu-row">{% show_menu 0 100 100 100 'leagues/menu.html' %}</div>
+                <div class="menu-row cffc-menu-row hidden_one hidden_two hidden_three">
+                    <div class="item conference-menu-node menu-node-league-3CFFC CFFC">
+                        <a href="/leagues/conf/CFFC/lev/3/">Conference-Liga</a>
+                    </div>
+                    <div class="item conference-menu-node menu-node-league-4CFFC CFFC">
+                        <a href="/leagues/conf/CFFC/lev/4/">Divisionsliga</a>
+                    </div>
+                    <div class="item conference-menu-node menu-node-league-5CFFC CFFC droppable">
+                        <a href="/leagues/conf/CFFC/lev/5/">Regionalliga</a>
+                    </div>
+                </div>
+                <div class="menu-row affc-menu-row hidden_one hidden_two hidden_three">
+                    <div class="item conference-menu-node menu-node-league-3AFFC AFFC">
+                        <a href="/leagues/conf/AFFC/lev/3/">Conference-Liga</a>
+                    </div>
+                    <div class="item conference-menu-node menu-node-league-4AFFC AFFC">
+                        <a href="/leagues/conf/AFFC/lev/4/">Divisionsliga</a>
+                    </div>
+                    <div class="item conference-menu-node menu-node-league-5AFFC AFFC droppable">
+                        <a href="/leagues/conf/AFFC/lev/5/">Regionalliga</a>
+                    </div>
+                </div>
+                <div class="menu-row regional-menu-row regional-cffc-menu-row hidden_one hidden_two hidden_three">
+                    <div class="item regional-menu-node menu-node-league-5CFFC-Nord CFFC">
+                        <a href="/leagues/conf/CFFC/lev/5/reg/Nord/">Nord</a>
+                    </div>
+                    <div class="item regional-menu-node menu-node-league-5CFFC-Ost CFFC">
+                        <a href="/leagues/conf/CFFC/lev/5/reg/Ost/">Ost</a>
+                    </div>
+                    <div class="item regional-menu-node menu-node-league-5CFFC-Süd CFFC">
+                        <a href="/leagues/conf/CFFC/lev/5/reg/Sued/">Süd</a>
+                    </div>
+                    <div class="item regional-menu-node menu-node-league-5CFFC-West CFFC">
+                        <a href="/leagues/conf/CFFC/lev/5/reg/West/">West</a>
+                    </div>
+                </div>
+                <div class="menu-row regional-menu-row regional-affc-menu-row hidden_one hidden_two hidden_three">
+                    <div class="item regional-menu-node menu-node-league-5AFFC-Nord AFFC">
+                        <a href="/leagues/conf/AFFC/lev/5/reg/Nord/">Nord</a>
+                    </div>
+                    <div class="item regional-menu-node menu-node-league-5AFFC-Ost AFFC">
+                        <a href="/leagues/conf/AFFC/lev/5/reg/Ost/">Ost</a>
+                    </div>
+                    <div class="item regional-menu-node menu-node-league-5AFFC-Süd AFFC">
+                        <a href="/leagues/conf/AFFC/lev/5/reg/Sued/">Süd</a>
+                    </div>
+                    <div class="item regional-menu-node menu-node-league-5AFFC-West AFFC">
+                        <a href="/leagues/conf/AFFC/lev/5/reg/West/">West</a>
+                    </div>
+                </div>
             </nav>
-
+            <div class="breadcrumb-container">
+                {% show_breadcrumb 1 "leagues/breadcrumb.html" %}
+            </div>
             <div class="content">
+
                 {% block content %}
                 {% endblock %}
             </div>
@@ -50,7 +103,7 @@
                     <li class="right"><a href="http://downsettalk.de/">DOWN,SET,TALK!</a></li>
                 </ul>
             </footer>
-        </div>
+        </nav>
         {% render_block js %}
         {% block js %}
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -59,7 +112,71 @@
         <script>
             $(function () {
                 $('nav').sticky();
-                $('.ui.dropdown').dropdown({on: 'hover'});
+
+                $('.menu-row.cffc, .menu-row.affc').hover(() => {
+                    $('.breadcrumb').addClass('hidden_one hidden_two hidden_three');
+                }, () => setTimeout(() => {
+                    $('.breadcrumb').removeClass('hidden_one hidden_two hidden_three');
+                }, 100));
+
+                $('.league-menu-node.droppable.cffc').hover(() => {
+                    $('.cffc-menu-row').removeClass('hidden_one');
+                    $('.affc-menu-row').addClass('hidden_one');
+                    $('.affc-menu-row').addClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_one');}, 100);
+                });
+                $('.league-menu-node.droppable.affc').hover(() => {
+                    $('.affc-menu-row').removeClass('hidden_one');
+                    $('.cffc-menu-row').addClass('hidden_one');
+                    $('.cffc-menu-row').addClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_one');}, 100);
+                });
+
+                $('.cffc-menu-row').hover(() => {
+                    $('.cffc-menu-row').removeClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_two');}, 100);
+                });
+                $('.affc-menu-row').hover(() => {
+                    $('.affc-menu-row').removeClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_two');}, 100);
+                });
+
+                $('.regional-cffc-menu-row').hover(() => {
+                    $('.cffc-menu-row').removeClass('hidden_three');
+                }, () => {
+                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_three');}, 100);
+                });
+                $('.regional-affc-menu-row').hover(() => {
+                    $('.affc-menu-row').removeClass('hidden_three');
+                }, () => {
+                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_three');}, 100);
+                });
+
+                $('.menu-node-league-5CFFC').hover(() => {
+                    $('.regional-cffc-menu-row').removeClass('hidden_one');
+                }, () => {
+                    setTimeout(() => {$('.regional-cffc-menu-row').addClass('hidden_one');}, 100);
+                });
+                $(' .menu-node-league-5AFFC').hover(() => {
+                    $('.regional-affc-menu-row').removeClass('hidden_one');
+                }, () => {
+                    setTimeout(() => {$('.regional-affc-menu-row').addClass('hidden_one');}, 100);
+                });
+
+                $('.regional-cffc-menu-row').hover(() => {
+                    $('.regional-cffc-menu-row').removeClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.regional-cffc-menu-row').addClass('hidden_two');}, 100);
+                });
+                $('.regional-affc-menu-row').hover(() => {
+                    $('.regional-affc-menu-row').removeClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.regional-affc-menu-row').addClass('hidden_two');}, 100);
+                });
             });
         </script>
         {% endblock %}

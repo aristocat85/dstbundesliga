@@ -1,12 +1,8 @@
 {% load menu_tags %}
 
 {% for child in children %}
-<div class="item {% if child.selected or child.ancestor %}selected {% endif %}{% if child.children %}ui dropdown {% endif %}{{ child.attr.li_class }}">
+<div class="item league-menu-node menu-node-{{child.id}} {% if child.selected or child.ancestor %}selected {% endif %}{% if child.children %}droppable {% endif %}{{ child.attr.li_class }}">
     <a href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">{{ child.get_menu_title }}</a>
-    {% if child.children %}
-    <div class="menu">
-        {% show_menu from_level to_level extra_inactive extra_active template "" "" child %}
-    </div>
-    {% endif %}
 </div>
 {% endfor %}
+

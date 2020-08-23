@@ -1,0 +1,13 @@
+{% if ancestors|length > 1 %}
+<ul class="breadcrumb {% if 'CFFC' in request.path %}CFFC{% elif 'AFFC' in request.path %}AFFC{% endif %}">
+    {% for ance in ancestors %}
+    <li class="item">
+        {% if not forloop.last %}
+        <a href="{{ ance.get_absolute_url }}">{% if ance.get_menu_title == 'Sued' %}Süd{% else %}{{ ance.get_menu_title }}{% endif %}</a>
+        {% else %}
+        <span class="active">{% if ance.get_menu_title == 'Sued' %}Süd{% else %}{{ ance.get_menu_title }}{% endif %}</span>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

@@ -47,6 +47,8 @@ class DraftsADPTable(tables.Table):
     player = tables.TemplateColumn(verbose_name='Spieler', template_name="Columns/player.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
     pos = tables.Column(verbose_name='Position', accessor="position", attrs={"td": {"class": "position"}, "th": {"class": "position"}})
     adp = tables.Column(verbose_name='ADP', attrs={"td": {"class": "adp"}, "th": {"class": "adp"}})
+    highest_pick = tables.Column(verbose_name='Highest', attrs={"td": {"class": "highest_pick"}, "th": {"class": "highest_pick"}})
+    lowest_pick = tables.Column(verbose_name='Lowest', attrs={"td": {"class": "lowest_pick"}, "th": {"class": "lowest_pick"}})
 
     def render_ranking(self):
         self.ranking = getattr(self, 'ranking', itertools.count(start=1))

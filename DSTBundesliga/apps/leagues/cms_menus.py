@@ -31,7 +31,7 @@ class LeaguesMenu(Menu):
                     conference_node = conferences.get(conference)
                     if not conference_node:
                         counter += 1
-                        conference_node = NavigationNode(conference, reverse('conference-detail', kwargs={"level": level, "conference": conference}), counter, attr={'li_class': conference})
+                        conference_node = NavigationNode(conference, reverse('conference-overview', kwargs={"conference": conference}), conference, attr={'li_class': conference})
                         nodes.append(conference_node)
                         conferences[conference] = conference_node
                     conference_id = conference_node.id
@@ -45,20 +45,22 @@ class LeaguesMenu(Menu):
                     kwargs["conference"] = conference
                     url = reverse('conference-detail', kwargs=kwargs)
 
-                print(title, conference, conference_id)
-
-                league_node = NavigationNode(title, url, counter, parent_id=conference_id, attr={'li_class': conference})
+                node_id = "league-%i" % level
+                if conference:
+                    node_id = conference + "-" + node_id
+                league_node = NavigationNode(title, url, node_id, parent_id=conference_id, attr={'li_class': conference})
                 league_id = league_node.id
                 nodes.append(league_node)
 
                 for region in conference_leagues.values_list("region", flat=True).distinct().order_by('region'):
                     if region:
-                        print("Region: ", region, conference_node, conference, conference_id)
+                        if region == 'Süd':
+                            region = 'Sued'
                         region_node = regions.get(conference, {}).get(region)
                         if not region_node:
                             counter += 1
-                            region_node = NavigationNode(region, reverse('region-detail', kwargs={"level": level, "conference": conference, "region": region}), counter, parent_id=league_id, attr={'li_class': conference})
-                            #nodes.append(region_node)
+                            region_node = NavigationNode(region, reverse('region-detail', kwargs={"level": level, "conference": conference, "region": region}), node_id+"-"+region, parent_id=league_id, attr={'li_class': conference})
+                            nodes.append(region_node)
                             if not regions.get(conference):
                                 regions[conference] = {}
                             regions[conference][region] = region_node
