@@ -86,7 +86,7 @@ def draft_stats(request, position=None):
     drafts_done_percent = drafts_done / drafts_overall * 100
 
     picks = Pick.objects.all()
-    players = Player.objects.annotate(adp=Avg("pick__pick_no"), highest_pick=Min('pick__pick_no'), lowest_pick=Min('pick__pick_no'))
+    players = Player.objects.annotate(adp=Avg("pick__pick_no"), highest_pick=Min('pick__pick_no'), lowest_pick=Max('pick__pick_no'))
 
     if position:
         players = players.filter(position=position)
