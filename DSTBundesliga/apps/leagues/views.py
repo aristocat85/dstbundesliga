@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min
+from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min, Max
 from django.shortcuts import render
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
