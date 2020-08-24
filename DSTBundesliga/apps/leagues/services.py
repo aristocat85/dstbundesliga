@@ -1,4 +1,5 @@
 import csv
+import time
 
 from datetime import datetime
 
@@ -9,8 +10,6 @@ from pytz import timezone
 import sleeper_wrapper
 
 from django.conf import settings
-from requests import HTTPError
-from urllib3.exceptions import HTTPError
 
 from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team
 
@@ -159,6 +158,14 @@ def update_or_create_draft(league_id, draft_data):
     if start_time:
         start_time = datetime.fromtimestamp(start_time / 1000, tz=timezone('Europe/Berlin'))
 
+    last_picked = draft_data.get('last_picked')
+    if last_picked:
+        last_picked = datetime.fromtimestamp(last_picked / 1000, tz=timezone('Europe/Berlin'))
+
+    last_message_time = draft_data.get('last_message_time')
+    if last_message_time:
+        last_message_time = datetime.fromtimestamp(last_message_time / 1000, tz=timezone('Europe/Berlin'))
+
     draft, _ = Draft.objects.update_or_create(
         draft_id=draft_data.get('draft_id'),
         league=League.objects.get(sleeper_id=league_id),
@@ -170,8 +177,8 @@ def update_or_create_draft(league_id, draft_data):
             "season_type": draft_data.get('season_type', ''),
             "season": draft_data.get('season', 0),
             "metadata": draft_data.get('metadata', {}),
-            "last_picked": datetime.fromtimestamp(draft_data.get('last_picked') / 1000, tz=timezone('Europe/Berlin')),
-            "last_message_time": datetime.fromtimestamp(draft_data.get('last_message_time') / 1000, tz=timezone('Europe/Berlin')),
+            "last_picked": last_picked,
+            "last_message_time": last_message_time,
             "last_message_id": draft_data.get('last_message_id'),
             "draft_order": draft_data.get('draft_order')
         }
