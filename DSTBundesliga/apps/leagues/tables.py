@@ -54,6 +54,9 @@ class DraftsADPTable(tables.Table):
         self.ranking = getattr(self, 'ranking', itertools.count(start=1))
         return next(self.ranking)
 
+    def render_adp(self, value):
+        return '{:0.1f}'.format(value)
+
 
 class NextDraftsTable(tables.Table):
 
@@ -85,3 +88,5 @@ class UpsetAndStealPickTable(tables.Table):
         self.ranking = getattr(self, 'ranking', itertools.count(start=1))
         return next(self.ranking)
 
+    def render_adp(self, value):
+        return '{:0.1f}'.format(value)

@@ -86,7 +86,7 @@ def draft_stats(request, position=None):
     drafts_done_percent = drafts_done / drafts_overall * 100
 
     picks = Pick.objects.all()
-    players = Player.objects.annotate(adp=Avg("pick__pick_no"), highest_pick=Min('pick__pick_no'), lowest_pick=Max('pick__pick_no'))
+    players = Player.objects.annotate(adp=Avg("pick__pick_no"), pick_count=Count("pick__player__id"), highest_pick=Min('pick__pick_no'), lowest_pick=Max('pick__pick_no')).filter(pick_count__gte=drafts_done*0.5)
 
     if position:
         players = players.filter(position=position)
@@ -97,7 +97,7 @@ def draft_stats(request, position=None):
     next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(status='complete').order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
 
     adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 10, output_field=IntegerField())
-    upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=5).annotate(adp_diff=adp_diff)
+    upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=drafts_done*0.8).annotate(adp_diff=adp_diff)
     upset_table = UpsetAndStealPickTable(upset_and_value_picks.order_by('adp_diff')[:5])
     steal_table = UpsetAndStealPickTable(upset_and_value_picks.order_by('-adp_diff')[:5])
 

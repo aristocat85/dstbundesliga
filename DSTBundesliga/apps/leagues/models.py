@@ -9,7 +9,7 @@ class League(models.Model):
     conference = models.CharField(max_length=30, null=True)
     region = models.CharField(max_length=30, null=True)
 
-    #Sleeper Data
+    # Sleeper Data
     total_rosters = models.IntegerField(default=12)
     status = models.CharField(max_length=20)
     sport = models.CharField(max_length=30)
@@ -26,7 +26,7 @@ class League(models.Model):
 
 
 class DSTPlayer(models.Model):
-    #Sleeper Data
+    # Sleeper Data
     sleeper_id = models.CharField(max_length=50, db_index=True, unique=True)
     display_name = models.CharField(max_length=50, db_index=True)
     avatar_id = models.CharField(max_length=100, null=True)
@@ -47,7 +47,7 @@ class Player(models.Model):
     ]
 
     type = models.IntegerField(choices=TYPES, default=PLAYER)
-    #Sleeper Data
+    # Sleeper Data
     sleeper_id = models.CharField(max_length=10, db_index=True, unique=True)
     last_name = models.CharField(max_length=50, default='')
     first_name = models.CharField(max_length=50, default='')
@@ -68,9 +68,12 @@ class Player(models.Model):
     def name(self):
         return "{first_name} {last_name}".format(first_name=self.first_name, last_name=self.last_name)
 
+    def __str__(self):
+        return self.name
+
 
 class Roster(models.Model):
-    #Sleeper Data
+    # Sleeper Data
     name = models.CharField(max_length=100, null=True)
     starters = models.CharField(max_length=100)
     wins = models.IntegerField(default=0)
@@ -92,7 +95,7 @@ class Roster(models.Model):
 
 
 class Draft(models.Model):
-    #Sleeper Data
+    # Sleeper Data
     draft_type = models.CharField(max_length=20)
     status = models.CharField(max_length=20)
     start_time = models.DateTimeField(blank=True, null=True)
@@ -110,7 +113,7 @@ class Draft(models.Model):
 
 
 class Pick(models.Model):
-    #Sleeper Data
+    # Sleeper Data
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     owner = models.ForeignKey(DSTPlayer, related_name="picks", on_delete=models.CASCADE, null=True)
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
@@ -120,13 +123,17 @@ class Pick(models.Model):
     pick_no = models.IntegerField(default=1)
     metadata = JSONField()
 
+    def __str__(self):
+        return "{round}.{draft_slot} ({pick_no}) - {player}".format(round=self.round,
+                                                                    draft_slot=self.draft_slot,
+                                                                    pick_no=self.pick_no,
+                                                                    player=self.player.name)
+
 
 class News(models.Model):
-
     class Meta:
         verbose_name_plural = "News"
 
     title = models.TextField()
     content = HTMLField()
     date = models.DateTimeField(auto_now=True)
-
