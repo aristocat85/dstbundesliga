@@ -192,4 +192,5 @@ else:
         }
     }
 
-DEFAULT_LEAGUE_SETTINGS_PATH = "Ligaübersicht.csv"
+
+DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")

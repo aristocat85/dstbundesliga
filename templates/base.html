@@ -113,69 +113,71 @@
             $(function () {
                 $('nav').sticky();
 
+                const delay = 200;
+
                 $('.menu-row.cffc, .menu-row.affc').hover(() => {
                     $('.breadcrumb').addClass('hidden_one hidden_two hidden_three');
                 }, () => setTimeout(() => {
                     $('.breadcrumb').removeClass('hidden_one hidden_two hidden_three');
-                }, 100));
+                }, delay));
 
                 $('.league-menu-node.droppable.cffc').hover(() => {
                     $('.cffc-menu-row').removeClass('hidden_one');
                     $('.affc-menu-row').addClass('hidden_one');
                     $('.affc-menu-row').addClass('hidden_two');
                 }, () => {
-                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_one');}, 100);
+                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_one');}, delay);
                 });
                 $('.league-menu-node.droppable.affc').hover(() => {
                     $('.affc-menu-row').removeClass('hidden_one');
                     $('.cffc-menu-row').addClass('hidden_one');
                     $('.cffc-menu-row').addClass('hidden_two');
                 }, () => {
-                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_one');}, 100);
+                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_one');}, delay);
                 });
 
                 $('.cffc-menu-row').hover(() => {
                     $('.cffc-menu-row').removeClass('hidden_two');
                 }, () => {
-                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_two');}, 100);
+                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_two');}, delay);
                 });
                 $('.affc-menu-row').hover(() => {
                     $('.affc-menu-row').removeClass('hidden_two');
                 }, () => {
-                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_two');}, 100);
+                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_two');}, delay);
                 });
 
                 $('.regional-cffc-menu-row').hover(() => {
                     $('.cffc-menu-row').removeClass('hidden_three');
                 }, () => {
-                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_three');}, 100);
+                    setTimeout(() => {$('.cffc-menu-row').addClass('hidden_three');}, delay);
                 });
                 $('.regional-affc-menu-row').hover(() => {
                     $('.affc-menu-row').removeClass('hidden_three');
                 }, () => {
-                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_three');}, 100);
+                    setTimeout(() => {$('.affc-menu-row').addClass('hidden_three');}, delay);
                 });
 
                 $('.menu-node-league-5CFFC').hover(() => {
                     $('.regional-cffc-menu-row').removeClass('hidden_one');
                 }, () => {
-                    setTimeout(() => {$('.regional-cffc-menu-row').addClass('hidden_one');}, 100);
+                    setTimeout(() => {$('.regional-cffc-menu-row').addClass('hidden_one');}, delay);
                 });
                 $(' .menu-node-league-5AFFC').hover(() => {
                     $('.regional-affc-menu-row').removeClass('hidden_one');
                 }, () => {
-                    setTimeout(() => {$('.regional-affc-menu-row').addClass('hidden_one');}, 100);
+                    setTimeout(() => {$('.regional-affc-menu-row').addClass('hidden_one');}, delay);
                 });
 
                 $('.regional-cffc-menu-row').hover(() => {
                     $('.regional-cffc-menu-row').removeClass('hidden_two');
                 }, () => {
-                    setTimeout(() => {$('.regional-cffc-menu-row').addClass('hidden_two');}, 100);
+                    setTimeout(() => {$('.regional-cffc-menu-row').addClass('hidden_two');}, delay);
                 });
                 $('.regional-affc-menu-row').hover(() => {
                     $('.regional-affc-menu-row').removeClass('hidden_two');
                 }, () => {
-                    setTimeout(() => {$('.regional-affc-menu-row').addClass('hidden_two');}, 100);
+                    setTimeout(() => {$('.regional-affc-menu-row').addClass('hidden_two');}, delay);
                 });
             });
         </script>
