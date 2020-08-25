@@ -342,7 +342,7 @@ class LeagueSetting:
 
 def get_league_settings(filepath=settings.DEFAULT_LEAGUE_SETTINGS_PATH):
     with open(filepath, encoding='iso-8859-1') as leagues_csv:
-        leagues_reader = csv.DictReader(leagues_csv, delimiter=';')
+        leagues_reader = csv.DictReader(leagues_csv, fieldnames=['Name der Liga', 'Ligakennung Sleeper'], delimiter=';')
         settings = [
             LeagueSetting(id=row.get('Ligakennung Sleeper'),
                           name=row.get('Name der Liga'),
