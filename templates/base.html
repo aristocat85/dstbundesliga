@@ -88,14 +88,13 @@
             </nav>
             <div class="breadcrumb-container">
                 {% show_breadcrumb 1 "leagues/breadcrumb.html" %}
+                {% cookielaw_banner  %}
             </div>
             <div class="content">
-
                 {% block content %}
                 {% endblock %}
             </div>
             <footer id="footer">
-                {% cookielaw_banner  %}
                 <ul>
                     <li class="right"><a href="/impressum">Impressum & Datenschutz</a></li>
                     <li class="right"><a href="/regelwerk">Regelwerk</a></li>
@@ -103,7 +102,7 @@
                     <li class="right"><a href="http://downsettalk.de/">DOWN,SET,TALK!</a></li>
                 </ul>
             </footer>
-        </nav>
+        </div>
         {% render_block js %}
         {% block js %}
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -112,6 +111,22 @@
         <script>
             $(function () {
                 $('nav').sticky({context: '#footer'});
+
+                $('#CookielawBanner')
+                    .modal({
+                        closable  : false,
+                        onDeny    : function(){
+                            return false;
+                        },
+                        onApprove : function() {
+                            Cookielaw.createCookielawCookie();
+                            return true;
+                        }
+                    })
+                    .modal('show')
+                ;
+
+
 
                 const delay = 200;
 
