@@ -24,6 +24,9 @@ class League(models.Model):
     draft_id = models.CharField(max_length=50)
     avatar_id = models.CharField(max_length=100)
 
+    def __str__(self):
+        return "{name} - {id}".format(name=self.sleeper_name, id=self.sleeper_id)
+
 
 class DSTPlayer(models.Model):
     # Sleeper Data

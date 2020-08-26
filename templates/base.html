@@ -94,7 +94,7 @@
                 {% block content %}
                 {% endblock %}
             </div>
-            <footer>
+            <footer id="footer">
                 {% cookielaw_banner  %}
                 <ul>
                     <li class="right"><a href="/impressum">Impressum & Datenschutz</a></li>
@@ -111,7 +111,7 @@
         <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
         <script>
             $(function () {
-                $('nav').sticky();
+                $('nav').sticky({context: '#footer'});
 
                 const delay = 200;
 

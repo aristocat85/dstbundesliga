@@ -40,8 +40,16 @@ def update_league(league_setting, league_data):
     return league
 
 
-def delete_old_leagues(league_settings):
-    League.objects.exclude(sleeper_id__in=[l.id for l in league_settings]).delete()
+def delete_old_leagues(league_settings, dry_run=True):
+    leagues_to_delete = League.objects.exclude(sleeper_id__in=[l.id for l in league_settings])
+    if dry_run:
+        print("DRY RUN - Would delete the following Leagues:")
+        for league in leagues_to_delete:
+            print(league)
+        print("Use --force to delete leagues.")
+    else:
+        print("Deleting Leagues now...")
+        leagues_to_delete.delete()
 
 
 def update_or_create_dst_player(league_id, player_data):
@@ -244,14 +252,13 @@ def update_draft_stats():
         pass
 
 
-
 def update_everything():
     update_players()
     update_leagues()
     update_drafts()
 
 
-def update_leagues():
+def update_leagues(delete_old=False):
     league_settings = get_league_settings()
     for league in league_settings:
         print("Updating League {league}".format(league=league.name))
@@ -268,8 +275,9 @@ def update_leagues():
         except AttributeError as e:
             print(league.id, league_data.response)
 
-    print("Deleting old leagues")
-    delete_old_leagues(league_settings)
+    if delete_old:
+        print("Deleting old leagues")
+        delete_old_leagues(league_settings, dry_run=False)
 
 
 def update_drafts():
