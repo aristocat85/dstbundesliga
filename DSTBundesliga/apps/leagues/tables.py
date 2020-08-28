@@ -1,6 +1,8 @@
 import itertools
+from datetime import datetime
 
 import django_tables2 as tables
+import pytz
 
 from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft, Player
 
@@ -68,6 +70,12 @@ class NextDraftsTable(tables.Table):
 
     league = tables.Column(verbose_name='Liga', accessor="league__sleeper_name", attrs={"td": {"class": "league"}, "th": {"class": "league"}})
     date = tables.DateTimeColumn(verbose_name='Datum', accessor="start_time", format='d.m. H:i', attrs={"td": {"class": "date"}, "th": {"class": "date"}})
+
+    def render_date(self, value):
+        if value < datetime.utcnow().replace(tzinfo=pytz.utc):
+            return "Running"
+
+        return value.strftime("%d.%m. %H:%M")
 
 
 class UpsetAndStealPickTable(tables.Table):
