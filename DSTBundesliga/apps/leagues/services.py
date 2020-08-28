@@ -52,6 +52,16 @@ def delete_old_leagues(league_settings, dry_run=True):
         leagues_to_delete.delete()
 
 
+def delete_old_drafts(league_id, draft_id):
+    if draft_id:
+        drafts_to_delete = Draft.objects.filter(league__sleeper_id=league_id).exclude(draft_id=draft_id)
+        if drafts_to_delete.count() > 0:
+            print('Deleting old drafts for league %s' % league_id)
+        for draft in drafts_to_delete:
+            print(draft.id, draft.start_time)
+        drafts_to_delete.delete()
+
+
 def update_or_create_dst_player(league_id, player_data):
     player, _ = DSTPlayer.objects.update_or_create(sleeper_id=player_data.get("user_id"), defaults={
         "display_name": player_data.get("display_name"),
@@ -205,6 +215,7 @@ def update_drafts_for_league(league_id, drafts_data):
     drafts = []
     for draft in drafts_data:
         drafts.append(update_or_create_draft(league_id, draft))
+        delete_old_drafts(league_id, draft.get('draft_id'))
 
     return drafts
 
