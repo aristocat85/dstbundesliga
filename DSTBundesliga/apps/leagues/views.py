@@ -1,4 +1,7 @@
+from datetime import datetime
+
 import django_tables2 as tables
+import pytz
 from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min, Max
 from django.shortcuts import render
 
@@ -81,7 +84,10 @@ def my_league(request):
 
 
 def draft_stats(request, position=None):
-    drafts_done = Draft.objects.filter(status='complete').count()
+    drafts = Draft.objects.all()
+
+    drafts_done = drafts.filter(status='complete').count()
+    drafts_running = drafts.filter(status='drafting').count()
     drafts_overall = League.objects.all().count()
     drafts_done_percent = drafts_done / drafts_overall * 100
 
@@ -93,8 +99,7 @@ def draft_stats(request, position=None):
 
     adp_table = DraftsADPTable(players.exclude(adp=None).order_by('adp')[:200])
 
-    drafts = Draft.objects.all()
-    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(status='complete').order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
+    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(start_time__lte=datetime.utcnow().replace(tzinfo=pytz.utc)).exclude(status__in=['complete', 'drafting']).order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
 
     adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 10, output_field=IntegerField())
     upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=drafts_done*0.8).annotate(adp_diff=adp_diff)
@@ -113,6 +118,7 @@ def draft_stats(request, position=None):
 
     return render(request, "stats/draft.html", {
         "drafts_done": drafts_done,
+        "drafts_running": drafts_running,
         "drafts_overall": drafts_overall,
         "drafts_done_percent": drafts_done_percent,
         "adp_table": adp_table,

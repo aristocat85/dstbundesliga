@@ -1,4 +1,5 @@
 import itertools
+from collections import defaultdict
 from datetime import datetime
 
 import django_tables2 as tables
@@ -39,6 +40,10 @@ class RosterTable(tables.Table):
 
 class DraftsADPTable(tables.Table):
 
+    def __init__(self, *args, **kwargs):
+        self.pos_ranking_counter = defaultdict(int)
+        super().__init__(*args, **kwargs)
+
     class Meta:
         empty_text = "Es haben noch keine Drafts stattgefunden"
         model = Player
@@ -59,6 +64,10 @@ class DraftsADPTable(tables.Table):
     def render_adp(self, value):
         return '{:0.1f}'.format(value)
 
+    def render_pos(self, value):
+        self.pos_ranking_counter[value] += 1
+        return "{pos} {pos_rank}".format(pos=value, pos_rank=self.pos_ranking_counter[value])
+
 
 class NextDraftsTable(tables.Table):
 
@@ -75,7 +84,7 @@ class NextDraftsTable(tables.Table):
         if value < datetime.utcnow().replace(tzinfo=pytz.utc):
             return "Running"
 
-        return value.strftime("%d.%m. %H:%M")
+        return value.astimezone(pytz.timezone('Europe/Berlin')).strftime("%d.%m. %H:%M")
 
 
 class UpsetAndStealPickTable(tables.Table):

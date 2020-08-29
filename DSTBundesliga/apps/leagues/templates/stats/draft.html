@@ -12,7 +12,7 @@
             <div class="bar" style="transition-duration: 300ms; width: {{ drafts_done_percent }}%;">
                 <div class="progress"></div>
             </div>
-            <div class="label">{{ drafts_done}} / {{ drafts_overall }} Drafts abgeschlossen</div>
+            <div class="label">{{ drafts_done}} / {{ drafts_overall }} Drafts abgeschlossen {% if drafts_running > 0 %}({{drafts_running}} Running){% endif %}</div>
         </div>
     </div>
 </div>
