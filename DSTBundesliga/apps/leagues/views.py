@@ -87,19 +87,21 @@ def draft_stats(request, position=None):
     drafts = Draft.objects.all()
 
     drafts_done = drafts.filter(status='complete').count()
-    drafts_running = drafts.filter(status='drafting').count()
+    drafts_running = drafts.filter(status__in=['drafting', 'paused']).count()
     drafts_overall = League.objects.all().count()
     drafts_done_percent = drafts_done / drafts_overall * 100
 
     picks = Pick.objects.all()
-    players = Player.objects.annotate(adp=Avg("pick__pick_no"), pick_count=Count("pick__player__id"), highest_pick=Min('pick__pick_no'), lowest_pick=Max('pick__pick_no')).filter(pick_count__gte=drafts_done*0.5)
+    players = Player.objects.annotate(adp=Avg("pick__pick_no"), pick_count=Count("pick__player__id"), highest_pick=Min('pick__pick_no'), lowest_pick=Max('pick__pick_no'))
 
     if position:
         players = players.filter(position=position)
+    else:
+        players = players.filter(pick_count__gte=drafts_done*0.5)
 
     adp_table = DraftsADPTable(players.exclude(adp=None).order_by('adp')[:200])
 
-    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(start_time__lte=datetime.utcnow().replace(tzinfo=pytz.utc)).exclude(status__in=['complete', 'drafting']).order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
+    next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(start_time__lte=datetime.utcnow().replace(tzinfo=pytz.utc)).exclude(status__in=['complete', 'drafting', 'paused']).order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
 
     adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 10, output_field=IntegerField())
     upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=drafts_done*0.8).annotate(adp_diff=adp_diff)
