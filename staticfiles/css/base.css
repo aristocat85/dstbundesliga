@@ -399,10 +399,14 @@ footer ul li {
     font-weight: bold;
     font-size: 24px;
     line-height: 30px;
-    display: flex;
     align-items: center;
-    margin: 0px;
+    margin: 0;
     color: #FFFFFF;
+}
+
+.league-title .draft-board-link {
+    float: right;
+    color: white;
 }
 
 .stats-title {
@@ -587,6 +591,109 @@ td.date {
     box-shadow: inset 0 0 100px 100px rgba(190, 190, 190, 0.5);
 }
 
+.draftboard {
+    background-color: #102F4D;
+    color: white;
+}
+
+.draft_order {
+    display: block;
+}
+
+.draft_order .pick_owner {
+    float: left;
+    width: 8.33%;
+    border: solid 2px #102F4D;
+    background-color: #102F4D;
+}
+
+.draft_order .owner_name {
+    font-size: 12px;
+    padding: 4px 4px;
+    color: white;
+    width: 100%;
+    text-align: center;
+    display: block;
+}
+
+.draft_order .owner_avatar {
+    border-radius: 50%;
+    border: 1px solid #C4C4C4;
+    background: none;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.picks {
+    background-color: #102F4D;
+}
+
+.picks .pick {
+    float: left;
+    width: 8.33%;
+    border: solid 2px #102F4D;
+    font-size: 12px;
+    padding: 4px 4px;
+    color: white;
+}
+
+.picks .pick.pos-QB {
+    background-color: #ff2a6d;
+}
+
+.picks .pick.pos-WR {
+    background-color: #58a7ff;
+}
+
+.picks .pick.pos-DEF {
+    background-color: #022047;
+}
+
+.picks .pick.pos-RB {
+    background-color: #00ceb8;;
+}
+
+.picks .pick.pos-TE {
+    background-color: #ffae58;;
+}
+
+.picks .pick.pos-K {
+    background-color: #bd66ff;;
+}
+
+.picks .pick.pos-TBD {
+    background-color: #102F4D;;
+}
+
+
+
+.picks .pick span {
+    width: 100%;
+    float: left;
+    line-height: 1.4em;
+}
+
+
+.picks span.pick_pos {
+    width: 80%;
+}
+
+.picks span.pick_round {
+    width: 20%;
+    float: right;
+    padding-right: 2px;
+    text-align: right;
+}
+
+.picks span.pick_first_name {
+
+}
+
+.picks span.pick_last_name {
+    font-weight: bold;
+    font-size: 13px;
+}
+
 form {
     border: 3px solid #f1f1f1;
 }
@@ -622,6 +729,25 @@ button:hover {
     padding-bottom: 1.5rem;
     background-color: white;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* raleway-regular - latin-ext_latin */
 @font-face {

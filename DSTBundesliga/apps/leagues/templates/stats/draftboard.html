@@ -1,0 +1,55 @@
+{% extends 'leagues/tables_base.html' %}
+
+{% load league_tags %}
+
+{% block content %}
+
+<div class="dst-spacer dst-spacer-100">
+    <div class="league-title-container">
+        <h2 class="league-title">Draft Board {{draft.league.sleeper_name}}</h2>
+    </div>
+    <div class="draftboard">
+        <div class="draft_order">
+            {% for order, owner in draft_order %}
+                <div class="pick_owner">
+                    <div class="owner_avatar"
+                         style="background-image: url('https://sleepercdn.com/avatars/thumbs/{{ owner.avatar_id }}'); width: 40px; height: 40px; flex: 0 0 40px; background-size: contain;"></div>
+                    <div class="owner_name">{{ owner.display_name }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="picks">
+            {% for pick in picks %}
+
+                <div class="pick pos-{{ pick.player.position }}">
+                    <span class="pick_pos"><b>{{ pick.player.position }}</b> - {{ pick.player.team.abbr }}</span>
+                    <span class="pick_round">{{ pick.round}}.{{ pick.pick_no|add:-1|modulo:12|add:1}}</span>
+                    <span class="pick_first_name">{{ pick.player.first_name}}</span>
+                    <span class="pick_last_name">{{ pick.player.last_name}}</span>
+                </div>
+                {% if pick.pick_no == fill_pick_pos and picks|length|modulo:12 != 0 and fill_picks_at_front %}
+                {% for fill_pick in fill_picks %}
+                <div class="pick pos-TBD">
+                    <span class="pick_pos">&nbsp;</span>
+                    <span class="pick_last_name">TBD</span>
+                    <span class="pick_first_name">&nbsp;</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if forloop.revcounter|add:forloop.counter < 180 and forloop.revcounter < 12 and pick.pick_no == fill_pick_pos and not fill_picks_at_front %}
+                    {% for fill_pick in fill_picks %}
+                        <div class="pick pos-TBD">
+                            <span class="pick_pos">&nbsp;</span>
+                            <span class="pick_last_name">TBD</span>
+                            <span class="pick_first_name">&nbsp;</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

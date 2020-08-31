@@ -24,6 +24,10 @@ class League(models.Model):
     draft_id = models.CharField(max_length=50)
     avatar_id = models.CharField(max_length=100)
 
+    @property
+    def draft(self):
+        return self.drafts.first()
+
     def __str__(self):
         return "{name} - {id}".format(name=self.sleeper_name, id=self.sleeper_id)
 
@@ -106,7 +110,7 @@ class Draft(models.Model):
     season_type = models.CharField(max_length=20)
     season = models.IntegerField()
     metadata = JSONField()
-    league = models.ForeignKey(League, on_delete=models.CASCADE)
+    league = models.ForeignKey(League, related_name="drafts", on_delete=models.CASCADE)
     last_picked = models.DateTimeField(null=True)
     last_message_time = models.DateTimeField(null=True)
     last_message_id = models.CharField(max_length=50, null=True)
@@ -120,7 +124,7 @@ class Pick(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     owner = models.ForeignKey(DSTPlayer, related_name="picks", on_delete=models.CASCADE, null=True)
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
-    draft = models.ForeignKey(Draft, on_delete=models.CASCADE)
+    draft = models.ForeignKey(Draft, related_name="picks", on_delete=models.CASCADE)
     round = models.IntegerField(default=1)
     draft_slot = models.IntegerField(default=1)
     pick_no = models.IntegerField(default=1)

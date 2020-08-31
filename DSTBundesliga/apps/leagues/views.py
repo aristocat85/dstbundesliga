@@ -4,9 +4,10 @@ import django_tables2 as tables
 import pytz
 from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min, Max
 from django.shortcuts import render
+from django.urls import reverse
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
-from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, News, Player
+from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, News, Player, DSTPlayer
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
     UpsetAndStealPickTable
 
@@ -48,7 +49,8 @@ def level_detail(request, level=None, conference=None, region=None):
     leagues = [{
         "title": league.sleeper_name,
         "table": RosterTable(Roster.objects.filter(league=league)),
-        "conference": league.conference or ""
+        "conference": league.conference or "",
+        "draft_link": reverse('draft-board', kwargs={'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
     } for league in league_objects]
 
     return render(request, "leagues/level_detail.html", {
@@ -79,6 +81,7 @@ def my_league(request):
         context["table"] = table
         context["conference"] = league.conference or ""
         context["header_logo"] = header_logo
+        context["draft_link"] = reverse('draft-board', kwargs={'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
 
     return render(request, "leagues/my_league.html", context)
 
@@ -141,4 +144,35 @@ def home(request):
     return render(request, "leagues/home.html", {
         "next_drafts_table": next_drafts_table,
         "news_list": news
+    })
+
+
+def draftboard(request, league_id):
+    draft = Draft.objects.get(league__sleeper_id=league_id)
+    picks = draft.picks.order_by('round', 'draft_slot')
+    picks_count = picks.count()
+    fill_picks = []
+    fill_pick_round = 16
+    fill_picks_at_front = True
+    fill_pick_pos = picks_count
+    if picks_count < 180:
+        fill_picks = range(12 - (((picks_count-1) % 12) + 1))
+        fill_pick_round = int(picks_count/12) + 1
+        if fill_pick_round % 2 == 1:
+            fill_picks_at_front = False
+        else:
+            fill_pick_round = int(picks_count/12)
+            fill_pick_pos = fill_pick_round * 12
+
+    owners = DSTPlayer.objects.filter(sleeper_id__in=draft.draft_order.keys())
+
+    draft_order = sorted([(draft.draft_order.get(owner.sleeper_id), owner) for owner in owners], key=lambda do: do[0])
+
+    return render(request, "stats/draftboard.html", {
+        "draft": draft,
+        "draft_order": draft_order,
+        "picks": picks,
+        "fill_picks": fill_picks,
+        "fill_pick_pos": fill_pick_pos,
+        "fill_picks_at_front": fill_picks_at_front
     })

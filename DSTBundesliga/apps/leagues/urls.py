@@ -12,4 +12,5 @@ urlpatterns = [
     path('my-league/', views.my_league, name='my-league'),
     path('stats/draft/', views.draft_stats, name='draft-stats'),
     path('stats/draft/<str:position>/', views.draft_stats, name='draft-stats'),
+    path('stats/draftboard/<str:league_id>/', views.draftboard, name='draft-board'),
 ]
