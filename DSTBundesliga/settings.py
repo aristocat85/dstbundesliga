@@ -196,3 +196,14 @@ else:
 DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
 
 LISTENER_LEAGUE_ID = "603961066644373504"
+
+import hashlib
+def md5(fname):
+    hash_md5 = hashlib.md5()
+    with open(fname, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
+
+CSS_VERSION_HASH = md5("staticfiles/css/base.css")

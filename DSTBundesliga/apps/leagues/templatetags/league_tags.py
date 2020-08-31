@@ -1,4 +1,5 @@
 from django import template
+from django.conf import settings
 
 register = template.Library()
 
@@ -11,3 +12,8 @@ def modulo(num, val):
 @register.filter
 def times(number):
     return range(number)
+
+# settings value
+@register.simple_tag
+def settings_value(name):
+    return getattr(settings, name, "")

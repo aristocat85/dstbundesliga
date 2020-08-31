@@ -602,7 +602,6 @@ td.date {
 
 .draft_order .pick_owner {
     float: left;
-    width: 8.33%;
     border: solid 2px #102F4D;
     background-color: #102F4D;
 }
@@ -630,11 +629,11 @@ td.date {
 
 .picks .pick {
     float: left;
-    width: 8.33%;
     border: solid 2px #102F4D;
     font-size: 12px;
     padding: 4px 4px;
     color: white;
+    height: 7em;
 }
 
 .picks .pick.pos-QB {

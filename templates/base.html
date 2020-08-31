@@ -1,4 +1,4 @@
-{% load cms_tags sekizai_tags menu_tags static cookielaw_tags %}
+{% load cms_tags sekizai_tags menu_tags static cookielaw_tags league_tags %}
 <html>
     <head>
         <title>{% page_attribute "page_title" %}</title>
@@ -23,7 +23,7 @@
         {% render_block "css" %}
         {% block css %}
             <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css">
-            <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+            <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}?id={% settings_value 'CSS_VERSION_HASH' %}">
         {% endblock %}
     </head>
     <body>
