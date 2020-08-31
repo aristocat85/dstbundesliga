@@ -20,7 +20,6 @@
         </div>
         <div class="picks">
             {% for pick in picks %}
-
                 <div class="pick pos-{{ pick.player.position }}" style="width: {{ pick_width }};">
                     <span class="pick_pos"><b>{{ pick.player.position }}</b> - {{ pick.player.team.abbr }}</span>
                     <span class="pick_round">{{ pick.round}}.{{ pick.pick_no|add:-1|modulo:12|add:1}}</span>

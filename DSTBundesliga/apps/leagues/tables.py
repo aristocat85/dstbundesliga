@@ -3,9 +3,17 @@ from collections import defaultdict
 from datetime import datetime
 
 import django_tables2 as tables
+from django_tables2.utils import A
 import pytz
 
 from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft, Player
+
+
+def _get_date(record):
+    if record.start_time < datetime.utcnow().replace(tzinfo=pytz.utc):
+        return "Running"
+
+    return record.start_time.astimezone(pytz.timezone('Europe/Berlin')).strftime("%d.%m. %H:%M")
 
 
 class LeagueTable(tables.Table):
@@ -78,13 +86,7 @@ class NextDraftsTable(tables.Table):
         fields = ['league', 'date']
 
     league = tables.Column(verbose_name='Liga', accessor="league__sleeper_name", attrs={"td": {"class": "league"}, "th": {"class": "league"}})
-    date = tables.DateTimeColumn(verbose_name='Datum', accessor="start_time", format='d.m. H:i', attrs={"td": {"class": "date"}, "th": {"class": "date"}})
-
-    def render_date(self, value):
-        if value < datetime.utcnow().replace(tzinfo=pytz.utc):
-            return "Running"
-
-        return value.astimezone(pytz.timezone('Europe/Berlin')).strftime("%d.%m. %H:%M")
+    date = tables.LinkColumn("draft-board", args=[A("league.sleeper_id")] , text=_get_date, verbose_name='Datum', attrs={"td": {"class": "date"}, "th": {"class": "date"}})
 
 
 class UpsetAndStealPickTable(tables.Table):
@@ -107,3 +109,6 @@ class UpsetAndStealPickTable(tables.Table):
 
     def render_adp(self, value):
         return '{:0.1f}'.format(value)
+
+
+

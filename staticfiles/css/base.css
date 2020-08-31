@@ -364,6 +364,10 @@ footer ul li {
     padding: 5px 0;
 }
 
+.stat-container .table-container .date a {
+    color: black;
+}
+
 .table-container {
     display: block;
     width: 100%;
@@ -663,8 +667,6 @@ td.date {
 .picks .pick.pos-TBD {
     background-color: #102F4D;;
 }
-
-
 
 .picks .pick span {
     width: 100%;

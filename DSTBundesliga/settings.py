@@ -206,4 +206,4 @@ def md5(fname):
     return hash_md5.hexdigest()
 
 
-CSS_VERSION_HASH = md5("staticfiles/css/base.css")
+CSS_VERSION_HASH = md5(os.path.join(BASE_DIR, "staticfiles/css/base.css"))
