@@ -10,6 +10,7 @@ from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
 from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, News, Player, DSTPlayer
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
     UpsetAndStealPickTable
+from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
 class LeagueView(tables.SingleTableView):
@@ -176,3 +177,15 @@ def draftboard(request, league_id):
         "fill_pick_pos": fill_pick_pos,
         "fill_picks_at_front": fill_picks_at_front
     })
+
+
+def listener_league(request):
+    league = League.objects.get(sleeper_id=LISTENER_LEAGUE_ID)
+    title = "DST - Hörerliga"
+    table = RosterTable(Roster.objects.filter(league=league))
+    context = {}
+    context["title"] = title
+    context["table"] = table
+    context["draft_link"] = reverse('draft-board', kwargs={'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
+
+    return render(request, "leagues/custom_league.html", context)

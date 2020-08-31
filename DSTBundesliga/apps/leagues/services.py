@@ -12,6 +12,7 @@ import sleeper_wrapper
 from django.conf import settings
 
 from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team
+from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
 def get_league_data(league_id):
@@ -373,3 +374,29 @@ def get_league_settings(filepath=settings.DEFAULT_LEAGUE_SETTINGS_PATH):
 
         return settings
 
+
+def update_listener_league():
+    league_data = get_league_data(LISTENER_LEAGUE_ID)
+    try:
+        ls = LeagueSetting(id=LISTENER_LEAGUE_ID,
+                           name="DST Hörerliga",
+                           level=99,
+                           conference=None,
+                           region=None)
+        update_league(ls, league_data)
+        dst_player_data = get_dst_player_data(LISTENER_LEAGUE_ID)
+        update_dst_players_for_league(LISTENER_LEAGUE_ID, dst_player_data)
+
+        roster_data = get_roster_data(LISTENER_LEAGUE_ID)
+        update_rosters_for_league(LISTENER_LEAGUE_ID, roster_data, dst_player_data)
+    except AttributeError as e:
+        print(LISTENER_LEAGUE_ID, league_data.response)
+
+
+def update_listener_draft():
+    drafts_data = get_draft_data(LISTENER_LEAGUE_ID)
+    drafts = update_drafts_for_league(LISTENER_LEAGUE_ID, drafts_data)
+
+    for draft in drafts:
+        picks_data = get_pick_data(draft.draft_id)
+        update_picks_for_draft(draft.draft_id, picks_data)

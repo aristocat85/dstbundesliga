@@ -194,3 +194,5 @@ else:
 
 
 DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
+
+LISTENER_LEAGUE_ID = "603961066644373504"

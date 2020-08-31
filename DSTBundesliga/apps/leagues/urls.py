@@ -10,6 +10,7 @@ urlpatterns = [
     path('conf/<str:conference>/lev/<int:level>/', views.level_detail, name='conference-detail'),
     path('conf/<str:conference>/lev/<int:level>/reg/<str:region>/', views.level_detail, name='region-detail'),
     path('my-league/', views.my_league, name='my-league'),
+    path('dst-league/', views.listener_league, name='dst-league'),
     path('stats/draft/', views.draft_stats, name='draft-stats'),
     path('stats/draft/<str:position>/', views.draft_stats, name='draft-stats'),
     path('stats/draftboard/<str:league_id>/', views.draftboard, name='draft-board'),

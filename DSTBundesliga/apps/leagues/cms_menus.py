@@ -71,6 +71,10 @@ class LeaguesMenu(Menu):
         counter += 1
         nodes.append(NavigationNode("Draft", reverse('draft-stats'), counter))
 
+        # Hörerliga
+        counter += 1
+        nodes.append(NavigationNode("DST - Hörerliga", reverse('dst-league'), counter))
+
         # My League
         counter += 1
         nodes.append(NavigationNode("Meine Liga", reverse('my-league'), counter, attr={'li_class': 'right border-left'}))
