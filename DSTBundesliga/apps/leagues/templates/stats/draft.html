@@ -2,6 +2,7 @@
 
 {% load render_table from django_tables2 %}
 
+
 {% block content %}
 
 
@@ -9,7 +10,7 @@
     <h1 class="ui header">Draft Stats</h1>
     <div class="ui segment">
         <div class="ui black progress" data-percent="{{ drafts_done_percent }}">
-            <div class="bar" style="transition-duration: 300ms; width: {{ drafts_done_percent }}%;">
+            <div class="bar" style="transition-duration: 300ms; width: {{ drafts_done_percent|stringformat:".2f" }}% !important;">
                 <div class="progress"></div>
             </div>
             <div class="label">{{ drafts_done}} / {{ drafts_overall }} Drafts abgeschlossen {% if drafts_running > 0 %}({{drafts_running}} Running){% endif %}</div>
