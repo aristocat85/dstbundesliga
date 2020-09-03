@@ -98,6 +98,8 @@ def draft_stats(request, position=None):
     picks = Pick.objects.all()
     players = Player.objects.annotate(adp=Avg("pick__pick_no"), pick_count=Count("pick__player__id"), highest_pick=Min('pick__pick_no'), lowest_pick=Max('pick__pick_no'))
 
+    draft_value = ExpressionWrapper((F('pick__pick_no')-F('adp')) * 20 / F('pick__round'), output_field=IntegerField())
+
     if position:
         players = players.filter(position=position)
     else:
@@ -107,10 +109,31 @@ def draft_stats(request, position=None):
 
     next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(start_time__lte=datetime.utcnow().replace(tzinfo=pytz.utc)).exclude(status__in=['complete', 'drafting', 'paused']).order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
 
-    adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 10, output_field=IntegerField())
+    adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 20 / F('round'), output_field=IntegerField())
     upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=drafts_done*0.8).annotate(adp_diff=adp_diff)
-    upset_table = UpsetAndStealPickTable(upset_and_value_picks.order_by('adp_diff')[:5])
-    steal_table = UpsetAndStealPickTable(upset_and_value_picks.order_by('-adp_diff')[:5])
+
+    upset_players = []
+    upset_picks = []
+    for pick in upset_and_value_picks.order_by('adp_diff'):
+        if pick.player not in upset_players:
+            upset_picks.append(pick)
+
+        upset_players.append(pick.player)
+        if len(upset_picks) >= 5:
+            break
+
+    steal_players = []
+    steal_picks = []
+    for pick in upset_and_value_picks.order_by('-adp_diff'):
+        if pick.player not in steal_players:
+            steal_picks.append(pick)
+
+        steal_players.append(pick.player)
+        if len(steal_picks) >= 5:
+            break
+
+    upset_table = UpsetAndStealPickTable(upset_picks)
+    steal_table = UpsetAndStealPickTable(steal_picks)
 
     positions = [
         {"title": "Gesamt", "position": ""},
