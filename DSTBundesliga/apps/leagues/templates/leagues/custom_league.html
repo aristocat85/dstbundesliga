@@ -5,12 +5,10 @@
 {% block content %}
 
 <div class="ui container league-container">
-
     <div class="league-title-container">
         <h2 class="league-title">{{ title }}{% if draft_link %}<a class="draft-board-link" href="{{ draft_link }}"><i class="inverted th icon"></i></a>{% endif %}</h2>
     </div>
     {% render_table table %}
-    {% include "leagues/legend.html" %}
 </div>
 
 {% endblock %}

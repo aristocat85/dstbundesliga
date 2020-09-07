@@ -215,3 +215,11 @@ def listener_league(request):
     context["draft_link"] = reverse('draft-board', kwargs={'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
 
     return render(request, "leagues/custom_league.html", context)
+
+
+def cl_quali(request):
+    context = {}
+    table = RosterTable(Roster.objects.all().order_by('fpts', 'fpts_decimal', 'wins')[:12])
+    context["table"] = table
+    context["title"] = "Champions League Qualifikation"
+    return render(request, "leagues/custom_league.html", context)
