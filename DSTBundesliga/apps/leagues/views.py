@@ -252,7 +252,7 @@ class AwardService():
 
         self.matchups = matchups
         self.narrow_matchups = matchups.annotate(point_difference=Abs(F('points_one')-F('points_two')))
-        self.rosters = Roster.objects.all()
+        self.rosters = Roster.objects.exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
 
     def get_all(self):
         return [
@@ -278,8 +278,8 @@ class AwardService():
             most_points_score = mpo.points_one
             most_points_roster = self.rosters.get(league__sleeper_id=mpo.league_id, roster_id=mpo.roster_id_one)
         else:
-            most_points_score = mpo.points_one
-            most_points_roster = self.rosters.get(league__sleeper_id=mpo.league_id, roster_id=mpo.roster_id_one)
+            most_points_score = mpt.points_two
+            most_points_roster = self.rosters.get(league__sleeper_id=mpt.league_id, roster_id=mpt.roster_id_two)
 
         context = {
             'roster': most_points_roster,
@@ -297,8 +297,8 @@ class AwardService():
             least_points_score = mpo.points_one
             least_points_roster = self.rosters.get(league__sleeper_id=mpo.league_id, roster_id=mpo.roster_id_one)
         else:
-            least_points_score = mpo.points_one
-            least_points_roster = self.rosters.get(league__sleeper_id=mpo.league_id, roster_id=mpo.roster_id_one)
+            least_points_score = mpt.points_two
+            least_points_roster = self.rosters.get(league__sleeper_id=mpt.league_id, roster_id=mpt.roster_id_two)
 
         context = {
             'roster': least_points_roster,
