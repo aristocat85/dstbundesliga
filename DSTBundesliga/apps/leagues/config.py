@@ -26,3 +26,5 @@ LOGO_MAP = {
         "AFFC": "dst_affc_reg_logo"
     }
 }
+
+POSITIONS = ["QB", "RB", "WR", "TE", "K", "DEF"]

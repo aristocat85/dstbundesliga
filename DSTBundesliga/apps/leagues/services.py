@@ -10,8 +10,10 @@ from pytz import timezone
 import sleeper_wrapper
 
 from django.conf import settings
+from sleeper_wrapper import BaseApi
 
-from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team
+from DSTBundesliga.apps.leagues.config import POSITIONS
+from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
@@ -389,6 +391,9 @@ def update_listener_league():
 
         roster_data = get_roster_data(LISTENER_LEAGUE_ID)
         update_rosters_for_league(LISTENER_LEAGUE_ID, roster_data, dst_player_data)
+
+        week = get_current_week()
+        update_matchup_for_league(LISTENER_LEAGUE_ID, week)
     except AttributeError as e:
         print(LISTENER_LEAGUE_ID, league_data.response)
 
@@ -400,3 +405,152 @@ def update_listener_draft():
     for draft in drafts:
         picks_data = get_pick_data(draft.draft_id)
         update_picks_for_draft(draft.draft_id, picks_data)
+
+
+def update_matchups():
+    week = get_current_week()
+    print("Updating Matchups for week {week}".format(week=week))
+    for league in get_league_settings():
+        update_matchup_for_league(league.id, week)
+    print("All done!")
+
+
+def update_matchup_for_league(league_id, week):
+    matchups = {}
+    league_service = sleeper_wrapper.League(league_id)
+    matchup_data_list = league_service.get_matchups(week)
+    for matchup_data in matchup_data_list:
+        matchup_id = matchup_data.get("matchup_id")
+        matchup = matchups.get(matchup_id)
+        if not matchup:
+            matchups[matchup_id] = {
+                'one': matchup_data
+            }
+        else:
+            matchups[matchup_id].update({
+                'two': matchup_data
+            })
+    for id, data in matchups.items():
+        Matchup.objects.update_or_create(
+            league_id=league_id,
+            week=week,
+            matchup_id=id,
+            defaults={
+                "roster_id_one": data.get("one").get("roster_id"),
+                "starters_one": ",".join(data.get("one").get("starters") or []),
+                "players_one": ",".join(data.get("one").get("players") or []),
+                "points_one": data.get("one").get("points") or 0,
+                "roster_id_two": data.get("two").get("roster_id"),
+                "starters_two": ",".join(data.get("two").get("starters") or []),
+                "players_two": ",".join(data.get("two").get("players") or []),
+                "points_two": data.get("two").get("points") or 0
+            })
+
+
+def get_current_week():
+    today = datetime.today()
+    current_week = 1
+    for key, value in settings.SCHEDULE.items():
+        if value < today:
+            current_week = key
+
+    return current_week
+
+
+def update_stats_for_position(position, week):
+    print("Updating Stats for Position {position} in week {week}".format(position=position, week=week))
+
+    season_type = "regular"
+    season = "2020"
+    stats_service = StatsService()
+    position_stats = stats_service.get_week_stats(season_type, season, position, week)
+
+    for stats in position_stats:
+        player_id = stats.get("player_id")
+        try:
+            player = Player.objects.get(sleeper_id=player_id)
+            player_stats = stats.get("stats") or {}
+            points = player_stats.get("pts_half_ppr") or 0
+            stats, created = StatsWeek.objects.update_or_create(
+                week=week,
+                season_type=season_type,
+                season=season,
+                player=player,
+                defaults={
+                    "points": points,
+                    "stats": player_stats,
+                    "projected_points": 0,
+                    "projected_stats": {}
+                }
+            )
+            if not created:
+                stats.points = points
+                stats.stats = player_stats
+                stats.save()
+
+        except Player.DoesNotExist:
+            print("Could not update Stats for unknown Player {player_id}".format(player_id=player_id))
+
+    print("All done!")
+
+
+def update_projections_for_position(position, week):
+    print("Updating Projections for Position {position} in week {week}".format(position=position, week=week))
+
+    season_type = "regular"
+    season = "2020"
+    stats_service = StatsService()
+    position_stats = stats_service.get_week_projections(season_type, season, position, week)
+
+    for stats in position_stats:
+        player_id = stats.get("player_id")
+        try:
+            player = Player.objects.get(sleeper_id=player_id)
+            player_projected_stats = stats.get("stats") or {}
+            projected_points = player_projected_stats.get("pts_half_ppr") or 0
+            stats, created = StatsWeek.objects.update_or_create(
+                week=week,
+                season_type=season_type,
+                season=season,
+                player=player,
+                defaults={
+                    "points": 0,
+                    "stats": {},
+                    "projected_points": projected_points,
+                    "projected_stats": player_projected_stats
+                }
+            )
+            if not created:
+                stats.projected_points = projected_points
+                stats.player_projected_stats = player_projected_stats
+                stats.save()
+
+        except Player.DoesNotExist:
+            print("Could not update Projections for unknown Player {player_id}".format(player_id=player_id))
+
+    print("All done!")
+
+
+def update_stats():
+    week = get_current_week()
+    for pos in POSITIONS:
+        update_stats_for_position(pos, week)
+        update_projections_for_position(pos, week)
+
+
+class StatsService(BaseApi):
+    def __init__(self):
+        self._base_stats_url = "https://api.sleeper.app/stats/{}".format("nfl")
+        self._base_projections_url = "https://api.sleeper.app/projections/{}".format("nfl")
+
+    def get_all_stats(self, season_type, season, position):
+        return self._call("{base_url}/{season}?season_type={season_type}&position[]={positionorder_by=pts_half_ppr".format(base_url=self._base_stats_url, season=season, season_type=season_type, position=position))
+
+    def get_week_stats(self, season_type, season, position, week):
+        return self._call("{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(base_url=self._base_stats_url, season=season, season_type=season_type, position=position, week=week))
+
+    def get_all_projections(self, season_type, season, position):
+            return self._call("{base_url}/{season}?season_type={season_type}&position[]={positionorder_by=pts_half_ppr".format(base_url=self._base_projections_url, season=season, season_type=season_type, position=position))
+
+    def get_week_projections(self, season_type, season, position, week):
+        return self._call("{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(base_url=self._base_projections_url, season=season, season_type=season_type, position=position, week=week))

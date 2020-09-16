@@ -85,6 +85,17 @@
                         <a href="/leagues/conf/AFFC/lev/5/reg/West/">West</a>
                     </div>
                 </div>
+                <div class="menu-row stats-menu-row hidden_one hidden_two hidden_three">
+                    <div class="item stats-menu-node">
+                        <a href="/leagues/stats/facts_and_figures/">Facts & Figures</a>
+                    </div>
+                    <div class="item stats-menu-node">
+                        <a href="/leagues/stats/cl_quali/">Champions League Quali Ranking</a>
+                    </div>
+                    <div class="item stats-menu-node">
+                        <a href="/leagues/stats/draft/">Draft</a>
+                    </div>
+                </div>
             </nav>
             <div class="breadcrumb-container">
                 {% show_breadcrumb 1 "leagues/breadcrumb.html" %}
@@ -140,6 +151,8 @@
                     $('.cffc-menu-row').removeClass('hidden_one');
                     $('.affc-menu-row').addClass('hidden_one');
                     $('.affc-menu-row').addClass('hidden_two');
+                    $('.stats-menu-row').addClass('hidden_one');
+                    $('.stats-menu-row').addClass('hidden_two');
                 }, () => {
                     setTimeout(() => {$('.cffc-menu-row').addClass('hidden_one');}, delay);
                 });
@@ -147,6 +160,8 @@
                     $('.affc-menu-row').removeClass('hidden_one');
                     $('.cffc-menu-row').addClass('hidden_one');
                     $('.cffc-menu-row').addClass('hidden_two');
+                    $('.stats-menu-row').addClass('hidden_one');
+                    $('.stats-menu-row').addClass('hidden_two');
                 }, () => {
                     setTimeout(() => {$('.affc-menu-row').addClass('hidden_one');}, delay);
                 });
@@ -193,6 +208,22 @@
                     $('.regional-affc-menu-row').removeClass('hidden_two');
                 }, () => {
                     setTimeout(() => {$('.regional-affc-menu-row').addClass('hidden_two');}, delay);
+                });
+
+                $('.league-menu-node.droppable.stats-node').hover(() => {
+                    $('.stats-menu-row').removeClass('hidden_one');
+                    $('.affc-menu-row').addClass('hidden_one');
+                    $('.affc-menu-row').addClass('hidden_two');
+                    $('.cffc-menu-row').addClass('hidden_one');
+                    $('.cffc-menu-row').addClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.stats-menu-row').addClass('hidden_one');}, delay);
+                });
+
+                $('.stats-menu-row').hover(() => {
+                    $('.stats-menu-row').removeClass('hidden_two');
+                }, () => {
+                    setTimeout(() => {$('.stats-menu-row').addClass('hidden_two');}, delay);
                 });
             });
         </script>

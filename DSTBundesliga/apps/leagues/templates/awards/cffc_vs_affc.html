@@ -1,0 +1,18 @@
+<div class="ui segment award-container">
+    <div class="award-title-container">
+        <h3 class="award-title">{{ title }} {{ icon }}</h3>
+    </div>
+    <div class="ui container award-content-container">
+        <div class="team-manager{% if score_one < score_two %} award-loser{% endif %}">
+            <div class="avatar {{ name_one }}"
+                 style="width: 40px; height: 40px; flex: 0 0 40px; background-size: contain;">{{ name_one|slice:"0:1"}}</div>
+            <div class="owner_name">{{ name_one }}<span class="score">{{ score_one|stringformat:".2f" }}</span></div>
+
+        </div>
+        <div class="team-manager{% if score_one > score_two %} award-loser{% endif %}">
+            <div class="avatar {{ name_two }}"
+                 style="width: 40px; height: 40px; flex: 0 0 40px; background-size: contain;">{{ name_two|slice:"0:1"}}</div>
+            <div class="owner_name">{{ name_two }}<span class="score">{{ score_two|stringformat:".2f" }}</span></div>
+        </div>
+    </div>
+</div>

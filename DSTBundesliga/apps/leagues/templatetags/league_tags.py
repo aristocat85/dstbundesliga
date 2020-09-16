@@ -17,3 +17,8 @@ def times(number):
 @register.simple_tag
 def settings_value(name):
     return getattr(settings, name, "")
+
+
+@register.tag
+def render_award(award, token):
+    return award

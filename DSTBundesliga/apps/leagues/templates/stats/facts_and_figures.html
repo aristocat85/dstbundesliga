@@ -1,0 +1,28 @@
+{% extends 'leagues/tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+
+{% block content %}
+
+
+<div class="ui container stats-container">
+    <h1 class="ui header">Facts & Figures</h1>
+    <br>
+</div>
+<div class="ui container stats-container">
+    <div class="title-container">
+        <h2 class="title">Awards</h2>
+    </div>
+    <div class="flex-container">
+        {% for award in awards %}
+            <div class="dst-spacer flex-grid-container flex-container dst-spacer-33">
+                <div class="ui container">
+                    {{ award }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

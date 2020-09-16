@@ -138,6 +138,18 @@ nav div.ui.dropdown .menu>.item {
     width: 100%;
 }
 
+.stats-menu-row {
+    background-color: #C4C4C4;
+    border: none;
+    border: 2px #FFFFFF ;
+    border-style: solid none;
+}
+
+.stats-menu-node {
+    background-color: #C4C4C4;
+    color: black;
+}
+
 .hidden_one.hidden_two.hidden_three {
     display: none;
 }
@@ -152,6 +164,11 @@ nav div.item.selected {
 }
 
 nav div.item.regional-menu-node:hover {
+    /*background-color: rgba(196, 196, 196, 0.63) !important;*/
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.75) !important;
+}
+
+nav div.item.stats-menu-node:hover {
     /*background-color: rgba(196, 196, 196, 0.63) !important;*/
     box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.75) !important;
 }
@@ -260,7 +277,6 @@ nav div.item:hover {
 .content {
     flex: 1;
     background-color: white;
-    //margin-bottom: 50px;
 }
 
 footer {
@@ -309,6 +325,10 @@ footer ul li {
         width: 25%;
     }
 
+    .dst-spacer-33 {
+        width: 33.3%;
+    }
+
     .dst-spacer-50 {
         width: 50%;
     }
@@ -327,7 +347,7 @@ footer ul li {
         padding: 1rem;
     }
 
-    dst-spacer-25, .dst-spacer-50, dst-spacer-75, .dst-spacer-100 {
+    .dst-spacer-25, dst-spacer-33, .dst-spacer-50, dst-spacer-75, .dst-spacer-100 {
         width: 100%;
     }
 }
@@ -347,8 +367,26 @@ footer ul li {
     padding: 10px;
 }
 
+.award-container {
+    background-color: white;
+    padding: 0.5em !important;
+}
+
+.flex-container .award-container {
+    height: 100%;
+}
+
 .home-container {
     background-color: white;
+    padding: 10px;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-grid-container {
     padding: 10px;
 }
 
@@ -424,6 +462,35 @@ footer ul li {
     align-items: center;
     margin: 0px;
     color: #FFFFFF;
+}
+
+h3.award-title {
+    text-decoration: none;
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    margin: 0px;
+}
+
+h4.award-sub-title a {
+    color: black;
+}
+
+.award-content-container {
+    padding-top: 5px;
+}
+
+span.score {
+    position: absolute;
+    right: 10px;
+}
+
+.award-loser {
+    opacity: 0.4;
 }
 
 h2.title {
@@ -538,6 +605,19 @@ div.avatar {
     border-radius: 50%;
     border: 1px solid #C4C4C4;
     background: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.avatar.CFFC {
+    background-color: #426BAE;
+}
+div.avatar.AFFC{
+    background-color: #9F2220;
 }
 
 td.league {
@@ -554,6 +634,7 @@ td.date {
 
 .my-league-container {
     max-width: 240px;
+    min-height: 300px;
 }
 
 .legend-container ul {

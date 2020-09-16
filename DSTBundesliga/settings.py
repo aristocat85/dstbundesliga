@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import datetime
 
 from dotenv import load_dotenv
 
@@ -192,11 +193,6 @@ else:
         }
     }
 
-
-DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
-
-LISTENER_LEAGUE_ID = "603961066644373504"
-
 import hashlib
 def md5(fname):
     hash_md5 = hashlib.md5()
@@ -207,3 +203,33 @@ def md5(fname):
 
 
 CSS_VERSION_HASH = md5(os.path.join(BASE_DIR, "staticfiles/css/base.css"))
+
+
+DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
+
+LISTENER_LEAGUE_ID = "603961066644373504"
+
+SCHEDULE = {
+    1: datetime.datetime(2020, 9, 11),
+    2: datetime.datetime(2020, 9, 18),
+    3: datetime.datetime(2020, 9, 25),
+    4: datetime.datetime(2020, 10, 2),
+    5: datetime.datetime(2020, 10, 9),
+    6: datetime.datetime(2020, 10, 16),
+    7: datetime.datetime(2020, 10, 23),
+    8: datetime.datetime(2020, 10, 30),
+    9: datetime.datetime(2020, 11, 6),
+    10: datetime.datetime(2020, 11, 13),
+    11: datetime.datetime(2020, 11, 20),
+    12: datetime.datetime(2020, 11, 27),
+    13: datetime.datetime(2020, 12, 4),
+    14: datetime.datetime(2020, 12, 11),
+    15: datetime.datetime(2020, 12, 18),
+    16: datetime.datetime(2020, 12, 25),
+    17: datetime.datetime(2021, 1, 3)
+}
+
+
+
+
+

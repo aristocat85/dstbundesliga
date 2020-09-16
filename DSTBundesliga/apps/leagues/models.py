@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from jsonfield import JSONField
 from tinymce.models import HTMLField
@@ -30,6 +31,10 @@ class League(models.Model):
 
     def __str__(self):
         return "{name} - {id}".format(name=self.sleeper_name, id=self.sleeper_id)
+
+    @property
+    def url(self):
+        return reverse('league-detail', kwargs={'league_id': self.sleeper_id})
 
 
 class DSTPlayer(models.Model):
@@ -80,6 +85,9 @@ class Player(models.Model):
 
 
 class Roster(models.Model):
+    class Meta:
+        ordering = ["-wins", "-ties", "-fpts", "-fpts_decimal"]
+
     # Sleeper Data
     name = models.CharField(max_length=100, null=True)
     starters = models.CharField(max_length=100)
@@ -99,6 +107,10 @@ class Roster(models.Model):
     players = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
+
+    @property
+    def points(self):
+        return "{}.{}".format(self.fpts, self.fpts_decimal)
 
 
 class Draft(models.Model):
@@ -137,6 +149,20 @@ class Pick(models.Model):
                                                                     player=self.player.name)
 
 
+class Matchup(models.Model):
+    week = models.IntegerField(db_index=True)
+    matchup_id = models.IntegerField(db_index=True)
+    league_id = models.CharField(max_length=50, db_index=True)
+    roster_id_one = models.IntegerField()
+    starters_one = models.CharField(max_length=255, null=True)
+    players_one = models.CharField(max_length=255, null=True)
+    points_one = models.DecimalField(max_digits=6, decimal_places=3)
+    roster_id_two = models.IntegerField()
+    starters_two = models.CharField(max_length=255, null=True)
+    players_two = models.CharField(max_length=255, null=True)
+    points_two = models.DecimalField(max_digits=6, decimal_places=3)
+
+
 class News(models.Model):
     class Meta:
         verbose_name_plural = "News"
@@ -144,3 +170,14 @@ class News(models.Model):
     title = models.TextField()
     content = HTMLField()
     date = models.DateTimeField(auto_now=True)
+
+
+class StatsWeek(models.Model):
+    week = models.IntegerField(db_index=True)
+    season_type = models.CharField(max_length=30)
+    season = models.IntegerField(default=2020)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    points = models.DecimalField(max_digits=6, decimal_places=3)
+    stats = JSONField()
+    projected_points = models.DecimalField(max_digits=6, decimal_places=3)
+    projected_stats = JSONField()

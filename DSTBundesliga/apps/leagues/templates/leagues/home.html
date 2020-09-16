@@ -1,6 +1,7 @@
 {% extends 'leagues/tables_base.html' %}
 
 {% load render_table from django_tables2 %}
+{% load league_tags %}
 
 {% block content %}
 
@@ -25,11 +26,13 @@
         </div>
     </div>
     <div class="dst-spacer dst-spacer-25">
-        <div class="ui container stat-container">
-            <div class="stats-title-container">
-                <h2 class="stats-title">Aktuelle Drafts</h2>
+        <div class="ui container home-container">
+            <div class="title-container">
+                <h2 class="title">Awards</h2>
             </div>
-            {% render_table next_drafts_table %}
+            {% for award in awards %}
+                {{ award }}
+            {% endfor %}
         </div>
     </div>
 </div>
