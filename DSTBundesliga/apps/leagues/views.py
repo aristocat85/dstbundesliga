@@ -236,6 +236,7 @@ def facts_and_figures(request):
     awards = awards_service.get_all()
 
     return render(request, "stats/facts_and_figures.html", {
+        "current_week": week,
         "awards": awards
     })
 
