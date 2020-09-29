@@ -243,7 +243,7 @@ def facts_and_figures(request):
 
 class AwardService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.all()
+        matchups = Matchup.objects.exclude(league_id=LISTENER_LEAGUE_ID)
 
         if week:
             matchups = matchups.filter(week=week)
