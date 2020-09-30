@@ -224,7 +224,7 @@ def listener_league(request):
 
 def cl_quali(request):
     context = {}
-    table = RosterTable(Roster.objects.exclude(league_id=LISTENER_LEAGUE_ID)[:12])
+    table = RosterTable(Roster.objects.exclude(league_id=LISTENER_LEAGUE_ID).order_by("-fpts", "-fpts_decimal")[:12])
     context["table"] = table
     context["title"] = "Champions League Qualifikation"
     return render(request, "leagues/custom_league.html", context)
