@@ -3,8 +3,8 @@ from datetime import datetime
 
 import django_tables2 as tables
 import pytz
-from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min, Max
-from django.db.models.functions import Abs
+from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min, Max, Window
+from django.db.models.functions import Abs, RowNumber
 from django.shortcuts import render
 from django.template import Node
 from django.template.loader import get_template, select_template
@@ -56,6 +56,7 @@ def level_detail(request, level=None, conference=None, region=None):
         "title": league.sleeper_name,
         "table": RosterTable(Roster.objects.filter(league=league)),
         "conference": league.conference or "",
+        "stats_link": reverse('facts_and_figures_league', kwargs={'league_id': league.sleeper_id}),
         "draft_link": reverse('draft-board', kwargs={'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
     } for league in league_objects]
 
@@ -87,6 +88,7 @@ def my_league(request):
         context["table"] = table
         context["conference"] = league.conference or ""
         context["header_logo"] = header_logo
+        context["stats_link"] = reverse('facts_and_figures_league', kwargs={'league_id': league.sleeper_id})
         context["draft_link"] = reverse('draft-board', kwargs={'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
 
     return render(request, "leagues/my_league.html", context)
@@ -233,12 +235,83 @@ def cl_quali(request):
 def facts_and_figures(request):
     week = Matchup.objects.all().aggregate(Max('week')).get('week__max')
     awards_service = AwardService(week)
+    stat_service = StatService(week)
+    stats = stat_service.get_all()
     awards = awards_service.get_all()
 
     return render(request, "stats/facts_and_figures.html", {
         "current_week": week,
+        "stats": stats,
         "awards": awards
     })
+
+
+def facts_and_figures_for_league(request, league_id, week=None):
+    if not week:
+        week = Matchup.objects.all().aggregate(Max('week')).get('week__max')
+    awards_service = AwardService(week, league_id)
+    stat_service = StatService(week, league_id)
+    stats = stat_service.get_all_for_league()
+    awards = awards_service.get_all()
+    league = League.objects.get(sleeper_id=league_id)
+
+    return render(request, "stats/facts_and_figures.html", {
+        "current_week": week,
+        "stats": stats,
+        "awards": awards,
+        "league_name": league.sleeper_name
+    })
+
+
+class StatService():
+    def __init__(self, week=None, league_id=None):
+        matchups = Matchup.objects.exclude(league_id=LISTENER_LEAGUE_ID)
+
+        if week:
+            matchups = matchups.filter(week=week)
+
+        self.matchups = matchups
+        self.league_id = league_id
+        self.rosters = Roster.objects.exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
+
+    def get_all_for_league(self):
+        return [
+            {'title': 'Liga Rang', 'value': self.league_ranking()},
+            {'title': 'Ø-Punkte/Matchup (Liga)', 'value': self.avg_points_league()},
+            {'title': 'Ø-Punkte/Matchup (DST)', 'value': self.avg_points()},
+            {'title': 'Ø-FAAB/Spieler', 'value': self.avg_faab()},
+        ]
+
+    def get_all(self):
+        return [
+            {'title': 'Ø-Punkte/Matchup', 'value': self.avg_points()},
+            {'title': 'Ø-FAAB/Spieler', 'value': self.avg_faab()},
+        ]
+
+    def avg_faab(self):
+        rosters = self.rosters
+        if self.league_id:
+            rosters = rosters.filter(league__sleeper_id=self.league_id)
+        avg_faab_used = rosters.aggregate(avg_faab_used=Avg('waiver_budget_used')).get('avg_faab_used') or 0
+        return "{faab}$".format(faab=int(
+            100-avg_faab_used))
+
+    def avg_points_league(self):
+        matchups = self.matchups.filter(league_id=self.league_id)
+        rosters = self.rosters.filter(league__sleeper_id=self.league_id)
+        sum_points = matchups.aggregate(sum_points=Sum('points_one')+Sum('points_two')).get('sum_points')
+        return "{:.2f}".format(sum_points / rosters.count())
+
+    def avg_points(self):
+        sum_points = self.matchups.aggregate(sum_points=Sum('points_one')+Sum('points_two')).get('sum_points')
+        return "{:.2f}".format(sum_points / self.rosters.count())
+
+    def league_ranking(self):
+        leagues = self.matchups.values('league_id').annotate(sum_points=Sum('points_one')+Sum('points_two')).order_by('-sum_points')
+        print([(l.get("sum_points"), l.get("league_id")) for l in leagues])
+        ranking = list(leagues.values_list('league_id', flat=True)).index(self.league_id) + 1
+
+        return "#{}".format(ranking)
 
 
 class AwardService():

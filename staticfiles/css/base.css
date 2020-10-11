@@ -367,6 +367,11 @@ footer ul li {
     padding: 10px;
 }
 
+.stats-container .stats {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
 .award-container {
     background-color: white;
     padding: 0.5em !important;

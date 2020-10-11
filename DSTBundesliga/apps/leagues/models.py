@@ -106,7 +106,7 @@ class Roster(models.Model):
     reserve = models.CharField(max_length=100, null=True)
     players = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
-    league = models.ForeignKey(League, on_delete=models.CASCADE)
+    league = models.ForeignKey(League, related_name='rosters', on_delete=models.CASCADE)
 
     @property
     def points(self):

@@ -7,8 +7,26 @@
 
 
 <div class="ui container stats-container">
-    <h1 class="ui header">Facts & Figures</h1>
+    <h1 class="ui header">Facts & Figures{% if league_name %} - {{league_name}} {% endif %}</h1>
     <br>
+</div>
+<div class="ui container stats-container">
+    <div class="title-container">
+        <h2 class="title">Stats - Woche {{ current_week }}</h2>
+    </div>
+    <div class="flex-container stats ui four statistics">
+        {% for stat in stats %}
+        <div class="ui statistic">
+            <div class="value">
+                {{ stat.value }}
+            </div>
+            <div class="label">
+                {{ stat.title}}
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
 </div>
 <div class="ui container stats-container">
     <div class="title-container">
@@ -16,11 +34,11 @@
     </div>
     <div class="flex-container">
         {% for award in awards %}
-            <div class="dst-spacer flex-grid-container flex-container dst-spacer-33">
-                <div class="ui container">
-                    {{ award }}
-                </div>
+        <div class="dst-spacer flex-grid-container flex-container dst-spacer-33">
+            <div class="ui container">
+                {{ award }}
             </div>
+        </div>
         {% endfor %}
     </div>
 </div>

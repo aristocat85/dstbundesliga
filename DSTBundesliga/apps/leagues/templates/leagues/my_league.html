@@ -7,7 +7,10 @@
 <div class="ui container league-container">
     {% if my_league %}
     <div class="league-title-container {{ conference }}">
-        <h2 class="league-title">{{ title }}{% if draft_link %}<a class="draft-board-link" href="{{ draft_link }}"><i class="inverted th icon"></i></a>{% endif %}</h2>
+        <h2 class="league-title">{{ title }}
+            {% if draft_link %}<a class="draft-board-link" href="{{ draft_link }}"><i class="inverted th icon"></i></a>{% endif %}
+            <a class="draft-board-link" href="{{ stats_link }}"><i class="inverted chart pie icon"></i></a>
+        </h2>
     </div>
     {% render_table table %}
     {% include "leagues/legend.html" %}

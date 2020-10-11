@@ -31,11 +31,12 @@ class RosterTable(tables.Table):
     class Meta:
         model = Roster
         orderable = False
-        fields = ['ranking', 'playoff_indicator', 'team_manager', 'wins', 'losses', 'ties', 'points']
+        fields = ['ranking', 'playoff_indicator', 'team_manager', 'faab', 'wins', 'losses', 'ties', 'points']
 
     ranking = tables.Column(verbose_name='Pl.', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
     playoff_indicator = tables.TemplateColumn(verbose_name='', template_name="Columns/playoff_indicator.html", empty_values=(), attrs={"td": {"class": "playoff-indicator"}, "th": {"class": "playoff-indicator"}})
     team_manager = tables.TemplateColumn(verbose_name='Team Manager', template_name="Columns/team_manager.html", empty_values=(), attrs={"td": {"class": "team-manager"}, "th": {"class": "team-manager"}})
+    faab = tables.Column(verbose_name='FAAB', accessor="waiver_budget_used")
     wins = tables.Column(verbose_name='W', attrs={"td": {"class": "wins"}, "th": {"class": "wins"}})
     losses = tables.Column(verbose_name='L', attrs={"td": {"class": "losses"}, "th": {"class": "losses"}})
     ties = tables.Column(verbose_name='T', attrs={"td": {"class": "ties"}, "th": {"class": "ties"}})
@@ -44,6 +45,9 @@ class RosterTable(tables.Table):
     def render_ranking(self):
         self.ranking = getattr(self, 'ranking', itertools.count(start=1))
         return next(self.ranking)
+
+    def render_faab(self, value):
+        return "{faab}$".format(faab=100-value)
 
 
 class DraftsADPTable(tables.Table):
