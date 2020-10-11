@@ -308,7 +308,6 @@ class StatService():
 
     def league_ranking(self):
         leagues = self.matchups.values('league_id').annotate(sum_points=Sum('points_one')+Sum('points_two')).order_by('-sum_points')
-        print([(l.get("sum_points"), l.get("league_id")) for l in leagues])
         ranking = list(leagues.values_list('league_id', flat=True)).index(self.league_id) + 1
 
         return "#{}".format(ranking)
@@ -423,6 +422,13 @@ class AwardService():
 
     def get_shootout(self):
         shootout = self.narrow_matchups.filter(point_difference__lte=10).annotate(points_sum=F('points_one')+F('points_two')).order_by('-points_sum').first()
+
+        if not shootout:
+            shootout = self.narrow_matchups.filter(point_difference__lte=20).annotate(points_sum=F('points_one')+F('points_two')).order_by('-points_sum').first()
+
+        if not shootout:
+            shootout = self.narrow_matchups.annotate(points_sum=F('points_one')+F('points_two')).order_by('-points_sum').first()
+
         roster_one = self.rosters.get(league__sleeper_id=shootout.league_id, roster_id=shootout.roster_id_one)
         roster_two = self.rosters.get(league__sleeper_id=shootout.league_id, roster_id=shootout.roster_id_two)
 
