@@ -280,6 +280,7 @@ class StatService():
             {'title': 'Ø-Punkte/Matchup (Liga)', 'value': self.avg_points_league()},
             {'title': 'Ø-Punkte/Matchup (DST)', 'value': self.avg_points()},
             {'title': 'Ø-FAAB/Spieler', 'value': self.avg_faab()},
+            {'title': 'Losers Median', 'value': self.median_loosing_points()},
         ]
 
     def get_all(self):
@@ -311,6 +312,14 @@ class StatService():
         ranking = list(leagues.values_list('league_id', flat=True)).index(self.league_id) + 1
 
         return "#{}".format(ranking)
+
+    def median_loosing_points(self):
+        matchups = self.matchups
+        if self.league_id:
+            matchups = matchups.filter(league_id=self.league_id)
+        losing_values = sorted([mu.points_one if mu.points_one < mu.points_two else mu.points_two for mu in matchups])
+
+        return "{:.2f}".format(losing_values[int(round(len(losing_values)/2))])
 
 
 class AwardService():
