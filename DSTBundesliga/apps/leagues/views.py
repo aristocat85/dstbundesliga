@@ -1,5 +1,6 @@
 import random
 from datetime import datetime
+from decimal import Decimal
 
 import django_tables2 as tables
 import pytz
@@ -280,7 +281,7 @@ class StatService():
             {'title': 'Ø-Punkte/Matchup (Liga)', 'value': self.avg_points_league()},
             {'title': 'Ø-Punkte/Matchup (DST)', 'value': self.avg_points()},
             {'title': 'Ø-FAAB/Spieler', 'value': self.avg_faab()},
-            {'title': 'Losers Median', 'value': self.median_loosing_points()},
+            {'title': 'Median', 'value': self.median_points()},
         ]
 
     def get_all(self):
@@ -317,9 +318,26 @@ class StatService():
         matchups = self.matchups
         if self.league_id:
             matchups = matchups.filter(league_id=self.league_id)
-        losing_values = sorted([mu.points_one if mu.points_one < mu.points_two else mu.points_two for mu in matchups])
+        losing_values = [mu.points_one if mu.points_one < mu.points_two else mu.points_two for mu in matchups]
 
-        return "{:.2f}".format(losing_values[int(round(len(losing_values)/2))])
+        return "{:.2f}".format(self._median(losing_values))
+
+    def median_points(self):
+        matchups = self.matchups
+        if self.league_id:
+            matchups = matchups.filter(league_id=self.league_id)
+        point_values = [mu.points_one for mu in matchups]
+        point_values.extend([mu.points_two for mu in matchups])
+
+        return "{:.2f}".format(self._median(point_values))
+
+    def _median(self, data):
+        count = len(data)
+        values = sorted(data)
+        if count % 2 == 1:
+            return values[int(round(count/2))]
+        else:
+            return sum(values[int(count/2-1):int(count/2+1)])/Decimal(2.0)
 
 
 class AwardService():
