@@ -5,7 +5,7 @@ local/
 DSTBundesliga.iml
 mydatabase
 *.pyc
-
+.rss_ts
 
 # Created by .ignore support plugin (hsz.mobi)
 ### VirtualEnv template

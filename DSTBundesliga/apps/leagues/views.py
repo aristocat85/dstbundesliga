@@ -174,7 +174,7 @@ def player_stats(request, position=None):
     if position:
         pos_filter = "where position = '{position}'".format(position=position)
 
-    players = players.raw("select * from (select id, first_name, last_name, position, points, games_played, points/games_played as avg_points from leagues_player left join (select player_id, sum(points) as points, Sum(Case when stats = '""' then 0 when stats='{}' then 0 else 1 end) as games_played from leagues_statsweek group by player_id) on id=player_id %s) left join (select player_id, AVG(pick_no) as adp from leagues_pick group by player_id) on id=player_id order by  points desc, adp asc;" % pos_filter)
+    players = players.raw("select * from (select id, first_name, last_name, position, points, games_played, points/games_played as avg_points from leagues_player left join (select player_id, sum(points) as points, Sum(Case when stats = '""' then 0 when stats='{}' then 0 else 1 end) as games_played from leagues_statsweek group by player_id) on id=player_id %s) as player_data left join (select player_id, AVG(pick_no) as adp from leagues_pick group by player_id) as adp_picks on id=player_id order by  points desc, adp asc;" % pos_filter)
 
     player_stats = players[:200]
 
