@@ -1,0 +1,22 @@
+{% extends 'leagues/tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+
+<div class="ui container league-container">
+    <div class="league-title-container">
+        <h2 class="league-title">Champions League Qualifikation</h2>
+    </div>
+    {% render_table top12_table %}
+</div>
+
+<div class="ui container league-container">
+    <div class="league-title-container">
+        <h2 class="league-title">In the hunt</h2>
+    </div>
+    {% render_table in_the_hunt_table %}
+</div>
+
+
+{% endblock %}

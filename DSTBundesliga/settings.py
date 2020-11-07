@@ -207,6 +207,12 @@ CSS_VERSION_HASH = md5(os.path.join(BASE_DIR, "staticfiles/css/base.css"))
 
 DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
 
+DEFAULT_NEWS_LOGO = "dst_logo_96.png"
+
+RSS_FEED = "https://anchor.fm/s/1ce78cc4/podcast/rss"
+PODCAST_NEWS_LOGO = "podcast.jpg"
+RSS_TIMESTAMP_FILE = ".rss_ts"
+
 LISTENER_LEAGUE_ID = "603961066644373504"
 
 SCHEDULE = {

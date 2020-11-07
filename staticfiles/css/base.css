@@ -511,6 +511,17 @@ h2.title {
     color: #FFFFFF;
 }
 
+.social-media-container {
+    color: black;
+    text-align: center;
+}
+
+.social-media-container a {
+    color: black;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 .news-date {
     float: right;
     position: absolute;

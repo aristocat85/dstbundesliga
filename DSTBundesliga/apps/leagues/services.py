@@ -1,5 +1,5 @@
 import csv
-import time
+import feedparser
 
 from datetime import datetime
 
@@ -13,7 +13,8 @@ from django.conf import settings
 from sleeper_wrapper import BaseApi
 
 from DSTBundesliga.apps.leagues.config import POSITIONS
-from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek
+from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, \
+    News
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
@@ -231,7 +232,8 @@ def update_or_create_pick(draft_id, pick_data):
             defaults={
                 "player": Player.objects.get(sleeper_id=pick_data.get('player_id')),
                 "owner": DSTPlayer.objects.get(sleeper_id=pick_data.get('picked_by')),
-                "roster": Roster.objects.get(roster_id=pick_data.get('roster_id'), owner__sleeper_id=pick_data.get('picked_by')),
+                "roster": Roster.objects.get(roster_id=pick_data.get('roster_id'),
+                                             owner__sleeper_id=pick_data.get('picked_by')),
                 "round": pick_data.get('round', 1),
                 "draft_slot": pick_data.get('draft_slot', 1),
                 "metadata": pick_data.get('metadata', {})
@@ -260,7 +262,8 @@ def update_picks_for_draft(draft_id, picks_data):
 def update_draft_stats():
     # Alle Picks mit mindestens 5 Picks je Spieler, sortiert nach Differenz zwischen adp und pick_no
     # Relevante Spieler:
-    relevant_players = Pick.objects.all().values('player__id').annotate(pick_count=Count('player__id')).filter(pick_count__gte=5).values_list('player_id', flat=True)
+    relevant_players = Pick.objects.all().values('player__id').annotate(pick_count=Count('player__id')).filter(
+        pick_count__gte=5).values_list('player_id', flat=True)
     relevant_picks = Pick.objects.filter(player__id__in=relevant_players)
     for pick in relevant_picks.annotate(adp=Avg('pick_no')):
         pass
@@ -326,7 +329,7 @@ def update_or_create_player(player_id, player_data):
         "first_name": player_data.get("first_name", ''),
         "weight": int(weight),
         "position": player_data.get("position"),
-        "height": player_data.get("height") ,
+        "height": player_data.get("height"),
         "age": age,
         "espn_id": player_data.get("espn_id"),
         "yahoo_id": player_data.get("yahoo_id"),
@@ -478,9 +481,7 @@ def update_stats_for_position(position, week):
                 player=player,
                 defaults={
                     "points": points,
-                    "stats": player_stats,
-                    "projected_points": 0,
-                    "projected_stats": {}
+                    "stats": player_stats
                 }
             )
             if not created:
@@ -514,8 +515,6 @@ def update_projections_for_position(position, week):
                 season=season,
                 player=player,
                 defaults={
-                    "points": 0,
-                    "stats": {},
                     "projected_points": projected_points,
                     "projected_stats": player_projected_stats
                 }
@@ -538,19 +537,40 @@ def update_stats():
         update_projections_for_position(pos, week)
 
 
+def update_stats_for_weeks(weeks=None):
+    if not weeks:
+        weeks = []
+    for week in weeks:
+        for pos in POSITIONS:
+            update_stats_for_position(pos, week)
+            update_projections_for_position(pos, week)
+
+
 class StatsService(BaseApi):
     def __init__(self):
         self._base_stats_url = "https://api.sleeper.app/stats/{}".format("nfl")
         self._base_projections_url = "https://api.sleeper.app/projections/{}".format("nfl")
 
     def get_all_stats(self, season_type, season, position):
-        return self._call("{base_url}/{season}?season_type={season_type}&position[]={positionorder_by=pts_half_ppr".format(base_url=self._base_stats_url, season=season, season_type=season_type, position=position))
+        return self._call(
+            "{base_url}/{season}?season_type={season_type}&position[]={positionorder_by=pts_half_ppr".format(
+                base_url=self._base_stats_url, season=season, season_type=season_type, position=position))
 
     def get_week_stats(self, season_type, season, position, week):
-        return self._call("{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(base_url=self._base_stats_url, season=season, season_type=season_type, position=position, week=week))
+        return self._call(
+            "{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(
+                base_url=self._base_stats_url, season=season, season_type=season_type, position=position, week=week))
 
     def get_all_projections(self, season_type, season, position):
-            return self._call("{base_url}/{season}?season_type={season_type}&position[]={positionorder_by=pts_half_ppr".format(base_url=self._base_projections_url, season=season, season_type=season_type, position=position))
+        return self._call(
+            "{base_url}/{season}?season_type={season_type}&position[]={positionorder_by=pts_half_ppr".format(
+                base_url=self._base_projections_url, season=season, season_type=season_type, position=position))
 
     def get_week_projections(self, season_type, season, position, week):
-        return self._call("{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(base_url=self._base_projections_url, season=season, season_type=season_type, position=position, week=week))
+        return self._call(
+            "{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(
+                base_url=self._base_projections_url, season=season, season_type=season_type, position=position,
+                week=week))
+
+
+

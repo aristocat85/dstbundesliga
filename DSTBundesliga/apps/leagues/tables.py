@@ -28,6 +28,10 @@ class LeagueTable(tables.Table):
 
 class RosterTable(tables.Table):
 
+    def __init__(self, data=None, ranking_offset=0):
+        self.ranking_offset = ranking_offset
+        super(RosterTable, self).__init__(data)
+
     class Meta:
         model = Roster
         orderable = False
@@ -43,7 +47,7 @@ class RosterTable(tables.Table):
     points = tables.Column(verbose_name='Punkte', attrs={"td": {"class": "points"}, "th": {"class": "points"}})
 
     def render_ranking(self):
-        self.ranking = getattr(self, 'ranking', itertools.count(start=1))
+        self.ranking = getattr(self, 'ranking', itertools.count(start=1+self.ranking_offset))
         return next(self.ranking)
 
     def render_faab(self, value):
@@ -79,6 +83,36 @@ class DraftsADPTable(tables.Table):
     def render_pos(self, value):
         self.pos_ranking_counter[value] += 1
         return "{pos} {pos_rank}".format(pos=value, pos_rank=self.pos_ranking_counter[value])
+
+
+class PlayerStatsTable(tables.Table):
+
+    class Meta:
+        empty_text = "Es gibt noch keine Stats"
+        model = Player
+        orderable = False
+        fields = ['ranking', 'player', 'pos', 'points', 'avg_points', 'games_played', 'adp']
+
+    ranking = tables.Column(verbose_name='Platz', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
+    player = tables.TemplateColumn(verbose_name='Spieler', template_name="Columns/player.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
+    pos = tables.Column(verbose_name='Position', accessor="position", attrs={"td": {"class": "position"}, "th": {"class": "position"}})
+    points = tables.Column(verbose_name='Punkte', accessor="points", attrs={"td": {"class": "points"}, "th": {"class": "points"}})
+    avg_points = tables.Column(verbose_name='Ø-Punkte', attrs={"td": {"class": "avg_points"}, "th": {"class": "avg_points"}})
+    games_played = tables.Column(verbose_name='#Spiele', attrs={"td": {"class": "games_played"}, "th": {"class": "games_played"}})
+    adp = tables.Column(verbose_name='ADP',  attrs={"td": {"class": "adp"}, "th": {"class": "adp"}})
+
+    def render_ranking(self):
+        self.ranking = getattr(self, 'ranking', itertools.count(start=1))
+        return next(self.ranking)
+
+    def render_adp(self, value):
+        return '{:0.1f}'.format(value)
+
+    def render_points(self, value):
+        return '{:0.1f}'.format(value)
+
+    def render_avg_points(self, value):
+        return '{:0.1f}'.format(value)
 
 
 class NextDraftsTable(tables.Table):

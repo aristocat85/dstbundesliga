@@ -14,7 +14,7 @@
             {% for news in news_list %}
             <div class="ui segment">
                 <h2 class="ui header">
-                    <img class="ui image" src="/media/images/dst_logo_96.png">
+                    <img class="ui image" src="/media/images/{{ news.image }}">
                     <div class="content news-title">
                         {{ news.title }}
                     </div>
@@ -27,6 +27,15 @@
     </div>
     <div class="dst-spacer dst-spacer-25">
         <div class="ui container home-container">
+            <a href="https://anchor.fm/dstfanfoobl"><img alt="DSTFanFooBL - Der Podcast zur Down, Set, Talk! Fantasy Football Bundesliga" class="ui image" src="/media/images/podcast.jpg"></a>
+        </div>
+        <div class="ui container home-container">
+            <div class="social-media-container">
+                <a href="https://twitter.com/dstfanfoobl"><i class="big twitter icon"></i></a>
+                <a href="https://www.instagram.com/dstfanfoobl/"><i class="big instagram icon"></i></a>
+            </div>
+        </div>
+        <div class="ui container home-container">
             <div class="title-container">
                 <h2 class="title">Awards</h2>
             </div>
@@ -37,5 +46,8 @@
         </div>
     </div>
 </div>
+
+
+
 
 {% endblock %}

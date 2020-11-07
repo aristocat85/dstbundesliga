@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -133,7 +134,7 @@ class Draft(models.Model):
 
 class Pick(models.Model):
     # Sleeper Data
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="picks")
     owner = models.ForeignKey(DSTPlayer, related_name="picks", on_delete=models.CASCADE, null=True)
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
     draft = models.ForeignKey(Draft, related_name="picks", on_delete=models.CASCADE)
@@ -169,6 +170,7 @@ class News(models.Model):
 
     title = models.TextField()
     content = HTMLField()
+    image = models.CharField(null=False, blank=False, default=settings.DEFAULT_NEWS_LOGO, max_length=255)
     date = models.DateTimeField(auto_now=True)
 
 
@@ -176,8 +178,8 @@ class StatsWeek(models.Model):
     week = models.IntegerField(db_index=True)
     season_type = models.CharField(max_length=30)
     season = models.IntegerField(default=2020)
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    points = models.DecimalField(max_digits=6, decimal_places=3)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="stats")
+    points = models.DecimalField(max_digits=6, decimal_places=3, default=0)
     stats = JSONField()
-    projected_points = models.DecimalField(max_digits=6, decimal_places=3)
+    projected_points = models.DecimalField(max_digits=6, decimal_places=3, default=0)
     projected_stats = JSONField()

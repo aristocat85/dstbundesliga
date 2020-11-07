@@ -1,6 +1,7 @@
 # Custom
 my.cnf
 static/
+local/
 DSTBundesliga.iml
 mydatabase
 *.pyc

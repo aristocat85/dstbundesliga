@@ -4,7 +4,8 @@ from decimal import Decimal
 
 import django_tables2 as tables
 import pytz
-from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min, Max, Window
+from django.db.models import Avg, ExpressionWrapper, F, DecimalField, IntegerField, Sum, Count, Min, Max, Window, Case, \
+    When
 from django.db.models.functions import Abs, RowNumber
 from django.shortcuts import render
 from django.template import Node
@@ -15,7 +16,7 @@ from DSTBundesliga.apps.leagues import services
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
 from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, News, Player, DSTPlayer, Matchup
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
-    UpsetAndStealPickTable
+    UpsetAndStealPickTable, PlayerStatsTable
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
@@ -104,9 +105,9 @@ def draft_stats(request, position=None):
     drafts_done_percent = drafts_done / drafts_overall * 100
 
     picks = Pick.objects.all()
-    players = Player.objects.annotate(adp=Avg("pick__pick_no"), pick_count=Count("pick__player__id"), highest_pick=Min('pick__pick_no'), lowest_pick=Max('pick__pick_no'))
+    players = Player.objects.annotate(adp=Avg("picks__pick_no"), pick_count=Count("picks__player__id"), highest_pick=Min('picks__pick_no'), lowest_pick=Max('picks__pick_no'))
 
-    draft_value = ExpressionWrapper((F('pick__pick_no')-F('adp')) * 20 / F('pick__round'), output_field=IntegerField())
+    draft_value = ExpressionWrapper((F('picks__pick_no')-F('adp')) * 20 / F('picks__round'), output_field=IntegerField())
 
     if position:
         players = players.filter(position=position)
@@ -118,7 +119,7 @@ def draft_stats(request, position=None):
     next_drafts_table = NextDraftsTable(drafts.exclude(start_time=None).exclude(start_time__lte=datetime.utcnow().replace(tzinfo=pytz.utc)).exclude(status__in=['complete', 'drafting', 'paused']).order_by('start_time', 'league__level', 'league__sleeper_name')[:10])
 
     adp_diff = ExpressionWrapper((F('pick_no')-F('adp')) * 20 / F('round'), output_field=IntegerField())
-    upset_and_value_picks = picks.annotate(adp=Avg('player__pick__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=drafts_done*0.8).annotate(adp_diff=adp_diff)
+    upset_and_value_picks = picks.annotate(adp=Avg('player__picks__pick_no'), pick_count=Count('player__id')).filter(pick_count__gte=drafts_done*0.8).annotate(adp_diff=adp_diff)
 
     upset_players = []
     upset_picks = []
@@ -164,6 +165,35 @@ def draft_stats(request, position=None):
         "upset_table": upset_table,
         "steal_table": steal_table,
         "next_drafts_table": next_drafts_table
+    })
+
+
+def player_stats(request, position=None):
+    players = Player.objects.all()
+    pos_filter = ""
+    if position:
+        pos_filter = "where position = '{position}'".format(position=position)
+
+    players = players.raw("select * from (select id, first_name, last_name, position, points, games_played, points/games_played as avg_points from leagues_player left join (select player_id, sum(points) as points, Sum(Case when stats = '""' then 0 when stats='{}' then 0 else 1 end) as games_played from leagues_statsweek group by player_id) on id=player_id %s) left join (select player_id, AVG(pick_no) as adp from leagues_pick group by player_id) on id=player_id order by  points desc, adp asc;" % pos_filter)
+
+    player_stats = players[:200]
+
+    player_stats_table = PlayerStatsTable(player_stats)
+
+    positions = [
+        {"title": "Gesamt", "position": ""},
+        {"title": "QB", "position": "QB"},
+        {"title": "RB", "position": "RB"},
+        {"title": "WR", "position": "WR"},
+        {"title": "TE", "position": "TE"},
+        {"title": "K", "position": "K"},
+        {"title": "DEF", "position": "DEF"}
+    ]
+
+    return render(request, "stats/player_stats.html", {
+        "player_stats_table": player_stats_table,
+        "positions": positions,
+        "selected_position": position or ""
     })
 
 
@@ -227,10 +257,15 @@ def listener_league(request):
 
 def cl_quali(request):
     context = {}
-    table = RosterTable(Roster.objects.exclude(league_id=LISTENER_LEAGUE_ID).order_by("-fpts", "-fpts_decimal")[:12])
-    context["table"] = table
-    context["title"] = "Champions League Qualifikation"
-    return render(request, "leagues/custom_league.html", context)
+    cl_quali_rosters = Roster.objects.exclude(league_id=LISTENER_LEAGUE_ID).order_by("-fpts", "-fpts_decimal")
+    top12_rosters = cl_quali_rosters[:12]
+    in_the_hunt_rosters = cl_quali_rosters[12:100]
+
+    top12_table = RosterTable(top12_rosters)
+    in_the_hunt_table = RosterTable(in_the_hunt_rosters, ranking_offset=12)
+    context["top12_table"] = top12_table
+    context["in_the_hunt_table"] = in_the_hunt_table
+    return render(request, "leagues/cl_quali.html", context)
 
 
 def facts_and_figures(request):
