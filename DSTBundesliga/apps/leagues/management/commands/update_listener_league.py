@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from DSTBundesliga.apps.leagues.services import update_listener_league
+from DSTBundesliga.apps.services.services import update_listener_league
 
 
 class Command(BaseCommand):

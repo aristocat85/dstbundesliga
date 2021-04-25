@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from DSTBundesliga.apps.leagues.services import update_stats_for_weeks, get_current_week
+from DSTBundesliga.apps.services.services import update_stats_for_weeks, get_current_week
 
 
 class Command(BaseCommand):

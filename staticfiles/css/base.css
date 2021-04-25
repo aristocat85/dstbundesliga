@@ -374,7 +374,9 @@ footer ul li {
 
 .award-container {
     background-color: white;
-    padding: 0.5em !important;
+    padding: 0px;
+    position: relative;
+    font-size: 14px;
 }
 
 .flex-container .award-container {
@@ -419,6 +421,11 @@ footer ul li {
 .title-container {
     background: #102F4D;
     padding: 1em;
+}
+
+.award-title-container {
+    background: #102F4D;
+    padding: 10px 10px;
 }
 
 .league-title-container {
@@ -479,6 +486,7 @@ h3.award-title {
     display: flex;
     align-items: center;
     margin: 0px;
+    color: white;
 }
 
 h4.award-sub-title a {
@@ -486,7 +494,7 @@ h4.award-sub-title a {
 }
 
 .award-content-container {
-    padding-top: 5px;
+    padding: 10px;
 }
 
 span.score {
@@ -792,9 +800,6 @@ td.date {
     font-size: 13px;
 }
 
-form {
-    border: 3px solid #f1f1f1;
-}
 
 /* Full-width inputs */
 input[type=text], input[type=password] {

@@ -18,5 +18,7 @@ urlpatterns = [
     path('stats/draftboard/<str:league_id>/', views.draftboard, name='draft-board'),
     path('stats/facts_and_figures/<str:league_id>/', views.facts_and_figures_for_league, name='facts_and_figures_league'),
     path('stats/cl_quali/', views.cl_quali, name='cl-quali'),
-    path('stats/facts_and_figures/', views.facts_and_figures, name='facts_and_figures')
+    path('stats/some_quali/', views.some_quali, name='some-quali'),
+    path('stats/facts_and_figures/', views.facts_and_figures, name='facts_and_figures'),
+    path('playoffs/<str:league_id>/', views.playoffs, name='playoffs')
 ]

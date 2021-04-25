@@ -1,4 +1,4 @@
-{% extends 'leagues/tables_base.html' %}
+{% extends 'tables_base.html' %}
 
 {% load render_table from django_tables2 %}
 {% load league_tags %}
@@ -39,6 +39,7 @@
             <div class="title-container">
                 <h2 class="title">Awards</h2>
             </div>
+            &nbsp;
             {% for award in awards %}
                 {{ award }}
             {% endfor %}

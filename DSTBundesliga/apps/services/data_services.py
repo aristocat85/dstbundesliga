@@ -14,7 +14,7 @@ from sleeper_wrapper import BaseApi
 
 from DSTBundesliga.apps.leagues.config import POSITIONS
 from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, \
-    News
+    News, PlayoffMatchup
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
@@ -448,6 +448,41 @@ def update_matchup_for_league(league_id, week):
                 "players_two": ",".join(data.get("two").get("players") or []),
                 "points_two": data.get("two").get("points") or 0
             })
+
+
+def update_playoffs():
+    week = get_current_week()
+    print("Updating Playoffs")
+    for league in get_league_settings():
+        update_playoffs_for_league(league.id)
+    print("All done!")
+
+
+def update_playoffs_for_league(league_id):
+    league_service = sleeper_wrapper.League(league_id)
+    winner_bracket = league_service.get_playoff_winners_bracket()
+    losers_bracket = league_service.get_playoff_losers_bracket()
+    for matchup in winner_bracket:
+        create_playoff_matchup(league_id, matchup, "Playoffs")
+
+    for matchup in losers_bracket:
+        create_playoff_matchup(league_id, matchup, "Toilet Bowl")
+
+
+def create_playoff_matchup(league_id, matchup, bracket):
+    PlayoffMatchup.objects.update_or_create(
+        bracket=bracket,
+        league_id=league_id,
+        round=matchup.get("r"),
+        matchup_id=matchup.get("m"),
+        defaults={
+            "roster_id_one": matchup.get("t1"),
+            "roster_id_two": matchup.get("t2"),
+            "winner": matchup.get("w"),
+            "loser": matchup.get("l"),
+            "rank": matchup.get("p")
+        }
+    )
 
 
 def get_current_week():

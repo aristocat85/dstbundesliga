@@ -1,0 +1,16 @@
+{% load menu_tags socialaccount %}
+
+{% for child in children %}
+<div class="item league-menu-node menu-node-{{child.id}} {% if child.selected or child.ancestor %}selected {% endif %}{% if child.children %}droppable {% endif %}{{ child.attr.li_class }}">
+    <a href="{{ child.attr.redirect_url|default:child.get_absolute_url }}">{{ child.get_menu_title }}</a>
+</div>
+{% endfor %}
+<div class="item league-menu-node right border-left}">
+    {% if user.is_authenticated %}
+    <li>User: {{ user.get_username }}</li>
+    <li><a href="{% url 'account_logout'%}?next={{request.path}}">Logout</a></li>
+    {% else %}
+    <li><a href="{% provider_login_url "patreon" next="/" %}">Login</a></li>
+    {% endif %}
+</div>
+

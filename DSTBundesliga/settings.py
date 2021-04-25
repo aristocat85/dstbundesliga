@@ -35,6 +35,26 @@ SITE_ID = 1
 
 # Application definition
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'patreon': {
+        'VERSION': 'v2',
+        'SCOPE': ['identity[email]', 'identity.memberships']
+    }
+}
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
+
+
 INSTALLED_APPS = [
     'djangocms_admin_style',
     'django.contrib.admin',
@@ -62,7 +82,12 @@ INSTALLED_APPS = [
     'django_tables2',
     'cookielaw',
     'tinymce',
-    'DSTBundesliga.apps.leagues'
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.patreon',
+    'DSTBundesliga.apps.leagues',
+    'DSTBundesliga.apps.dstffbl',
 ]
 
 MIDDLEWARE = [
@@ -238,4 +263,4 @@ SCHEDULE = {
 
 
 
-
+DST_PATREON_CAMPAIGN_ID = '2708731'

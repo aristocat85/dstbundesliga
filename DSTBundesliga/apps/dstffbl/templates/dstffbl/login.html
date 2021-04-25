@@ -1,0 +1,33 @@
+{% extends 'tables_base.html' %}
+
+{% load render_table from django_tables2 socialaccount %}
+{% load league_tags %}
+
+{% block content %}
+
+<div class="ui container">
+    <div class="dst-spacer dst-spacer-100">
+        <div class="ui container home-container">
+            <div class="title-container">
+                <h2 class="title">Anmeldung</h2>
+            </div>
+            <div class="ui segment">
+                <p>Um an der "Down, Set, Talk!" Fantasy Football Bundesliga teilnehmen zu können, musst du "Down, Set, Talk!"-Special-Teamer sein (weitere Informationen und Anmeldungen hierfür unter https://www.patreon.com/downsettalk). Wir nutzen daher Patreon, um deine Teilnahmeberechtigung zu prüfen und einen "Down, Set, Talk!" Fantasy Football Bundesliga Zugang zu erstellen. </p>
+                <button class="ui button"><a href="{% provider_login_url "patreon" %}">Mit Patreon anmelden</a></button>
+                <div class="ui accordion">
+                    <div class="title active">
+                        <i class="dropdown icon"></i>
+                        Welche Daten speichern wir?
+                    </div>
+                    <div class="content active">
+
+                        <p class="transition visible" style="display: block !important;">Wir speichern deine Patreon Kontaktinformationen und deinen Status als "Down, Set, Talk!" Special Teamer. Diese Daten werden ausschließlich genutzt, um die Durchführung der "Down, Set, Talk!" Fantasy Football Bundesliga zu ermöglichen. Du kannst deinen Zugang bei uns jederzeit löschen, alle von Patreon bezogenen Daten werden dann ebenfalls gelöscht. Beachte bitte, dass eine (weitere) Teilnahme am Spielbetrieb damit leider nicht mehr möglich ist. Weitere Details findest du
+                            <a href="https://dstffbl.uber.space/impressum/">hier</a>.</p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
