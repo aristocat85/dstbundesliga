@@ -386,10 +386,19 @@ class AwardService():
             matchups = matchups.filter(league_id=league_id)
 
         self.matchups = matchups
-        self.narrow_matchups = matchups.annotate(point_difference=Abs(F('points_one')-F('points_two')))
-        self.rosters = Roster.objects.exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
+
+        if self.matchups.count() == 0:
+            self.active = False
+
+        else:
+            self.active = True
+            self.narrow_matchups = matchups.annotate(point_difference=Abs(F('points_one')-F('points_two')))
+            self.rosters = Roster.objects.exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
 
     def get_all(self):
+        if not self.active:
+            return []
+
         return [
             self.get_highscorer(),
             self.get_lowscorer(),
@@ -403,6 +412,9 @@ class AwardService():
         ]
 
     def get_all_for_league(self):
+        if not self.active:
+            return []
+
         return [
             self.get_highscorer(),
             self.get_lowscorer(),
@@ -412,6 +424,8 @@ class AwardService():
         ]
 
     def get_random(self, count=99):
+        if not self.active:
+            return []
         return random.sample(self.get_all(), count)
 
     def get_highscorer(self):
