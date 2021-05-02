@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from DSTBundesliga.apps.services.services import delete_old_leagues, get_league_settings
+from DSTBundesliga.apps.services.data_services import delete_old_leagues, get_league_settings
 
 
 class Command(BaseCommand):
