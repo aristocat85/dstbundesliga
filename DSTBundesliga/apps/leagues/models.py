@@ -202,16 +202,6 @@ class PlayoffMatchup(models.Model):
     rank = models.IntegerField(null=True)
 
 
-class News(models.Model):
-    class Meta:
-        verbose_name_plural = "News"
-
-    title = models.TextField()
-    content = HTMLField()
-    image = models.CharField(null=False, blank=False, default=settings.DEFAULT_NEWS_LOGO, max_length=255)
-    date = models.DateTimeField(auto_now=True)
-
-
 class StatsWeek(models.Model):
     week = models.IntegerField(db_index=True)
     season_type = models.CharField(max_length=30)

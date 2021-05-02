@@ -7,10 +7,9 @@
 {% endfor %}
 <div class="item league-menu-node right border-left}">
     {% if user.is_authenticated %}
-    <li>User: {{ user.get_username }}</li>
-    <li><a href="{% url 'account_logout'%}?next={{request.path}}">Logout</a></li>
+    <a href="{% url 'logout' %}">Logout</a>
     {% else %}
-    <li><a href="{% provider_login_url "patreon" next="/" %}">Login</a></li>
+    <a href="{% provider_login_url "patreon" next="/" %}">Login mit Patreon</a>
     {% endif %}
 </div>
 

@@ -1,4 +1,4 @@
-{% load cms_tags sekizai_tags menu_tags static cookielaw_tags league_tags %}
+{% load cms_tags sekizai_tags menu_tags static cookielaw_tags league_tags get_announcements %}
 <html>
     <head>
         <title>{% page_attribute "page_title" %}</title>
@@ -105,6 +105,14 @@
                 {% cookielaw_banner  %}
             </div>
             <div class="content">
+                <div class="announcements">
+                    {% get_announcements as announcements %}
+                    {% for announcement in announcements %}
+                    <div class="ui message">
+                        <p>{{ announcement.content|safe }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
                 {% block content %}
                 {% endblock %}
             </div>
@@ -143,6 +151,7 @@
                     .modal('show')
                 ;
 
+                $('.ui.accordion').accordion();
 
 
                 const delay = 200;

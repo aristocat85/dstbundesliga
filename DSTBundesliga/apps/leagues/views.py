@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
-from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, News, Player, DSTPlayer, Matchup, \
+from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, Player, DSTPlayer, Matchup, \
     PlayoffMatchup
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
     UpsetAndStealPickTable, PlayerStatsTable
@@ -201,18 +201,6 @@ def player_stats(request, position=None):
         "player_stats_table": player_stats_table,
         "positions": positions,
         "selected_position": position or ""
-    })
-
-
-def home(request):
-    week = Matchup.objects.all().aggregate(Max('week')).get('week__max')
-    awards_service = AwardService(week)
-    awards = awards_service.get_random(4)
-    news = News.objects.all().order_by('-date')[:3]
-
-    return render(request, "leagues/../dstffbl/templates/dstffbl/home.html", {
-        "news_list": news,
-        "awards": awards
     })
 
 

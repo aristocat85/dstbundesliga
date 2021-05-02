@@ -24,8 +24,8 @@ from DSTBundesliga.apps.leagues import views
 admin.autodiscover()
 
 urlpatterns = [
-    path('', include('DSTBundesliga.apps.dstffbl.urls')),
-    #path('accounts/', include('django.contrib.auth.urls')),
+    path('', include(('DSTBundesliga.apps.dstffbl.urls', 'dstffbl'), namespace='dstffbl')),
+    path('auth/', include('django.contrib.auth.urls')),
     path('accounts/', include('allauth.urls')),
     path('leagues/', include('DSTBundesliga.apps.leagues.urls')),
     path('tinymce/', include('tinymce.urls')),
