@@ -1,4 +1,4 @@
-{% extends 'leagues/tables_base.html' %}
+{% extends 'tables_base.html' %}
 
 {% load render_table from django_tables2 %}
 
@@ -11,6 +11,7 @@
                     <h2 class="league-title">{{ league.title }}
                         {% if league.draft_link %}<a class="draft-board-link" href="{{ league.draft_link }}"><i class="inverted th icon"></i></a>{% endif %}
                         <a class="draft-board-link" href="{{ league.stats_link }}"><i class="inverted chart pie icon"></i></a>
+                        <a class="draft-board-link" href="{{ league.playoffs_link }}"><i class="inverted trophy icon"></i></a>
                     </h2>
                 </div>
                 {% render_table league.table %}
@@ -20,7 +21,7 @@
 </div>
 <div class="ui container">
     <div class="dst-spacer dst-spacer-100">
-        {% include "leagues/legend.html" %}
+        {% include "legend.html" %}
     </div>
 </div>
 

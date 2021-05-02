@@ -1,0 +1,22 @@
+{% extends 'tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+{% block content %}
+
+<div class="ui container league-container">
+    <div class="league-title-container">
+        <h2 class="league-title">Top 2nd Places</h2>
+    </div>
+    {% render_table top8_rank_two_roster_table %}
+</div>
+
+<div class="ui container league-container">
+    <div class="league-title-container">
+        <h2 class="league-title">Top 3rd Places</h2>
+    </div>
+    {% render_table top8_rank_three_roster_table %}
+</div>
+
+
+{% endblock %}

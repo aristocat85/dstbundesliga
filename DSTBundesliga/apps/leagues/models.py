@@ -4,6 +4,32 @@ from django.urls import reverse
 
 from jsonfield import JSONField
 from tinymce.models import HTMLField
+from datetime import datetime
+
+
+class Season(models.Model):
+    year = models.IntegerField(default=datetime.now().year)
+    name = models.CharField(max_length=50)
+    active = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.active:
+            Season.objects.filter(active=True).update(active=False)
+
+        super(Season, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def get_active():
+        current_year = datetime.now().year
+        season, _ = Season.objects.get_or_create(active=True, defaults={
+            'year': current_year,
+            'name': 'Saison {current_year}/{next_year}'.format(current_year=current_year, next_year=current_year+1)
+        })
+
+        return season
 
 
 class League(models.Model):
@@ -164,14 +190,16 @@ class Matchup(models.Model):
     points_two = models.DecimalField(max_digits=6, decimal_places=3)
 
 
-class News(models.Model):
-    class Meta:
-        verbose_name_plural = "News"
-
-    title = models.TextField()
-    content = HTMLField()
-    image = models.CharField(null=False, blank=False, default=settings.DEFAULT_NEWS_LOGO, max_length=255)
-    date = models.DateTimeField(auto_now=True)
+class PlayoffMatchup(models.Model):
+    bracket = models.CharField(max_length=20, db_index=True)
+    round = models.IntegerField(db_index=True)
+    matchup_id = models.IntegerField(db_index=True)
+    league_id = models.CharField(max_length=50, db_index=True)
+    roster_id_one = models.IntegerField(null=True)
+    roster_id_two = models.IntegerField(null=True)
+    winner = models.IntegerField(null=True)
+    loser = models.IntegerField(null=True)
+    rank = models.IntegerField(null=True)
 
 
 class StatsWeek(models.Model):

@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from DSTBundesliga.apps.leagues.services import update_listener_draft, get_draft_data, update_drafts_for_league, \
+from DSTBundesliga.apps.services.services import get_draft_data, update_drafts_for_league, \
     get_pick_data, update_picks_for_draft
 
 

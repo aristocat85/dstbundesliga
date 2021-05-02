@@ -1,0 +1,59 @@
+{% extends 'tables_base.html' %}
+
+{% block content %}
+
+<div class="ui container">
+    <div class="dst-spacer dst-spacer-100">
+        <div class="ui container home-container">
+
+            {% if season_user %}
+            <div class="title-container">
+                <h2 class="title">Let's gooo!</h2>
+            </div>
+            <div class="ui segment">
+                <h3>Du bist für die {{ current_season }} angemeldet! </h3>
+                <p>Weitere Infos folgen bald.</p>
+            </div>
+            {% else %}
+            <div class="title-container">
+                <h2 class="title">Anmeldung zu {{current_season}}</h2>
+            </div>
+            <div class="ui container">
+                <div class="ui segment">
+                    <form class="ui form" action="/register/" method="post">
+                        {% csrf_token %}
+                        <div class="fields">
+                            <div class="six wide field">
+                                <label for="sleeper_username">Wie lautet dein Sleeper Benutzername?</label>
+                                <input type="text" id="sleeper_username" name="sleeper_username" maxlength="50"
+                                       placeholder="Benutzername oder ID">
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="ten wide field">
+                                <label for="region">In welcher Region wohnst du?</label>
+                                <select class="ui fluid search dropdown" name="region" id="region">
+                                    {% for value, region in region_choices %}
+                                    <option value="{{value}}">{{region}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="ui submit button">Submit</div>
+                    </form>
+                </div>
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $('select.dropdown').dropdown();
+</script>
+{% endblock %}

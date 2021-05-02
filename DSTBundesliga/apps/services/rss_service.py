@@ -6,7 +6,7 @@ from dateutil.parser import *
 
 from django.conf import settings
 
-from DSTBundesliga.apps.leagues.models import News
+from DSTBundesliga.apps.dstffbl.models import News
 
 
 def update():

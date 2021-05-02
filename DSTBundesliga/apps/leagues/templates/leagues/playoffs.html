@@ -1,0 +1,53 @@
+{% extends 'tables_base.html' %}
+
+{% load league_tags %}
+
+{% block content %}
+
+{% for bracket in brackets %}
+<div class="dst-spacer dst-spacer-100">
+    <div class="league-title-container">
+        <h2 class="league-title">{{ bracket.bracket }} {{league.sleeper_name}}</h2>
+    </div>
+    <div class="playoffs">
+        <div class="bracket-rounds-container">
+            {% for round in bracket.rounds %}
+            <div class="bracket-round">
+                <div class="header">Round {{ round.round }}
+                    <div class="week">(Week 14)</div>
+                </div>
+                {% for matchup in round.matchups %}
+                <div class="round-matchup-item">
+                    <div style="flex-direction: row; flex: 1 1 0%;"></div>
+                    <div style="display: flex; flex-direction: row; flex: 1 1 0%;">
+                        <div class="top-connector"></div>
+                        <div style="flex: 1 1 0%;"></div>
+                    </div>
+                    <div style="margin-left: 10px; border-width: 1px; border-radius: 4px; border-color: rgb(170, 170, 170);">
+                        <div class="bracket-matchup">
+                            <div class="wrapper">
+                                {% with record=matchup.roster_one %}
+                                    {% include 'Columns/team_manager.html' %}
+                                {% endwith %}
+                                {% with record=matchup.roster_two %}
+                                    {% include 'Columns/team_manager.html' %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: row; flex: 1 1 0%;">
+                        <div class="bottom-connector"></div>
+                        <div style="flex: 1 1 0%;"></div>
+                    </div>
+                    <div style="flex-direction: row; flex: 1 1 0%;"></div>
+                </div>
+                {% endfor %}
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
