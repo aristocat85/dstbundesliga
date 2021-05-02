@@ -1,3 +1,4 @@
+python-dotenv
 django
 django-cms
 django-filer
