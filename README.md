@@ -21,3 +21,12 @@ Start Server
 ```bash
 python manage.py runserver 127.0.0.1:8000
 ```
+
+
+Testdata
+========
+
+Testdata is provided as a fixture:
+```
+python manage.py loaddata DSTBundesliga/apps/leagues/fixtures/Season2020Testdata.json
+```
