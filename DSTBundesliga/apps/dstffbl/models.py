@@ -22,6 +22,7 @@ class SeasonUser(models.Model):
     sleeper_id = models.CharField(max_length=50)
     region = models.IntegerField(choices=REGIONS)
     new_player = models.BooleanField(default=False)
+    possible_commish = models.BooleanField(default=False)
 
 
 class AnnouncementManager(models.Manager):

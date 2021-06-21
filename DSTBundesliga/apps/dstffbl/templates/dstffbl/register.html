@@ -5,7 +5,6 @@
 <div class="ui container">
     <div class="dst-spacer dst-spacer-100">
         <div class="ui container home-container">
-
             {% if season_user %}
             <div class="title-container">
                 <h2 class="title">Let's gooo!</h2>
@@ -20,13 +19,13 @@
             </div>
             <div class="ui container">
                 <div class="ui segment">
-                    <form class="ui form" action="/register/" method="post">
+                    <form class="ui form" action="/anmeldung/" method="post">
                         {% csrf_token %}
                         <div class="fields">
                             <div class="six wide field">
                                 <label for="sleeper_username">Wie lautet dein Sleeper Benutzername?</label>
                                 <input type="text" id="sleeper_username" name="sleeper_username" maxlength="50"
-                                       placeholder="Benutzername oder ID">
+                                       placeholder="Benutzername oder ID" value="{{form.sleeper_username.value|default_if_none:'' }}">
                             </div>
                         </div>
                         <div class="fields">
@@ -34,13 +33,40 @@
                                 <label for="region">In welcher Region wohnst du?</label>
                                 <select class="ui fluid search dropdown" name="region" id="region">
                                     {% for value, region in region_choices %}
-                                    <option value="{{value}}">{{region}}</option>
+                                    <option value="{{value}}" {% if value == form.region.value %}selected{% endif %}>{{region}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
-
-                        <div class="ui submit button">Submit</div>
+                        <div class="fields">
+                            <div class="ten wide field">
+                                <div class="ui checkbox {% if form.possible_commish.value == True %}checked{% endif %}">
+                                    <input type="checkbox" {% if form.possible_commish.value == True %}checked=""{% endif %} name="possible_commish">
+                                    <label>Ich kann mir vorstellen in meiner Liga die Rolle des Comissioners zu übernehmen</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="ten wide field">
+                                {% if form.errors %}
+                                {% for field in form %}
+                                {% for error in field.errors %}
+                                <div class="ui negative message">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                                {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                <div class="ui negative message">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="dst-spacer-25">
+                            <button class="ui approve submit button">Absenden</button>
+                        </div>
                     </form>
                 </div>
 
@@ -53,7 +79,10 @@
 {% endblock %}
 
 {% block js %}
+{{ block.super }}
 <script>
-    $('select.dropdown').dropdown();
+    $('select.dropdown').dropdown('set selected', '{{form.region.value}}');
+    $('.ui.radio.checkbox').checkbox();
+
 </script>
 {% endblock %}

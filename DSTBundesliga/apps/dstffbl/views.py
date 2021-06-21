@@ -1,7 +1,6 @@
-from django.contrib.auth import logout
 from django.db.models import Max
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render
+from django.conf import settings
 
 from DSTBundesliga.apps.dstffbl.forms import RegisterForm
 from DSTBundesliga.apps.dstffbl.models import SeasonUser, News
@@ -23,6 +22,8 @@ def home(request):
 
 def register(request):
     user = request.user
+    season_user = None
+    form = None
 
     if user.is_authenticated:
         if request.method == 'POST':
@@ -35,19 +36,23 @@ def register(request):
                     defaults={
                         'sleeper_id': form.cleaned_data.get('sleeper_username'),
                         'region': form.cleaned_data.get('region'),
-                        'new_player': DSTPlayer.objects.filter(sleeper_id=form.cleaned_data.get('sleeper_username')).count() > 0
+                        'new_player': DSTPlayer.objects.filter(sleeper_id=form.cleaned_data.get('sleeper_username')).count() > 0,
+                        'possible_commish': form.cleaned_data.get('possible_commish')
                     }
                 )
 
-        if request.method == 'GET':
+        elif request.method == 'GET':
             try:
                 season_user = SeasonUser.objects.get(user=user)
             except SeasonUser.DoesNotExist as e:
                 season_user = None
+            if not form:
+                form = RegisterForm()
 
-            form = RegisterForm()
-
-        return render(request, 'dstffbl/register.html', {'form': form, 'region_choices': SeasonUser.REGIONS, 'current_season': Season.get_active(), 'season_user': season_user})
+        if settings.REGISTRATION_OPEN:
+            return render(request, 'dstffbl/register.html', {'form': form, 'region_choices': SeasonUser.REGIONS, 'current_season': Season.get_active(), 'season_user': season_user})
+        else:
+            return render(request, 'dstffbl/waiting_for_register.html')
 
     else:
-        return render(request, 'dstffbl/login.html', {'next': '/register/'})
+        return render(request, 'dstffbl/login.html', {'next': '/anmeldung/'})

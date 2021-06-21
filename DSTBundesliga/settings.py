@@ -228,7 +228,7 @@ def md5(fname):
 
 
 CSS_VERSION_HASH = md5(os.path.join(BASE_DIR, "staticfiles/css/base.css"))
-
+REGISTRATION_OPEN = os.getenv('REGISTRATION_OPEN', 0) == '1'
 
 DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
 

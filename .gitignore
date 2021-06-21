@@ -3,7 +3,7 @@ my.cnf
 static/
 local/
 DSTBundesliga.iml
-mydatabase
+mydatabase*
 *.pyc
 .rss_ts
 

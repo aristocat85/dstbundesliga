@@ -1,0 +1,24 @@
+{% extends 'tables_base.html' %}
+
+{% block content %}
+
+<div class="ui container">
+    <div class="dst-spacer dst-spacer-100">
+        <div class="ui container home-container">
+            <div class="title-container">
+                <h2 class="title">Bald geht's los!</h2>
+            </div>
+            <div class="ui segment">
+                <h3>Sobald die Anmeldephase startet kannst du dich hier registrieren.</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $('select.dropdown').dropdown();
+</script>
+{% endblock %}

@@ -8,7 +8,7 @@ from DSTBundesliga.apps.dstffbl.models import SeasonUser
 class RegisterForm(forms.Form):
     sleeper_username = forms.CharField(max_length=100)
     region = forms.ChoiceField(choices=SeasonUser.REGIONS)
-    terms_accepted = forms.BooleanField(required=True, error_messages={'required': 'Bitte akzeptiere unsere Datenschutzbestimmungen!'})
+    possible_commish = forms.BooleanField(required=False)
 
     def clean_sleeper_username(self):
         data = self.cleaned_data
@@ -21,6 +21,4 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError(
                 message=_('Dein Sleeper Benutzername scheint falsch zu sein - bitte gib deinen aktuellen Benutzernamen an!'))
 
-        data['sleeper_username'] = sleeper_id
-
-        return data
+        return sleeper_id
