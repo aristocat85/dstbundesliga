@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from tinymce.models import HTMLField
 
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+
 from DSTBundesliga.apps.leagues.models import Season, DSTPlayer
 
 
@@ -50,3 +52,11 @@ class News(models.Model):
     content = HTMLField()
     image = models.CharField(null=False, blank=False, default=settings.DEFAULT_NEWS_LOGO, max_length=255)
     date = models.DateTimeField(auto_now=True)
+
+
+class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
+
+    def populate_user(self, request, sociallogin, data):
+        user = super().populate_user(request, sociallogin, data)
+        user.username = user.email
+        return user

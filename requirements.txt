@@ -10,6 +10,7 @@ djangocms-video
 djangocms-googlemap
 djangocms-snippet
 djangocms-style
+django-allauth
 jsonfield
 django-tables2
 django-cookie-law
@@ -17,3 +18,4 @@ django-tinymce
 sleeper-api-wrapper
 feedparser
 python-dateutil
+patreon

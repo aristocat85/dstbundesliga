@@ -46,13 +46,14 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     'patreon': {
         'VERSION': 'v2',
-        'SCOPE': ['identity[email]', 'identity.memberships']
+        'SCOPE': ['identity', 'identity[email]', 'campaigns', 'campaigns.members']
     }
 }
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+SOCIALACCOUNT_ADAPTER = "DSTBundesliga.apps.dstffbl.models.CustomSocialAccountAdapter"
 
 
 INSTALLED_APPS = [
@@ -259,8 +260,5 @@ SCHEDULE = {
     16: datetime.datetime(2020, 12, 25),
     17: datetime.datetime(2021, 1, 3)
 }
-
-
-
 
 DST_PATREON_CAMPAIGN_ID = '2708731'
