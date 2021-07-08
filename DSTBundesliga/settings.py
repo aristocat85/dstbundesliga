@@ -55,6 +55,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 SOCIALACCOUNT_ADAPTER = "DSTBundesliga.apps.dstffbl.models.CustomSocialAccountAdapter"
 SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION ='none'
 
 INSTALLED_APPS = [
     'djangocms_admin_style',
