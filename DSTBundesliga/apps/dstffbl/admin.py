@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from DSTBundesliga.apps.dstffbl.models import News, Announcement
+from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser
 
 
 class NewsAdmin(admin.ModelAdmin):
@@ -13,6 +13,11 @@ class AnnouncementAdmin(admin.ModelAdmin):
     ordering = ['-valid_from', '-valid_to']
 
 
+class SeasonUserAdmin(admin.ModelAdmin):
+    list_display = ['email', 'sleeper_user', 'region', 'new_player', 'possible_commish', 'registration_ts']
+
+
 admin.site.register(News, NewsAdmin)
 admin.site.register(Announcement, AnnouncementAdmin)
+admin.site.register(SeasonUser, SeasonUserAdmin)
 

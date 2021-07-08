@@ -1,9 +1,7 @@
-from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
 from jsonfield import JSONField
-from tinymce.models import HTMLField
 from datetime import datetime
 
 
@@ -70,6 +68,9 @@ class DSTPlayer(models.Model):
     display_name = models.CharField(max_length=50, db_index=True)
     avatar_id = models.CharField(max_length=100, null=True)
     leagues = models.ManyToManyField(League)
+
+    def __str__(self):
+        return "{display_name} - {sleeper_id}".format(display_name=self.display_name, sleeper_id=self.sleeper_id)
 
 
 class Team(models.Model):

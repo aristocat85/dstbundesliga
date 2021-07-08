@@ -25,6 +25,13 @@ class SeasonUser(models.Model):
     region = models.IntegerField(choices=REGIONS)
     new_player = models.BooleanField(default=False)
     possible_commish = models.BooleanField(default=False)
+    registration_ts = models.DateTimeField(auto_now=True)
+
+    def sleeper_user(self):
+        return str(DSTPlayer.objects.get(sleeper_id=self.sleeper_id))
+
+    def email(self):
+        return self.user.email
 
 
 class AnnouncementManager(models.Manager):

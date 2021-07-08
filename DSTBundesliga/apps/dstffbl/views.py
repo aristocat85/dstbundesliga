@@ -2,6 +2,8 @@ from django.db.models import Max
 from django.shortcuts import render
 from django.conf import settings
 
+import sleeper_wrapper
+
 from DSTBundesliga.apps.dstffbl.forms import RegisterForm
 from DSTBundesliga.apps.dstffbl.models import SeasonUser, News
 from DSTBundesliga.apps.leagues.models import Matchup, Season, DSTPlayer
@@ -30,16 +32,23 @@ def register(request):
             form = RegisterForm(request.POST)
 
             if form.is_valid():
+                sleeper_id = form.cleaned_data.get('sleeper_username')
                 season_user, created = SeasonUser.objects.get_or_create(
                     user=user,
                     season=Season.get_active(),
                     defaults={
-                        'sleeper_id': form.cleaned_data.get('sleeper_username'),
+                        'sleeper_id': sleeper_id,
                         'region': form.cleaned_data.get('region'),
-                        'new_player': DSTPlayer.objects.filter(sleeper_id=form.cleaned_data.get('sleeper_username')).count() > 0,
+                        'new_player': DSTPlayer.objects.filter(sleeper_id=form.cleaned_data.get('sleeper_username')).count() == 0,
                         'possible_commish': form.cleaned_data.get('possible_commish')
                     }
                 )
+
+                sleeper_user = sleeper_wrapper.User(sleeper_id)
+                sleeper_username = sleeper_user.get_username()
+                DSTPlayer.objects.update_or_create(sleeper_id=sleeper_id, defaults={
+                    "display_name": sleeper_username
+                })
 
         elif request.method == 'GET':
             try:
