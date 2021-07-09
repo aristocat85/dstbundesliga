@@ -84,12 +84,12 @@ INSTALLED_APPS = [
     'django_tables2',
     'cookielaw',
     'tinymce',
+    'DSTBundesliga.apps.leagues',
+    'DSTBundesliga.apps.dstffbl',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.patreon',
-    'DSTBundesliga.apps.leagues',
-    'DSTBundesliga.apps.dstffbl',
 ]
 
 MIDDLEWARE = [

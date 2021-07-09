@@ -1,10 +1,12 @@
 import datetime
+import sys
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from tinymce.models import HTMLField
 
+from tinymce.models import HTMLField
+from loguru import logger
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 from DSTBundesliga.apps.leagues.models import Season, DSTPlayer
@@ -67,3 +69,15 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user = super().populate_user(request, sociallogin, data)
         user.username = user.email
         return user
+
+    def authentication_error(
+            self,
+            request,
+            provider_id,
+            error=None,
+            exception=None,
+            extra_context=None,
+    ):
+        logger.error(
+            "error: {error}\nexception: {exception}\nextra_content: {extra_context}\nrequest: {request}".format(error=error, exception=exception, extra_context=extra_context, request=request.__dict__)
+        )

@@ -19,3 +19,4 @@ sleeper-api-wrapper
 feedparser
 python-dateutil
 patreon
+loguru
