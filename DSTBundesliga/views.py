@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 from django.shortcuts import render
 
-
+'''
 def login(request):
     return render(request, 'login.html')
 
@@ -18,3 +18,4 @@ def authenticate(request):
         response = redirect('/login')
     return response
 
+'''
