@@ -12,9 +12,6 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from DSTBundesliga.apps.leagues.models import Season, DSTPlayer
 
 
-logger.add("auth_error.log", rotation="1 day", retention="10 days", colorize=True, format="{time} {level} {message}", level="DEBUG", backtrace=True)
-
-
 class SeasonUser(models.Model):
     REGIONS = (
         (1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'),
