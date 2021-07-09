@@ -12,10 +12,11 @@
             </div>
             <div class="ui segment">
                 <p>Um an der "Down, Set, Talk!" Fantasy Football Bundesliga teilnehmen zu können, musst du "Down, Set, Talk!"-Special-Teamer sein (weitere Informationen und Anmeldungen hierfür unter <a href="https://www.patreon.com/downsettalk">https://www.patreon.com/downsettalk</a>). Wir nutzen daher Patreon, um deine Teilnahmeberechtigung zu prüfen und einen "Down, Set, Talk!" Fantasy Football Bundesliga Zugang zu erstellen. </p>
-                <form class="ui form" action='{% provider_login_url "patreon" %}?next={{ next|default:"/" }}'>
+                <form class="ui form" action='{% provider_login_url "patreon" %}' method="get">
                     <div class="fields">
                         <div class="ten wide field">
                             <div class="ui checkbox {% if form.possible_commish.value == True %}checked{% endif %}">
+                                <input hidden name="next" id="next" value="{{ next|default:'/' }}">
                                 <input id="accept_patreon_data_access" type="checkbox" required onchange="this.setCustomValidity(validity.valueMissing ? 'Eine Anmeldung ist nur möglich, wenn du der Datenverarbeitung zustimmst' : '');">
                                 <label>Ich akzeptiere, dass ihr meine Patreon-Daten abruft und für die "Down, Set, Talk!" Fantasy Football Bundesliga speichert</label>
                             </div>

@@ -46,7 +46,7 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     'patreon': {
         'VERSION': 'v2',
-        'SCOPE': ['identity', 'identity[email]', 'campaigns', 'campaigns.members']
+        'SCOPE': ['identity', 'identity[email]', 'identity.memberships']
     }
 }
 
