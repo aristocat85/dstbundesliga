@@ -80,5 +80,5 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     ):
         import traceback
         logger.exception(
-            "\nerror: {error}\nexception: {exception}\nextra_content: {extra_context}\nstacktrace: {trace}\nrequest: {request}".format(error=error, exception=exception.stacktrace, extra_context=extra_context, trace=traceback.format_exc(), request=request.__dict__)
+            "\nerror: {error}\nexception: {exception}\nextra_content: {extra_context}\nstacktrace: {trace}\nrequest: {request}".format(error=error, exception=exception, extra_context=extra_context, trace=traceback.format_exc(), request=request.__dict__)
         )
