@@ -56,6 +56,10 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 SOCIALACCOUNT_ADAPTER = "DSTBundesliga.apps.dstffbl.models.CustomSocialAccountAdapter"
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_EMAIL_VERIFICATION ='none'
+SESSION_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = None
+SESSION_COOKIE_NAME = 'dstffbl_session_id'
+
 
 INSTALLED_APPS = [
     'djangocms_admin_style',
@@ -84,12 +88,12 @@ INSTALLED_APPS = [
     'django_tables2',
     'cookielaw',
     'tinymce',
-    'DSTBundesliga.apps.leagues',
-    'DSTBundesliga.apps.dstffbl',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.patreon',
+    'DSTBundesliga.apps.leagues',
+    'DSTBundesliga.apps.dstffbl',
 ]
 
 MIDDLEWARE = [
@@ -264,5 +268,4 @@ SCHEDULE = {
 
 DST_PATREON_CAMPAIGN_ID = '2708731'
 
-SESSION_COOKIE_SAMESITE = None
-CSRF_COOKIE_SAMESITE = None
+
