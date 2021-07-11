@@ -934,7 +934,9 @@ button:hover {
     width: 150px;
 }
 
-
+.announcements .message * {
+    margin-top: 0 !important;
+}
 
 
 

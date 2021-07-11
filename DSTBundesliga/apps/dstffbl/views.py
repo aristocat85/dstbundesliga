@@ -1,8 +1,11 @@
+from urllib.parse import urlencode
+
 from django.db.models import Max
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 
 import sleeper_wrapper
+from django.urls import reverse
 
 from DSTBundesliga.apps.dstffbl.forms import RegisterForm
 from DSTBundesliga.apps.dstffbl.models import SeasonUser, News
@@ -64,4 +67,14 @@ def register(request):
             return render(request, 'dstffbl/waiting_for_register.html')
 
     else:
-        return render(request, 'dstffbl/login.html', {'next': '/anmeldung/'})
+        login_url = reverse('dstffbl:login')
+        return redirect('{}?{}'.format(login_url, urlencode({'next': '/anmeldung/'})))
+
+
+def login(request):
+    next = request.GET.get('next', '/')
+
+    if request.user.is_authenticated:
+        return redirect(next)
+
+    return render(request, 'dstffbl/login.html', {'next': next})

@@ -108,8 +108,9 @@
                 <div class="announcements">
                     {% get_announcements as announcements %}
                     {% for announcement in announcements %}
-                    <div class="ui message">
-                        <p>{{ announcement.content|safe }}</p>
+                    <div class="ui large icon message">
+                        <i class="bullhorn icon"></i>
+                        {{ announcement.content|safe }}
                     </div>
                     {% endfor %}
                 </div>
