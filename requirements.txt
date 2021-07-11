@@ -1,7 +1,9 @@
 python-dotenv
-django
-django-cms
+django==3.1
+django-cms==3.9
 django-filer
+django-sekizai
+django-polymorphic
 djangocms-text-ckeditor
 djangocms-link
 djangocms-file
