@@ -1,5 +1,5 @@
 python-dotenv
-django==3.1
+django==3.1.12
 django-cms==3.9
 django-filer
 django-sekizai
