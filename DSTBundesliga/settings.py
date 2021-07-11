@@ -57,7 +57,7 @@ SOCIALACCOUNT_ADAPTER = "DSTBundesliga.apps.dstffbl.models.CustomSocialAccountAd
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_EMAIL_VERIFICATION ='none'
 SESSION_COOKIE_SAMESITE = 'None'
-CSRF_COOKIE_SAMESITE = None
+CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_NAME = 'dstffbl_session_id'
 
 
@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',

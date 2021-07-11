@@ -1,6 +1,6 @@
 python-dotenv
-django==3.1
-django-cms==3.9
+django<3.2
+django-cms<4.0
 django-filer
 django-sekizai
 django-polymorphic
