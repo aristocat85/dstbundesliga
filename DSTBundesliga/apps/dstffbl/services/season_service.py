@@ -22,7 +22,7 @@ def update_last_years_leagues():
             su.new_player = False
             pass
 
-    su.save()
+        su.save()
 
 
 def create_season_users(users):
