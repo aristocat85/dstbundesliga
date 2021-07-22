@@ -6,7 +6,10 @@ from DSTBundesliga.apps.leagues.models import DSTPlayer, League, Season
 
 
 def get_last_years_league(player: DSTPlayer):
-    return League.objects.filter(id__in=[r.league.id for r in player.roster_set.all()]).get(type=League.BUNDESLIGA)
+    try:
+        return League.objects.filter(id__in=[r.league.id for r in player.roster_set.all()]).get(type=League.BUNDESLIGA)
+    except League.DoesNotExist:
+        return None
 
 
 def update_last_years_leagues():
