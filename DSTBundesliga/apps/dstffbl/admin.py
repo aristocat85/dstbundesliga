@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser
 
-
+'''
 def download_season_users_csv(modeladmin, request, queryset):
     REGION = {
         1: 'Nord',
@@ -30,7 +30,7 @@ def download_season_users_csv(modeladmin, request, queryset):
         writer.writerow([su.user.email, sleeper_username, sleeper_id, region, new_player, league, league_id, commish, su.registration_ts.strftime("%d.%m.%Y, %H:%M:%S")])
 
     return response
-
+'''
 
 class NewsAdmin(admin.ModelAdmin):
     list_display = ['date', 'title', 'content']
@@ -44,7 +44,7 @@ class AnnouncementAdmin(admin.ModelAdmin):
 
 class SeasonUserAdmin(admin.ModelAdmin):
     list_display = ['email', 'sleeper_user', 'region', 'new_player', 'last_years_league', 'possible_commish', 'registration_ts']
-    actions = [download_season_users_csv]
+   # actions = [download_season_users_csv]
 
 
 admin.site.register(News, NewsAdmin)
