@@ -1,11 +1,7 @@
-import sleeper_wrapper
-from django.contrib.auth.models import User
-
-from DSTBundesliga.apps.dstffbl.models import SeasonUser
-from DSTBundesliga.apps.leagues.models import DSTPlayer, League, Season
 
 
-def get_last_years_league(player: DSTPlayer):
+def get_last_years_league(player):
+    from DSTBundesliga.apps.leagues.models import League
     try:
         return League.objects.filter(id__in=[r.league.id for r in player.roster_set.all()]).get(type=League.BUNDESLIGA)
     except League.DoesNotExist:
@@ -13,6 +9,9 @@ def get_last_years_league(player: DSTPlayer):
 
 
 def update_last_years_leagues():
+    from DSTBundesliga.apps.leagues.models import DSTPlayer, Season
+    from DSTBundesliga.apps.dstffbl.models import SeasonUser
+
     for su in SeasonUser.objects.filter(season=Season.get_active()):
         try:
             dst_player = DSTPlayer.objects.get(sleeper_id=su.sleeper_id)
@@ -26,6 +25,11 @@ def update_last_years_leagues():
 
 
 def create_season_users(users):
+    from django.contrib.auth.models import User
+    import sleeper_wrapper
+    from DSTBundesliga.apps.leagues.models import DSTPlayer, Season
+    from DSTBundesliga.apps.dstffbl.models import SeasonUser
+
     for user_tuple in users:
         dst_player = None
         last_years_league = None
