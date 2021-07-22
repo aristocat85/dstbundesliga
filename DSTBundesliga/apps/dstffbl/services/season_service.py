@@ -17,16 +17,19 @@ def update_last_years_leagues():
         try:
             dst_player = DSTPlayer.objects.get(sleeper_id=su.sleeper_id)
             su.last_years_league = get_last_years_league(dst_player)
-            su.save()
         except DSTPlayer.DoesNotExist:
+            su.last_years_league = None
+            su.new_player = False
             pass
+
+    su.save()
 
 
 def create_season_users(users):
-    dst_player = None
-    last_years_league = None
-
     for user_tuple in users:
+        dst_player = None
+        last_years_league = None
+
         email, sleeper_username, commish, region = user_tuple
         sleeper_user = sleeper_wrapper.User(sleeper_username)
 
