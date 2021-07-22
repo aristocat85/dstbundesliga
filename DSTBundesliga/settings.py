@@ -115,7 +115,7 @@ ROOT_URLCONF = 'DSTBundesliga.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'django.template.backends.django.DjangsoTemplates',
         'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
