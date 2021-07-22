@@ -14,10 +14,12 @@ def get_last_years_league(player: DSTPlayer):
 
 def update_last_years_leagues():
     for su in SeasonUser.objects.filter(season=Season.get_active()):
-        dst_player = DSTPlayer.objects.get(sleeper_id = su.sleeper_id)
-        if dst_player:
+        try:
+            dst_player = DSTPlayer.objects.get(sleeper_id=su.sleeper_id)
             su.last_years_league = get_last_years_league(dst_player)
             su.save()
+        except DSTPlayer.DoesNotExist:
+            pass
 
 
 def create_season_users(users):
@@ -25,8 +27,8 @@ def create_season_users(users):
     last_years_league = None
 
     for user_tuple in users:
-        email, sleeper_user, commish, region = user_tuple
-        sleeper_user = sleeper_wrapper.User(sleeper_user)
+        email, sleeper_username, commish, region = user_tuple
+        sleeper_user = sleeper_wrapper.User(sleeper_username)
 
         sleeper_id = sleeper_user.get_user_id()
         try:
@@ -47,3 +49,7 @@ def create_season_users(users):
             region=region,
             possible_commish=commish
         )
+
+        DSTPlayer.objects.update_or_create(sleeper_id=sleeper_id, defaults={
+            "display_name": sleeper_username
+        })
