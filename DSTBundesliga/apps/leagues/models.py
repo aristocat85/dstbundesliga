@@ -31,6 +31,17 @@ class Season(models.Model):
 
 
 class League(models.Model):
+    BUNDESLIGA = 1
+    CL = 2
+    LISTENER = 3
+
+    TYPES = [
+        (BUNDESLIGA, 'Bundesliga'),
+        (CL, 'Champions League'),
+        (LISTENER, 'Hörerliga'),
+    ]
+
+    type = models.IntegerField(choices=TYPES, default=BUNDESLIGA)
     level = models.IntegerField(default=0)
     conference = models.CharField(max_length=30, null=True)
     region = models.CharField(max_length=30, null=True)

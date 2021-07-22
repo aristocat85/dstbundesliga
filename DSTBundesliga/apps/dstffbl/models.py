@@ -9,7 +9,7 @@ from tinymce.models import HTMLField
 from loguru import logger
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
-from DSTBundesliga.apps.leagues.models import Season, DSTPlayer
+from DSTBundesliga.apps.leagues.models import Season, DSTPlayer, League
 
 
 class SeasonUser(models.Model):
@@ -26,6 +26,7 @@ class SeasonUser(models.Model):
     sleeper_id = models.CharField(max_length=50)
     region = models.IntegerField(choices=REGIONS)
     new_player = models.BooleanField(default=False)
+    last_years_league = models.ForeignKey(League, null=True, on_delete=models.SET_NULL)
     possible_commish = models.BooleanField(default=False)
     registration_ts = models.DateTimeField(auto_now=True)
 

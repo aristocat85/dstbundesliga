@@ -9,7 +9,8 @@ from django.urls import reverse
 
 from DSTBundesliga.apps.dstffbl.forms import RegisterForm
 from DSTBundesliga.apps.dstffbl.models import SeasonUser, News
-from DSTBundesliga.apps.leagues.models import Matchup, Season, DSTPlayer
+from DSTBundesliga.apps.dstffbl.services import season_service
+from DSTBundesliga.apps.leagues.models import Matchup, Season, DSTPlayer, League
 from DSTBundesliga.apps.services.awards_service import AwardService
 
 
@@ -36,13 +37,24 @@ def register(request):
 
             if form.is_valid():
                 sleeper_id = form.cleaned_data.get('sleeper_username')
+                dst_player = None
+                last_years_league = None
+
+                try:
+                    dst_player = DSTPlayer.objects.get(sleeper_id=form.cleaned_data.get('sleeper_username'))
+                    if dst_player:
+                        last_years_league = season_service.get_last_years_league(player=dst_player)
+                except:
+                    pass
+
                 season_user, created = SeasonUser.objects.get_or_create(
                     user=user,
                     season=Season.get_active(),
                     defaults={
                         'sleeper_id': sleeper_id,
                         'region': form.cleaned_data.get('region'),
-                        'new_player': DSTPlayer.objects.filter(sleeper_id=form.cleaned_data.get('sleeper_username')).count() == 0,
+                        'new_player': dst_player is None,
+                        'last_years_league': last_years_league,
                         'possible_commish': form.cleaned_data.get('possible_commish')
                     }
                 )
