@@ -60,6 +60,7 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_NAME = 'dstffbl_session_id'
 
+CSRF_USE_SESSIONS = True
 
 INSTALLED_APPS = [
     'djangocms_admin_style',
