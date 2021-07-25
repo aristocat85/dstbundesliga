@@ -47,13 +47,7 @@ class SeasonUserAdmin(admin.ModelAdmin):
 
     get_sleeper_username.short_description = 'Sleeper Username'
 
-    def get_last_years_league(self, obj):
-        return str(obj.last_years_league) if obj.last_years_league else ''
-
-    get_last_years_league.short_description = 'Liga letzte Saison'
-    get_last_years_league.admin_order_field = 'last_years_league__level'
-
-    list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'get_last_years_league', 'possible_commish', 'registration_ts']
+    list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'last_years_league', 'possible_commish', 'registration_ts']
     search_fields = ['user__email', 'dst_player__display_name', 'sleeper_id', 'last_years_league__sleeper_name']
     actions = [download_season_users_csv]
 

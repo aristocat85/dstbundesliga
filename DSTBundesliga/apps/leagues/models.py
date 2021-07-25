@@ -31,6 +31,10 @@ class Season(models.Model):
 
 
 class League(models.Model):
+
+    class Meta:
+        ordering = ['-level', 'sleeper_name']
+
     BUNDESLIGA = 1
     CL = 2
     LISTENER = 3
