@@ -22,12 +22,11 @@ def download_season_users_csv(modeladmin, request, queryset):
     writer.writerow(["Email", "Sleeper Username", "Sleeper ID", "Region", "Neuer Spieler", "Liga letzte Saison", "Liga letzte Saison ID", "Potentieller Komissioner", "Anmeldezeitpunkt"])
 
     for su in queryset:
-        sleeper_username, sleeper_id = su.sleeper_user().split(' - ') if su.sleeper_user() is not None else ("", "")
         new_player = "Ja" if su.new_player else "Nein"
         league, league_id = (su.last_years_league.sleeper_name, su.last_years_league.sleeper_id) if su.last_years_league else ("", "")
         commish = "Ja" if su.possible_commish else "Nein"
         region = REGION.get(su.region)
-        writer.writerow([su.user.email, sleeper_username, sleeper_id, region, new_player, league, league_id, commish, su.registration_ts.strftime("%d.%m.%Y, %H:%M:%S")])
+        writer.writerow([su.user.email, su.dst_player.display_name, su.sleeper_id, region, new_player, league, league_id, commish, su.registration_ts.strftime("%d.%m.%Y, %H:%M:%S")])
 
     return response
 
@@ -43,7 +42,19 @@ class AnnouncementAdmin(admin.ModelAdmin):
 
 
 class SeasonUserAdmin(admin.ModelAdmin):
-    list_display = ['email', 'sleeper_user', 'region', 'new_player', 'last_years_league', 'possible_commish', 'registration_ts']
+    def get_sleeper_username(self, obj):
+        return obj.dst_player.display_name
+
+    get_sleeper_username.short_description = 'Sleeper Username'
+
+    def get_last_years_league(self, obj):
+        return str(obj.last_years_league) if obj.last_years_league else ''
+
+    get_last_years_league.short_description = 'Liga letzte Saison'
+    get_last_years_league.admin_order_field = 'last_years_league__level'
+
+    list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'get_last_years_league', 'possible_commish', 'registration_ts']
+    search_fields = ['user__email', 'dst_player__display_name', 'sleeper_id', 'last_years_league__sleeper_name']
     actions = [download_season_users_csv]
 
 

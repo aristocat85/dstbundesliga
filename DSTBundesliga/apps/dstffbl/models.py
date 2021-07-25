@@ -21,6 +21,7 @@ class SeasonUser(models.Model):
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
     season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, default=Season.get_active)
     sleeper_id = models.CharField(max_length=50)
     region = models.IntegerField(choices=REGIONS)
@@ -28,9 +29,6 @@ class SeasonUser(models.Model):
     last_years_league = models.ForeignKey(League, null=True, on_delete=models.SET_NULL)
     possible_commish = models.BooleanField(default=False)
     registration_ts = models.DateTimeField(auto_now=True)
-
-    def sleeper_user(self):
-        return str(DSTPlayer.objects.get(sleeper_id=self.sleeper_id))
 
     def email(self):
         return self.user.email
