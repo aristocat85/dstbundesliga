@@ -28,7 +28,7 @@ class SeasonUser(models.Model):
     new_player = models.BooleanField(default=False)
     last_years_league = models.ForeignKey(League, null=True, on_delete=models.SET_NULL)
     possible_commish = models.BooleanField(default=False)
-    registration_ts = models.DateTimeField(auto_now=True)
+    registration_ts = models.DateTimeField(auto_now_add=True)
 
     def email(self):
         return self.user.email
