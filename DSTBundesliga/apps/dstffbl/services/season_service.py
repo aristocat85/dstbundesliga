@@ -13,13 +13,15 @@ def get_last_years_league(player: DSTPlayer):
 
 
 def update_last_years_leagues():
-    for su in SeasonUser.objects.filter(season=Season.get_active()):
+    for su in SeasonUser.objects.filter(season=Season.get_active(), last_years_league=None):
         try:
             dst_player = DSTPlayer.objects.get(sleeper_id=su.sleeper_id)
             su.last_years_league = get_last_years_league(dst_player)
+            if su.last_years_league:
+                su.new_player = False
         except DSTPlayer.DoesNotExist:
             su.last_years_league = None
-            su.new_player = False
+            su.new_player = True
             pass
 
         su.save()
