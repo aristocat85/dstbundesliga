@@ -61,9 +61,12 @@ def register(request):
 
                 sleeper_user = sleeper_wrapper.User(sleeper_id)
                 sleeper_username = sleeper_user.get_username()
-                DSTPlayer.objects.update_or_create(sleeper_id=sleeper_id, defaults={
+                dst_player, _ = DSTPlayer.objects.update_or_create(sleeper_id=sleeper_id, defaults={
                     "display_name": sleeper_username
                 })
+
+                season_user.dst_player = dst_player
+                season_user.save()
 
         elif request.method == 'GET':
             try:
