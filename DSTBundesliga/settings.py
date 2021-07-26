@@ -282,6 +282,12 @@ LOGGING = {
     },
 }
 
+DEFAULT_FROM_EMAIL = 'Down Set Talk Fantasy Football Bundesliga <noreply@dstffbl.uber.space>'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 25))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+
 DST_PATREON_CAMPAIGN_ID = '2708731'
 
 

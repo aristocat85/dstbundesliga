@@ -1,5 +1,4 @@
 import csv
-import feedparser
 
 from datetime import datetime
 
@@ -13,8 +12,7 @@ from django.conf import settings
 from sleeper_wrapper import BaseApi
 
 from DSTBundesliga.apps.leagues.config import POSITIONS
-from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, \
-    News, PlayoffMatchup
+from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, PlayoffMatchup
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
