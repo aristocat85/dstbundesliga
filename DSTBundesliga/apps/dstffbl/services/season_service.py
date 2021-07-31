@@ -110,14 +110,21 @@ def import_invitations(filepath):
                 print(f"League {league_id} - {league_name} incomplete!".format(league_id=league_id, league_name=league_name))
             else:
                 print("Creating Invitations for league {league_id} - {league_name}".format(league_id=league_id, league_name=league_name))
+                counter = 0
                 for player in players:
                     try:
-                        SeasonInvitation.objects.create(
+                        su, created = SeasonInvitation.objects.get_or_create(
                             season_user=SeasonUser.objects.get(dst_player__display_name=player),
                             sleeper_username=player,
                             sleeper_league_name=league_name,
                             sleeper_league_id=league_id,
                             sleeper_league_link=league_link
                         )
+                        if created:
+                            counter += 1
                     except SeasonUser.DoesNotExist:
                         print("SeasonUser for Sleeper-Name {sleeper_name} does not exist!".format(sleeper_name=player))
+
+                print("Created {count} Invitations".format(count=counter))
+
+        print("All done! There are now {count} open invitations".format(SeasonInvitation.objects.filter(send_ts=None).count()))
