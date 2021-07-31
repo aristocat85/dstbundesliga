@@ -127,4 +127,4 @@ def import_invitations(filepath):
 
                 print("Created {count} Invitations".format(count=counter))
 
-        print("All done! There are now {count} open invitations".format(SeasonInvitation.objects.filter(send_ts=None).count()))
+        print("All done! There are now {count} open invitations".format(count=SeasonInvitation.objects.filter(send_ts=None).count()))
