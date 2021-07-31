@@ -3,7 +3,7 @@ import csv
 from django.contrib import admin
 from django.http import HttpResponse
 
-from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser
+from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser, SeasonInvitation
 
 
 def download_season_users_csv(modeladmin, request, queryset):
@@ -52,7 +52,16 @@ class SeasonUserAdmin(admin.ModelAdmin):
     actions = [download_season_users_csv]
 
 
+class SeasonInvitationAdmin(admin.ModelAdmin):
+    def get_sleeper_username(self, obj):
+        return obj.season_user.dst_player.display_name
+
+    list_display = ['get_sleeper_username', 'sleeper_league_name', 'sleeper_league_id', 'sleeper_league_link', 'send_ts', 'has_erros', 'error_message']
+    ordering = ['-send_ts', 'sleeper_league_id']
+
+
 admin.site.register(News, NewsAdmin)
 admin.site.register(Announcement, AnnouncementAdmin)
 admin.site.register(SeasonUser, SeasonUserAdmin)
+admin.site.register(SeasonInvitation, SeasonInvitationAdmin)
 
