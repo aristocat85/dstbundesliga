@@ -282,7 +282,7 @@ LOGGING = {
     },
 }
 
-DEFAULT_FROM_EMAIL = 'Down Set Talk Fantasy Football Bundesliga <noreply@dstffbl.uber.space>'
+DEFAULT_FROM_EMAIL = 'DSTFanFooBL - Down Set Talk! Fantasy Football Bundesliga <noreply@dstffbl.uber.space>'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 25))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
