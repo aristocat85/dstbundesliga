@@ -30,6 +30,7 @@ urlpatterns = [
     path('leagues/', include('DSTBundesliga.apps.leagues.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('admin/', admin.site.urls),
+    url(r'^shared/', include('filer.urls')),
     re_path(r'^', include('cms.urls')),
 ]
 

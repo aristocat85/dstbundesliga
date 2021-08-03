@@ -180,6 +180,8 @@ CMS_PERMISSION = True
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.expanduser("~/html/media/")
 
+FILER_CANONICAL_URL = 'files/'
+
 THUMBNAIL_HIGH_RESOLUTION = True
 
 THUMBNAIL_PROCESSORS = (
