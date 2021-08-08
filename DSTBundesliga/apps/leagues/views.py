@@ -10,7 +10,7 @@ from django.urls import reverse
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
 from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, Player, DSTPlayer, Matchup, \
-    PlayoffMatchup
+    PlayoffMatchup, Season
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
     UpsetAndStealPickTable, PlayerStatsTable
 from DSTBundesliga.apps.services.awards_service import AwardService
@@ -19,7 +19,7 @@ from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 class LeagueView(tables.SingleTableView):
     table_class = LeagueTable
-    queryset = League.objects.all().order_by('level', 'sleeper_name')
+    queryset = League.objects.get_active().order_by('level', 'sleeper_name')
     template_name = "leagues/league_list.html"
 
 
@@ -35,9 +35,16 @@ def roster_list(request, league_id):
     })
 
 
-def level_detail(request, level=None, conference=None, region=None):
+def level_detail(request, level=None, conference=None, region=None, season=None):
     league_objects = League.objects.all().order_by('sleeper_name')
     header_logo = None
+
+    if season:
+        season = Season.objects.get(year=season)
+    else:
+        season = Season.get_active()
+
+    league_objects = league_objects.filter(season=season)
 
     if level:
         league_objects = league_objects.filter(level=level)
@@ -68,7 +75,8 @@ def level_detail(request, level=None, conference=None, region=None):
 
 
 def my_league(request):
-    all_leagues = League.objects.all()
+    all_leagues = League.objects.get_active()
+
     context = {
         "levels": [{
             "title": LEVEL_MAP.get(level),
@@ -101,7 +109,7 @@ def draft_stats(request, position=None):
 
     drafts_done = drafts.filter(status='complete').count()
     drafts_running = drafts.filter(status__in=['drafting', 'paused']).count()
-    drafts_overall = League.objects.all().count()
+    drafts_overall = League.objects.get_active().filter(type=League.BUNDESLIGA).count()
     drafts_done_percent = drafts_done / drafts_overall * 100
 
     picks = Pick.objects.all()

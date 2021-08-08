@@ -141,8 +141,8 @@ class AwardService():
         return ShootoutAward(context)
 
     def get_cffc_vs_affc(self):
-        cffc_league_ids = League.objects.filter(conference="CFFC").values_list('sleeper_id', flat=True)
-        affc_league_ids = League.objects.filter(conference="AFFC").values_list('sleeper_id', flat=True)
+        cffc_league_ids = League.objects.get_active().filter(conference="CFFC").values_list('sleeper_id', flat=True)
+        affc_league_ids = League.objects.get_active().filter(conference="AFFC").values_list('sleeper_id', flat=True)
 
         points_cffc = self.matchups.filter(league_id__in=cffc_league_ids).aggregate(
             point_sum=Sum('points_one') + Sum('points_two')).get("point_sum")

@@ -17,7 +17,7 @@ class LeaguesMenu(Menu):
         nodes = []
         counter = 1
         nodes.append(NavigationNode("Startseite", "/", counter))
-        all_leagues = League.objects.all()
+        all_leagues = League.objects.get_active()
         conferences = {}
         regions = {}
 

@@ -11,10 +11,13 @@ from DSTBundesliga.apps.leagues.models import DSTPlayer, League, Season
 
 import logging
 
+from DSTBundesliga.apps.services.data_services import LeagueSetting, guess_level, guess_conference, guess_region, \
+    update_or_create_league, get_league_data
+
 
 def get_last_years_league(player: DSTPlayer):
     try:
-        return League.objects.filter(id__in=[r.league.id for r in player.roster_set.all()]).get(type=League.BUNDESLIGA)
+        return League.objects.filter(season=Season.get_last(), id__in=[r.league.id for r in player.roster_set.all()]).get(type=League.BUNDESLIGA)
     except League.DoesNotExist:
         return None
 
@@ -128,3 +131,18 @@ def import_invitations(filepath):
                 print("Created {count} Invitations".format(count=counter))
 
         print("All done! There are now {count} open invitations".format(count=SeasonInvitation.objects.filter(send_ts=None).count()))
+
+
+def create_leagues_from_invitations():
+    for si in SeasonInvitation.objects.filter(season_user__season=Season.get_active()):
+        league_settings = LeagueSetting(
+            id=si.sleeper_league_id,
+            name=si.sleeper_league_name,
+            level=guess_level(si.sleeper_league_name),
+            conference=guess_conference(si.sleeper_league_name),
+            region=guess_region(si.sleeper_league_name)
+        )
+
+        league_data = get_league_data(si.sleeper_league_id)
+
+        update_or_create_league(league_settings, league_data)

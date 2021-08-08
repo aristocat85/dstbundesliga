@@ -1,6 +1,5 @@
-import csv
-
 from datetime import datetime
+from typing import List
 
 from attr import dataclass
 from django.db.models import Count, Avg
@@ -16,19 +15,27 @@ from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, 
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
+@dataclass
+class LeagueSetting:
+    id: str
+    name: str
+    level: int
+    conference: str or None
+    region: str or None
+
+
 def get_league_data(league_id):
     league_service = sleeper_wrapper.League(league_id)
     return league_service.get_league()
 
 
-def update_league(league_setting, league_data):
+def update_or_create_league(league_setting: LeagueSetting, league_data):
     league, _ = League.objects.update_or_create(sleeper_id=league_setting.id, defaults={
         "total_rosters": league_data.get("total_rosters"),
         "status": league_data.get("status"),
         "sport": league_data.get("sport"),
         "settings": league_data.get("settings"),
         "season_type": league_data.get("season_type"),
-        "season": league_data.get("season"),
         "scoring_settings": league_data.get("scoring_settings"),
         "roster_positions": league_data.get("roster_positions"),
         "previous_league_id": league_data.get("previous_league_id"),
@@ -42,7 +49,25 @@ def update_league(league_setting, league_data):
     return league
 
 
-def delete_old_leagues(league_settings, dry_run=True):
+def update_league(league: League, league_data):
+    league.total_rosters = league_data.get("total_rosters")
+    league.status = league_data.get("status")
+    league.sport = league_data.get("sport")
+    league.settings = league_data.get("settings")
+    league.season_type = league_data.get("season_type")
+    league.scoring_settings = league_data.get("scoring_settings")
+    league.roster_positions = league_data.get("roster_positions")
+    league.previous_league_id = league_data.get("previous_league_id")
+    league.sleeper_name = league_data.get("name")
+    league.draft_id = league_data.get("draft_id")
+    league.avatar_id = league_data.get("avatar")
+
+    league.save()
+
+    return league
+
+
+def delete_old_leagues(league_settings: List[LeagueSetting], dry_run=True):
     leagues_to_delete = League.objects.exclude(sleeper_id__in=[l.id for l in league_settings])
     if dry_run:
         print("DRY RUN - Would delete the following Leagues:")
@@ -165,7 +190,7 @@ def guess_level(name):
         return 1
     elif "ConfL" in name or "Conference" in name:
         return 3
-    elif "Divisionsliga" in name:
+    elif "DivL" in name or "Divisionsliga" in name:
         return 4
     elif "RL" in name or "Regionalliga" in name:
         return 5
@@ -273,32 +298,27 @@ def update_everything():
     update_drafts()
 
 
-def update_leagues(delete_old=False):
-    league_settings = get_league_settings()
-    for league in league_settings:
-        print("Updating League {league}".format(league=league.name))
-        league_data = get_league_data(league.id)
+def update_leagues():
+    for league in League.objects.get_active():
+        print("Updating League {league}".format(league=league.sleeper_name))
         try:
+            league_data = get_league_data(league.sleeper_id)
             update_league(league, league_data)
+            
+            dst_player_data = get_dst_player_data(league.sleeper_id)
+            update_dst_players_for_league(league.sleeper_id, dst_player_data)
 
-            dst_player_data = get_dst_player_data(league.id)
-            update_dst_players_for_league(league.id, dst_player_data)
-
-            roster_data = get_roster_data(league.id)
-            update_rosters_for_league(league.id, roster_data, dst_player_data)
+            roster_data = get_roster_data(league.sleeper_id)
+            update_rosters_for_league(league.sleeper_id, roster_data, dst_player_data)
 
         except AttributeError as e:
-            print(league.id, league_data.response)
-
-    if delete_old:
-        print("Deleting old leagues")
-        delete_old_leagues(league_settings, dry_run=False)
+            print(league.id, e)
 
 
 def update_drafts():
-    for league in get_league_settings():
-        drafts_data = get_draft_data(league.id)
-        drafts = update_drafts_for_league(league.id, drafts_data)
+    for league in League.objects.get_active():
+        drafts_data = get_draft_data(league.sleeper_id)
+        drafts = update_drafts_for_league(league.sleeper_id, drafts_data)
 
         for draft in drafts:
             picks_data = get_pick_data(draft.draft_id)
@@ -354,30 +374,6 @@ def update_players():
     return players
 
 
-@dataclass
-class LeagueSetting:
-    id: str
-    name: str
-    level: int
-    conference: str
-    region: str
-
-
-def get_league_settings(filepath=settings.DEFAULT_LEAGUE_SETTINGS_PATH):
-    with open(filepath, encoding='iso-8859-1') as leagues_csv:
-        leagues_reader = csv.DictReader(leagues_csv, fieldnames=['Name der Liga', 'Ligakennung Sleeper'], delimiter=';')
-        settings = [
-            LeagueSetting(id=row.get('Ligakennung Sleeper'),
-                          name=row.get('Name der Liga'),
-                          level=guess_level(row.get('Name der Liga')),
-                          conference=guess_conference(row.get('Name der Liga')),
-                          region=guess_region(row.get('Name der Liga')))
-            for row in leagues_reader
-        ]
-
-        return settings
-
-
 def update_listener_league():
     league_data = get_league_data(LISTENER_LEAGUE_ID)
     try:
@@ -386,7 +382,7 @@ def update_listener_league():
                            level=99,
                            conference=None,
                            region=None)
-        update_league(ls, league_data)
+        update_or_create_league(ls, league_data)
         dst_player_data = get_dst_player_data(LISTENER_LEAGUE_ID)
         update_dst_players_for_league(LISTENER_LEAGUE_ID, dst_player_data)
 
@@ -411,8 +407,8 @@ def update_listener_draft():
 def update_matchups():
     week = get_current_week()
     print("Updating Matchups for week {week}".format(week=week))
-    for league in get_league_settings():
-        update_matchup_for_league(league.id, week)
+    for league in League.objects.get_active():
+        update_matchup_for_league(league.sleeper_id, week)
     print("All done!")
 
 
@@ -451,8 +447,8 @@ def update_matchup_for_league(league_id, week):
 def update_playoffs():
     week = get_current_week()
     print("Updating Playoffs")
-    for league in get_league_settings():
-        update_playoffs_for_league(league.id)
+    for league in League.objects.get_active():
+        update_playoffs_for_league(league.sleeper_id)
     print("All done!")
 
 

@@ -22,12 +22,35 @@ class Season(models.Model):
     @staticmethod
     def get_active():
         current_year = datetime.now().year
-        season, _ = Season.objects.get_or_create(active=True, defaults={
+        season, _ = Season.objects.get_or_create(active=True, year=current_year, defaults={
             'year': current_year,
             'name': 'Saison {current_year}/{next_year}'.format(current_year=current_year, next_year=current_year+1)
         })
 
         return season
+
+    @staticmethod
+    def get_active_id():
+        return Season.get_active().id
+
+    @staticmethod
+    def get_last():
+        last_year = datetime.now().year - 1
+        season, _ = Season.objects.get_or_create(active=False, defaults={
+            'year': last_year,
+            'name': 'Saison {last_year}/{current_year}'.format(last_year=last_year, current_year=last_year+1)
+        })
+
+        return season
+
+    @staticmethod
+    def get_last_id():
+        return Season.get_last().id
+
+
+class LeagueManager(models.Manager):
+    def get_active(self):
+        return self.filter(season__active=True)
 
 
 class League(models.Model):
@@ -45,6 +68,10 @@ class League(models.Model):
         (LISTENER, 'Hörerliga'),
     ]
 
+    objects = LeagueManager()
+
+    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+
     type = models.IntegerField(choices=TYPES, default=BUNDESLIGA)
     level = models.IntegerField(default=0)
     conference = models.CharField(max_length=30, null=True)
@@ -56,7 +83,6 @@ class League(models.Model):
     sport = models.CharField(max_length=30)
     settings = JSONField()
     season_type = models.CharField(max_length=30)
-    season = models.IntegerField(default=2020)
     scoring_settings = JSONField()
     roster_positions = JSONField()
     previous_league_id = models.CharField(max_length=100, null=True)
@@ -193,6 +219,8 @@ class Pick(models.Model):
 
 
 class Matchup(models.Model):
+    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+
     week = models.IntegerField(db_index=True)
     matchup_id = models.IntegerField(db_index=True)
     league_id = models.CharField(max_length=50, db_index=True)
@@ -207,6 +235,8 @@ class Matchup(models.Model):
 
 
 class PlayoffMatchup(models.Model):
+    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+
     bracket = models.CharField(max_length=20, db_index=True)
     round = models.IntegerField(db_index=True)
     matchup_id = models.IntegerField(db_index=True)
@@ -219,9 +249,10 @@ class PlayoffMatchup(models.Model):
 
 
 class StatsWeek(models.Model):
+    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+
     week = models.IntegerField(db_index=True)
     season_type = models.CharField(max_length=30)
-    season = models.IntegerField(default=2020)
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="stats")
     points = models.DecimalField(max_digits=6, decimal_places=3, default=0)
     stats = JSONField()
