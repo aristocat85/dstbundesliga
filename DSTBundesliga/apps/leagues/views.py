@@ -105,7 +105,7 @@ def my_league(request):
 
 
 def draft_stats(request, position=None):
-    drafts = Draft.objects.all()
+    drafts = Draft.objects.filter(league__season__active=True)
 
     drafts_done = drafts.filter(status='complete').count()
     drafts_running = drafts.filter(status__in=['drafting', 'paused']).count()
