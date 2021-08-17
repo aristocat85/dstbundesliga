@@ -6,7 +6,7 @@ import django_tables2 as tables
 from django_tables2.utils import A
 import pytz
 
-from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft, Player
+from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft, Player, PlayerDraftStats
 
 
 def _get_date(record):
@@ -62,13 +62,13 @@ class DraftsADPTable(tables.Table):
 
     class Meta:
         empty_text = "Es haben noch keine Drafts stattgefunden"
-        model = Player
+        model = PlayerDraftStats
         orderable = False
         fields = ['ranking', 'player', 'pos', 'adp']
 
     ranking = tables.Column(verbose_name='Platz', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
     player = tables.TemplateColumn(verbose_name='Spieler', template_name="Columns/player.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
-    pos = tables.Column(verbose_name='Position', accessor="position", attrs={"td": {"class": "position"}, "th": {"class": "position"}})
+    pos = tables.Column(verbose_name='Position', accessor="position", attrs={"td": {"class": "player_position"}, "th": {"class": "position"}})
     adp = tables.Column(verbose_name='ADP', attrs={"td": {"class": "adp"}, "th": {"class": "adp"}})
     highest_pick = tables.Column(verbose_name='Highest', attrs={"td": {"class": "highest_pick"}, "th": {"class": "highest_pick"}})
     lowest_pick = tables.Column(verbose_name='Lowest', attrs={"td": {"class": "lowest_pick"}, "th": {"class": "lowest_pick"}})

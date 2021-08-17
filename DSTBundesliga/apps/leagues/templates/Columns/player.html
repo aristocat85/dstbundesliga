@@ -1,4 +1,4 @@
 <div class="player">
-    <div class="player_name">{{ record.first_name }}&nbsp;{{ record.last_name }}, {{ record.team.abbr | default_if_none:"-" }}</div>
+    <div class="player_name">{{ record.player_name }}, {{ record.player_team | default_if_none:"-" }}</div>
 </div>
 

@@ -258,3 +258,15 @@ class StatsWeek(models.Model):
     stats = JSONField()
     projected_points = models.DecimalField(max_digits=6, decimal_places=3, default=0)
     projected_stats = JSONField()
+
+
+class PlayerDraftStats(models.Model):
+    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+    player_id = models.CharField(max_length=10, null=True)
+    player_name = models.CharField(max_length=100)
+    player_team = models.CharField(max_length=10)
+    player_position = models.CharField(max_length=10)
+    pick_count = models.IntegerField(default=0)
+    adp = models.DecimalField(max_digits=6, decimal_places=2)
+    highest_pick = models.IntegerField()
+    lowest_pick = models.IntegerField()

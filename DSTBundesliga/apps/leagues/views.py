@@ -10,7 +10,7 @@ from django.urls import reverse
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
 from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, Player, DSTPlayer, Matchup, \
-    PlayoffMatchup, Season
+    PlayoffMatchup, Season, PlayerDraftStats
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
     UpsetAndStealPickTable, PlayerStatsTable
 from DSTBundesliga.apps.services.awards_service import AwardService
@@ -112,19 +112,15 @@ def draft_stats(request, position=None):
     drafts_overall = League.objects.get_active().filter(type=League.BUNDESLIGA).count()
     drafts_done_percent = drafts_done / drafts_overall * 100
 
-    picks = Pick.objects.all()
-    players = Player.objects.annotate(adp=Avg("picks__pick_no"), pick_count=Count("picks__player__id"),
-                                      highest_pick=Min('picks__pick_no'), lowest_pick=Max('picks__pick_no'))
-
-    draft_value = ExpressionWrapper((F('picks__pick_no') - F('adp')) * 20 / F('picks__round'),
-                                    output_field=IntegerField())
+    picks = Pick.objects.filter(draft__in=drafts)
+    player_stats = PlayerDraftStats.objects.filter(season__active=True)
 
     if position:
-        players = players.filter(position=position)
+        player_stats = player_stats.filter(player_position=position)
     else:
-        players = players.filter(pick_count__gte=drafts_done * 0.5)
+        player_stats = player_stats.filter(pick_count__gte=drafts_done * 0.5)
 
-    adp_table = DraftsADPTable(players.exclude(adp=None).order_by('adp')[:200])
+    adp_table = DraftsADPTable(player_stats.order_by('adp')[:200])
 
     next_drafts_table = NextDraftsTable(
         drafts.exclude(start_time=None).exclude(start_time__lte=datetime.utcnow().replace(tzinfo=pytz.utc)).exclude(

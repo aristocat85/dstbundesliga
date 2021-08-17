@@ -11,7 +11,8 @@ from django.conf import settings
 from sleeper_wrapper import BaseApi
 
 from DSTBundesliga.apps.leagues.config import POSITIONS
-from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, PlayoffMatchup
+from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, \
+    PlayoffMatchup, Season, PlayerDraftStats
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
@@ -278,6 +279,8 @@ def update_picks_for_draft(draft_id, picks_data):
     picks = []
     for pick in picks_data:
         picks.append(update_or_create_pick(draft_id, pick))
+
+    update_player_draft_stats_from_picks(Season.get_active())
 
     return picks
 
@@ -573,6 +576,28 @@ def update_stats_for_weeks(weeks=None):
         for pos in POSITIONS:
             update_stats_for_position(pos, week)
             update_projections_for_position(pos, week)
+
+
+def update_player_draft_stats_from_picks(season: Season):
+    player_map = {}
+    for pick in Pick.objects.filter(roster__league__season=season):
+        player_stats = player_map.get(pick.player.sleeper_id, {})
+        player_stats['name'] = pick.player.first_name + pick.player.last_name
+        player_stats['team'] = pick.player.team.abbr
+        player_stats['position'] = pick.player.position
+        player_stats['picked_positions'] = player_stats.get('picked_positions', []) + [pick.pick_no]
+        player_map[pick.player.sleeper_id] = player_stats
+
+    for player_id, player_stats in player_map.items():
+        PlayerDraftStats.objects.update_or_create(season=season, player_id=player_id, defaults={
+            'player_name': player_stats['name'],
+            'player_team': player_stats['team'],
+            'player_position': player_stats['position'],
+            'pick_count': len(player_stats['picked_positions']),
+            'adp': sum(player_stats['picked_positions']) / len(player_stats['picked_positions']),
+            'highest_pick': min(player_stats['picked_positions']),
+            'lowest_pick': max(player_stats['picked_positions'])
+        })
 
 
 class StatsService(BaseApi):
