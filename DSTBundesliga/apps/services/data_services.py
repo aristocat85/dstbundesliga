@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import List
-
 from attr import dataclass
-from django.db.models import Count, Avg
 from pytz import timezone
 
-import sleeper_wrapper
-
+from django.db import models
+from django.db.models import Count, Avg
 from django.conf import settings
+
+import sleeper_wrapper
 from sleeper_wrapper import BaseApi
 
 from DSTBundesliga.apps.leagues.config import POSITIONS
@@ -269,7 +269,7 @@ def update_or_create_pick(draft_id, pick_data):
     except Roster.DoesNotExist as e:
         print("Draft: ", draft_id, "Roster: ", pick_data.get('roster_id'), "Picked by: ", pick_data.get('picked_by'))
 
-    except Pick.MultipleObjectsReturned as e:
+    except models.MultipleObjectsReturned as e:
         print("Draft: ", draft_id, "Roster: ", pick_data.get('roster_id'), "Picked by: ", pick_data.get('picked_by'))
         raise e
 
