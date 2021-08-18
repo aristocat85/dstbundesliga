@@ -127,27 +127,25 @@ def draft_stats(request, position=None):
             status__in=['complete', 'drafting', 'paused']).order_by('start_time', 'league__level',
                                                                     'league__sleeper_name')[:10])
 
-    adp_diff = ExpressionWrapper((F('pick_no') - F('adp')) * 20 / F('round'), output_field=IntegerField())
-    upset_and_value_picks = picks.annotate(adp=Avg('player__picks__pick_no'), pick_count=Count('player__id')).filter(
-        pick_count__gte=drafts_done * 0.8).annotate(adp_diff=adp_diff)
+    upset_and_value_picks = player_stats.filter(pick_count__gte=drafts_done * 0.8).annotate(
+        upset_value=ExpressionWrapper(F('adp') - F('highest_pick'), output_field=IntegerField()),
+        steal_value=ExpressionWrapper(F('lowest_pick') - F('adp'), output_field=IntegerField()))
 
-    upset_players = []
     upset_picks = []
-    for pick in upset_and_value_picks.order_by('adp_diff'):
-        if pick.player not in upset_players:
-            upset_picks.append(pick)
+    for upset_pick in upset_and_value_picks.order_by('upset_value'):
+        pick = picks.filter(player__id=upset_pick.player_id, pick_no=upset_pick.highest_pick).annotate(
+            adp=upset_pick.adp).first()
+        upset_picks.append(pick)
 
-        upset_players.append(pick.player)
         if len(upset_picks) >= 5:
             break
 
-    steal_players = []
     steal_picks = []
-    for pick in upset_and_value_picks.order_by('-adp_diff'):
-        if pick.player not in steal_players:
-            steal_picks.append(pick)
+    for steal_pick in upset_and_value_picks.order_by('steal_value'):
+        pick = picks.filter(player__id=steal_pick.player_id, pick_no=steal_pick.lowest_pick).annotate(
+            adp=steal_pick.adp).first()
+        steal_picks.append(pick)
 
-        steal_players.append(pick.player)
         if len(steal_picks) >= 5:
             break
 
@@ -249,14 +247,15 @@ def playoffs(request, league_id):
     bracket_names = ["Playoffs", "Toilet Bowl"]
     brackets = [{
         "bracket": bracket,
-        "rounds":  [
+        "rounds": [
             {
                 "round": round,
                 "matchups": [
                     {
                         "roster_one": league.rosters.get(
                             roster_id=matchup.roster_id_one) if matchup.roster_id_one else None,
-                        "roster_two": league.rosters.get(roster_id=matchup.roster_id_two) if matchup.roster_id_two else None
+                        "roster_two": league.rosters.get(
+                            roster_id=matchup.roster_id_two) if matchup.roster_id_two else None
                     } for matchup in playoff_matchups.filter(round=round, bracket=bracket)]
             } for round in sorted(playoff_matchups.filter(bracket=bracket).values_list('round', flat=True).distinct())
         ]
@@ -433,4 +432,3 @@ class StatService():
             return values[int(round(count / 2))]
         else:
             return sum(values[int(count / 2 - 1):int(count / 2 + 1)]) / Decimal(2.0)
-
