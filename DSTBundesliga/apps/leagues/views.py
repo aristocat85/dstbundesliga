@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import django_tables2 as tables
 import pytz
-from django.db.models import Avg, ExpressionWrapper, F, IntegerField, Sum, Count, Min, Max, Window
+from django.db.models import Avg, ExpressionWrapper, F, IntegerField, Sum, Count, Min, Max, Window, Value
 from django.db.models.functions import RowNumber
 from django.shortcuts import render
 from django.urls import reverse
@@ -127,14 +127,14 @@ def draft_stats(request, position=None):
             status__in=['complete', 'drafting', 'paused']).order_by('start_time', 'league__level',
                                                                     'league__sleeper_name')[:10])
 
-    upset_and_value_picks = player_stats.filter(pick_count__gte=drafts_done * 0.8).annotate(
+    upset_and_value_picks = player_stats.filter(pick_count__gte=drafts_done * 0.2).annotate(
         upset_value=ExpressionWrapper(F('adp') - F('highest_pick'), output_field=IntegerField()),
         steal_value=ExpressionWrapper(F('lowest_pick') - F('adp'), output_field=IntegerField()))
 
     upset_picks = []
     for upset_pick in upset_and_value_picks.order_by('upset_value'):
-        pick = picks.filter(player__id=upset_pick.player_id, pick_no=upset_pick.highest_pick).annotate(
-            adp=upset_pick.adp).first()
+        pick = picks.filter(player__sleeper_id=upset_pick.player_id, pick_no=upset_pick.highest_pick).annotate(
+            adp=ExpressionWrapper(Value(float(upset_pick.adp)), output_field=IntegerField())).first()
         upset_picks.append(pick)
 
         if len(upset_picks) >= 5:
@@ -142,8 +142,8 @@ def draft_stats(request, position=None):
 
     steal_picks = []
     for steal_pick in upset_and_value_picks.order_by('steal_value'):
-        pick = picks.filter(player__id=steal_pick.player_id, pick_no=steal_pick.lowest_pick).annotate(
-            adp=steal_pick.adp).first()
+        pick = picks.filter(player__sleeper_id=steal_pick.player_id, pick_no=steal_pick.lowest_pick).annotate(
+            adp=ExpressionWrapper(Value(float(steal_pick.adp)), output_field=IntegerField())).first()
         steal_picks.append(pick)
 
         if len(steal_picks) >= 5:
