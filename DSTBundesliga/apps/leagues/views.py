@@ -127,7 +127,7 @@ def draft_stats(request, position=None):
             status__in=['complete', 'drafting', 'paused']).order_by('start_time', 'league__level',
                                                                     'league__sleeper_name')[:10])
 
-    upset_and_value_picks = player_stats.filter(pick_count__gte=drafts_done * 0.2).annotate(
+    upset_and_value_picks = player_stats.filter(pick_count__gte=drafts_done * 0.8).annotate(
         upset_value=ExpressionWrapper(F('adp') - F('highest_pick'), output_field=IntegerField()),
         steal_value=ExpressionWrapper(F('lowest_pick') - F('adp'), output_field=IntegerField()))
 
