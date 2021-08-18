@@ -250,14 +250,16 @@ def update_drafts_for_league(league_id, drafts_data):
 
 def update_or_create_pick(draft_id, pick_data):
     try:
+        draft = Draft.objects.get(draft_id=draft_id)
         pick, _ = Pick.objects.update_or_create(
-            draft=Draft.objects.get(draft_id=draft_id),
+            draft=draft,
             pick_no=pick_data.get('pick_no'),
             defaults={
                 "player": Player.objects.get(sleeper_id=pick_data.get('player_id')),
                 "owner": DSTPlayer.objects.get(sleeper_id=pick_data.get('picked_by')),
                 "roster": Roster.objects.get(roster_id=pick_data.get('roster_id'),
-                                             owner__sleeper_id=pick_data.get('picked_by')),
+                                             owner__sleeper_id=pick_data.get('picked_by'),
+                                             league=draft.league),
                 "round": pick_data.get('round', 1),
                 "draft_slot": pick_data.get('draft_slot', 1),
                 "metadata": pick_data.get('metadata', {})
@@ -268,11 +270,6 @@ def update_or_create_pick(draft_id, pick_data):
 
     except Roster.DoesNotExist as e:
         print("Draft: ", draft_id, "Roster: ", pick_data.get('roster_id'), "Picked by: ", pick_data.get('picked_by'))
-
-    except models.MultipleObjectsReturned as e:
-        print("Draft: ", draft_id, "Roster: ", pick_data.get('roster_id'), "Picked by: ", pick_data.get('picked_by'))
-        raise e
-
 
 
 def get_pick_data(draft_id):
@@ -312,7 +309,7 @@ def update_leagues():
         try:
             league_data = get_league_data(league.sleeper_id)
             update_league(league, league_data)
-            
+
             dst_player_data = get_dst_player_data(league.sleeper_id)
             update_dst_players_for_league(league.sleeper_id, dst_player_data)
 
@@ -630,6 +627,3 @@ class StatsService(BaseApi):
             "{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(
                 base_url=self._base_projections_url, season=season, season_type=season_type, position=position,
                 week=week))
-
-
-
