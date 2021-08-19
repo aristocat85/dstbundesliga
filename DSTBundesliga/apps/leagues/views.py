@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import django_tables2 as tables
 import pytz
-from django.db.models import Avg, ExpressionWrapper, F, IntegerField, Sum, Count, Min, Max, Window, Value
+from django.db.models import Avg, ExpressionWrapper, F, IntegerField, Sum, Count, Min, Max, Window, Value, FloatField
 from django.db.models.functions import RowNumber
 from django.shortcuts import render
 from django.urls import reverse
@@ -134,7 +134,7 @@ def draft_stats(request, position=None):
     upset_picks = []
     for upset_pick in upset_and_value_picks.order_by('-upset_value'):
         pick = picks.filter(player__sleeper_id=upset_pick.player_id, pick_no=upset_pick.highest_pick).annotate(
-            adp=ExpressionWrapper(Value(float(upset_pick.adp)), output_field=IntegerField())).first()
+            adp=ExpressionWrapper(Value(float(upset_pick.adp)), output_field=FloatField())).first()
         upset_picks.append(pick)
 
         if len(upset_picks) >= 5:
@@ -143,7 +143,7 @@ def draft_stats(request, position=None):
     steal_picks = []
     for steal_pick in upset_and_value_picks.order_by('-steal_value'):
         pick = picks.filter(player__sleeper_id=steal_pick.player_id, pick_no=steal_pick.lowest_pick).annotate(
-            adp=ExpressionWrapper(Value(float(steal_pick.adp)), output_field=IntegerField())).first()
+            adp=ExpressionWrapper(Value(float(steal_pick.adp)), output_field=FloatField())).first()
         steal_picks.append(pick)
 
         if len(steal_picks) >= 5:
