@@ -132,7 +132,7 @@ def draft_stats(request, position=None):
         steal_value=ExpressionWrapper(F('lowest_pick') - F('adp'), output_field=IntegerField()))
 
     upset_picks = []
-    for upset_pick in upset_and_value_picks.order_by('upset_value'):
+    for upset_pick in upset_and_value_picks.order_by('-upset_value'):
         pick = picks.filter(player__sleeper_id=upset_pick.player_id, pick_no=upset_pick.highest_pick).annotate(
             adp=ExpressionWrapper(Value(float(upset_pick.adp)), output_field=IntegerField())).first()
         upset_picks.append(pick)
@@ -141,7 +141,7 @@ def draft_stats(request, position=None):
             break
 
     steal_picks = []
-    for steal_pick in upset_and_value_picks.order_by('steal_value'):
+    for steal_pick in upset_and_value_picks.order_by('-steal_value'):
         pick = picks.filter(player__sleeper_id=steal_pick.player_id, pick_no=steal_pick.lowest_pick).annotate(
             adp=ExpressionWrapper(Value(float(steal_pick.adp)), output_field=IntegerField())).first()
         steal_picks.append(pick)
