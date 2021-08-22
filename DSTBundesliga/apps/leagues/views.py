@@ -270,8 +270,21 @@ def playoffs(request, league_id):
 
 
 def listener_league(request):
-    league = League.objects.get(sleeper_id=LISTENER_LEAGUE_ID)
+    league = League.objects.get(type=League.LISTENER, season=Season.get_active())
     title = "DST - Hörerliga"
+    table = RosterTable(Roster.objects.filter(league=league))
+    context = {}
+    context["title"] = title
+    context["table"] = table
+    context["draft_link"] = reverse('draft-board', kwargs={
+        'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
+
+    return render(request, "leagues/custom_league.html", context)
+
+
+def champions_league(request):
+    league = League.objects.get(type=League.CL, season=Season.get_active())
+    title = "Champions League"
     table = RosterTable(Roster.objects.filter(league=league))
     context = {}
     context["title"] = title

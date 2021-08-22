@@ -20,6 +20,7 @@ from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 class LeagueSetting:
     id: str
     name: str
+    type: int or None
     level: int
     conference: str or None
     region: str or None
@@ -43,6 +44,7 @@ def update_or_create_league(league_setting: LeagueSetting, league_data):
         "sleeper_name": league_data.get("name"),
         "draft_id": league_data.get("draft_id"),
         "avatar_id": league_data.get("avatar"),
+        "type": league_setting.type or League.BUNDESLIGA,
         "level": league_setting.level,
         "conference": league_setting.conference,
         "region": league_setting.region
@@ -239,8 +241,9 @@ def get_draft_data(league_id):
     return league_service.get_all_drafts()
 
 
-def update_drafts_for_league(league_id, drafts_data):
+def update_drafts_for_league(league_id):
     drafts = []
+    drafts_data = get_draft_data(league_id)
     for draft in drafts_data:
         drafts.append(update_or_create_draft(league_id, draft))
         delete_old_drafts(league_id, draft.get('draft_id'))
@@ -322,8 +325,7 @@ def update_leagues():
 
 def update_drafts():
     for league in League.objects.get_active():
-        drafts_data = get_draft_data(league.sleeper_id)
-        drafts = update_drafts_for_league(league.sleeper_id, drafts_data)
+        drafts = update_drafts_for_league(league.sleeper_id)
 
         for draft in drafts:
             picks_data = get_pick_data(draft.draft_id)
@@ -401,8 +403,7 @@ def update_listener_league():
 
 
 def update_listener_draft():
-    drafts_data = get_draft_data(LISTENER_LEAGUE_ID)
-    drafts = update_drafts_for_league(LISTENER_LEAGUE_ID, drafts_data)
+    drafts = update_drafts_for_league(LISTENER_LEAGUE_ID)
 
     for draft in drafts:
         picks_data = get_pick_data(draft.draft_id)

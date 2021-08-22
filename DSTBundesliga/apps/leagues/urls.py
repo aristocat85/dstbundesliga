@@ -11,6 +11,7 @@ urlpatterns = [
     path('conf/<str:conference>/lev/<int:level>/reg/<str:region>/', views.level_detail, name='region-detail'),
     path('my-league/', views.my_league, name='my-league'),
     path('dst-league/', views.listener_league, name='dst-league'),
+    path('champions-league/', views.champions_league, name='champions-league'),
     path('stats/draft/', views.draft_stats, name='draft-stats'),
     path('stats/draft/<str:position>/', views.draft_stats, name='draft-stats'),
     path('stats/players/', views.player_stats, name='player-stats'),
