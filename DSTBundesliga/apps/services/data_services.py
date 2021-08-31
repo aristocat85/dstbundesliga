@@ -274,6 +274,9 @@ def update_or_create_pick(draft_id, pick_data):
     except Roster.DoesNotExist as e:
         print("Draft: ", draft_id, "Roster: ", pick_data.get('roster_id'), "Picked by: ", pick_data.get('picked_by'))
 
+    except DSTPlayer.DoesNotExist as e:
+        print("Draft: ", draft_id, "Roster: ", pick_data.get('roster_id'), "Picked by: ", pick_data.get('picked_by'))
+
 
 def get_pick_data(draft_id):
     draft_service = sleeper_wrapper.Drafts(draft_id)
