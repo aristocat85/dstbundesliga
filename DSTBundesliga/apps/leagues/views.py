@@ -206,10 +206,9 @@ def player_stats(request, position=None):
     })
 
 
-def draftboard(request, league_id, players=12):
-    if league_id == LISTENER_LEAGUE_ID:
-        players = 14
+def draftboard(request, league_id):
     draft = Draft.objects.get(league__sleeper_id=league_id)
+    rosters = draft.league.total_rosters
     picks = draft.picks.order_by('round', 'draft_slot')
     picks_count = picks.count()
     fill_picks = []
@@ -217,20 +216,20 @@ def draftboard(request, league_id, players=12):
     fill_picks_at_front = True
     fill_pick_pos = picks_count
     if picks_count < 180:
-        fill_picks = range(players - (((picks_count - 1) % players) + 1))
-        fill_pick_round = int(picks_count / players) + 1
+        fill_picks = range(rosters - (((picks_count - 1) % rosters) + 1))
+        fill_pick_round = int(picks_count / rosters) + 1
         if fill_pick_round % 2 == 1:
             fill_picks_at_front = False
         else:
-            fill_pick_round = int(picks_count / players)
-            fill_pick_pos = fill_pick_round * players
+            fill_pick_round = int(picks_count / rosters)
+            fill_pick_pos = fill_pick_round * rosters
 
     owners = DSTPlayer.objects.filter(sleeper_id__in=draft.draft_order.keys())
 
     draft_order = sorted([(draft.draft_order.get(owner.sleeper_id), owner) for owner in owners], key=lambda do: do[0])
 
     return render(request, "stats/draftboard.html", {
-        "pick_width": "{:.2f}% !important".format(100 / players),
+        "pick_width": "{:.2f}% !important".format(100 / rosters),
         "draft": draft,
         "draft_order": draft_order,
         "picks": picks,
