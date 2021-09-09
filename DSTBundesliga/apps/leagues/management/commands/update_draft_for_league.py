@@ -16,9 +16,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         league_id = options['league_id']
-        drafts_data = get_draft_data(league_id)
-        drafts = update_drafts_for_league(league_id, drafts_data)
+        draft = update_drafts_for_league(league_id)
 
-        for draft in drafts:
-            picks_data = get_pick_data(draft.draft_id)
-            update_picks_for_draft(draft.draft_id, picks_data)
+        picks_data = get_pick_data(draft.draft_id)
+        update_picks_for_draft(draft.draft_id, picks_data)

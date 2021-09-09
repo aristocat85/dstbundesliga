@@ -242,13 +242,13 @@ def get_draft_data(league_id):
 
 
 def update_drafts_for_league(league_id):
-    drafts = []
     drafts_data = get_draft_data(league_id)
-    for draft in drafts_data:
-        drafts.append(update_or_create_draft(league_id, draft))
-        delete_old_drafts(league_id, draft.get('draft_id'))
 
-    return drafts
+    latest_draft_data = max(drafts_data, key=lambda d: d.get('start_time'))
+    draft = update_or_create_draft(league_id, latest_draft_data)
+    delete_old_drafts(league_id, draft.draft_id)
+
+    return draft
 
 
 def update_or_create_pick(draft_id, pick_data):
@@ -328,11 +328,10 @@ def update_leagues():
 
 def update_drafts():
     for league in League.objects.get_active():
-        drafts = update_drafts_for_league(league.sleeper_id)
+        draft = update_drafts_for_league(league.sleeper_id)
 
-        for draft in drafts:
-            picks_data = get_pick_data(draft.draft_id)
-            update_picks_for_draft(draft.draft_id, picks_data)
+        picks_data = get_pick_data(draft.draft_id)
+        update_picks_for_draft(draft.draft_id, picks_data)
 
 
 def update_or_create_player(player_id, player_data):
@@ -406,11 +405,10 @@ def update_listener_league():
 
 
 def update_listener_draft():
-    drafts = update_drafts_for_league(LISTENER_LEAGUE_ID)
+    draft = update_drafts_for_league(LISTENER_LEAGUE_ID)
 
-    for draft in drafts:
-        picks_data = get_pick_data(draft.draft_id)
-        update_picks_for_draft(draft.draft_id, picks_data)
+    picks_data = get_pick_data(draft.draft_id)
+    update_picks_for_draft(draft.draft_id, picks_data)
 
 
 def update_matchups():
