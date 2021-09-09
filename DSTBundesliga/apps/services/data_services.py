@@ -589,7 +589,7 @@ def update_player_draft_stats_from_picks(season: Season):
     for pick in Pick.objects.filter(roster__league__season=season):
         player_stats = player_map.get(pick.player.sleeper_id, {})
         player_stats['name'] = pick.player.first_name + pick.player.last_name
-        player_stats['team'] = pick.player.team.abbr
+        player_stats['team'] = pick.player.get('team', {}).get('abbr', '-')
         player_stats['position'] = pick.player.position
         player_stats['picked_positions'] = player_stats.get('picked_positions', []) + [pick.pick_no]
         player_map[pick.player.sleeper_id] = player_stats
