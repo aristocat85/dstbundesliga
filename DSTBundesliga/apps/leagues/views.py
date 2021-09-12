@@ -36,7 +36,7 @@ def roster_list(request, league_id):
 
 
 def level_detail(request, level=None, conference=None, region=None, season=None):
-    league_objects = League.objects.all().order_by('sleeper_name')
+    league_objects = League.objects.all().order_by('sleeper_id')
     header_logo = None
 
     if season:
@@ -105,7 +105,7 @@ def my_league(request):
 
 
 def draft_stats(request, position=None):
-    drafts = Draft.objects.filter(league__season__active=True)
+    drafts = Draft.objects.filter(league__season__active=True).filter(league__type=League.BUNDESLIGA)
 
     drafts_done = drafts.filter(status='complete').count()
     drafts_running = drafts.filter(status__in=['drafting', 'paused']).count()
