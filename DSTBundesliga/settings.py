@@ -251,23 +251,24 @@ RSS_TIMESTAMP_FILE = ".rss_ts"
 LISTENER_LEAGUE_ID = "603961066644373504"
 
 SCHEDULE = {
-    1: datetime.datetime(2020, 9, 11),
-    2: datetime.datetime(2020, 9, 18),
-    3: datetime.datetime(2020, 9, 25),
-    4: datetime.datetime(2020, 10, 2),
-    5: datetime.datetime(2020, 10, 9),
-    6: datetime.datetime(2020, 10, 16),
-    7: datetime.datetime(2020, 10, 23),
-    8: datetime.datetime(2020, 10, 30),
-    9: datetime.datetime(2020, 11, 6),
-    10: datetime.datetime(2020, 11, 13),
-    11: datetime.datetime(2020, 11, 20),
-    12: datetime.datetime(2020, 11, 27),
-    13: datetime.datetime(2020, 12, 4),
-    14: datetime.datetime(2020, 12, 11),
-    15: datetime.datetime(2020, 12, 18),
-    16: datetime.datetime(2020, 12, 25),
-    17: datetime.datetime(2021, 1, 3)
+    1: datetime.datetime(2021, 9, 15),
+    2: datetime.datetime(2021, 9, 22),
+    3: datetime.datetime(2021, 9, 29),
+    4: datetime.datetime(2021, 10, 6),
+    5: datetime.datetime(2021, 10, 13),
+    6: datetime.datetime(2021, 10, 20),
+    7: datetime.datetime(2021, 10, 27),
+    8: datetime.datetime(2021, 11, 3),
+    9: datetime.datetime(2021, 11, 10),
+    10: datetime.datetime(2021, 11, 17),
+    11: datetime.datetime(2021, 11, 20),
+    12: datetime.datetime(2021, 11, 27),
+    13: datetime.datetime(2021, 12, 1),
+    14: datetime.datetime(2021, 12, 8),
+    15: datetime.datetime(2021, 12, 15),
+    16: datetime.datetime(2021, 12, 22),
+    17: datetime.datetime(2022, 1, 5),
+    18: datetime.datetime(2022, 1, 12)
 }
 
 LOGGING = {
