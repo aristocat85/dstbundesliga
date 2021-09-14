@@ -500,7 +500,7 @@ def update_stats_for_position(position, week):
     print("Updating Stats for Position {position} in week {week}".format(position=position, week=week))
 
     season_type = "regular"
-    season = "2020"
+    season = "2021"
     stats_service = StatsService()
     position_stats = stats_service.get_week_stats(season_type, season, position, week)
 
