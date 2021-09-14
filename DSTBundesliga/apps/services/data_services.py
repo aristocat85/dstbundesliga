@@ -513,7 +513,6 @@ def update_stats_for_position(position, week):
             stats, created = StatsWeek.objects.update_or_create(
                 week=week,
                 season_type=season_type,
-                season=season,
                 player=player,
                 defaults={
                     "points": points,
