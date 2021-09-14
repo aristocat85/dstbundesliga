@@ -500,7 +500,7 @@ def update_stats_for_position(position, week):
     print("Updating Stats for Position {position} in week {week}".format(position=position, week=week))
 
     season_type = "regular"
-    season = "2020"
+    season = "2021"
     stats_service = StatsService()
     position_stats = stats_service.get_week_stats(season_type, season, position, week)
 
@@ -510,10 +510,11 @@ def update_stats_for_position(position, week):
             player = Player.objects.get(sleeper_id=player_id)
             player_stats = stats.get("stats") or {}
             points = player_stats.get("pts_half_ppr") or 0
+            season_object = Season.get_active()
             stats, created = StatsWeek.objects.update_or_create(
                 week=week,
                 season_type=season_type,
-                season=season,
+                season=season_object,
                 player=player,
                 defaults={
                     "points": points,
