@@ -536,7 +536,7 @@ def update_projections_for_position(position, week):
     print("Updating Projections for Position {position} in week {week}".format(position=position, week=week))
 
     season_type = "regular"
-    season = "2020"
+    season = "2021"
     stats_service = StatsService()
     position_stats = stats_service.get_week_projections(season_type, season, position, week)
 
@@ -545,11 +545,12 @@ def update_projections_for_position(position, week):
         try:
             player = Player.objects.get(sleeper_id=player_id)
             player_projected_stats = stats.get("stats") or {}
+            season_object = Season.get_active()
             projected_points = player_projected_stats.get("pts_half_ppr") or 0
             stats, created = StatsWeek.objects.update_or_create(
                 week=week,
                 season_type=season_type,
-                season=season,
+                season=season_object,
                 player=player,
                 defaults={
                     "projected_points": projected_points,
