@@ -510,9 +510,11 @@ def update_stats_for_position(position, week):
             player = Player.objects.get(sleeper_id=player_id)
             player_stats = stats.get("stats") or {}
             points = player_stats.get("pts_half_ppr") or 0
+            season_object = Season.get_active()
             stats, created = StatsWeek.objects.update_or_create(
                 week=week,
                 season_type=season_type,
+                season=season_object,
                 player=player,
                 defaults={
                     "points": points,
