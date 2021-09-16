@@ -9,7 +9,7 @@ from DSTBundesliga.apps.leagues.models import Matchup, Roster, League, Season
 
 class AwardService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA))
+        matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id'))
 
         if week:
             matchups = matchups.filter(week=week)
@@ -158,7 +158,7 @@ class AwardService():
         return CFFCvsAFFCAward(context)
 
     def get_buli_leader(self):
-        leader = Roster.objects.filter(league_season=Season.get_active(), league__level=1).first()
+        leader = Roster.objects.filter(league__season=Season.get_active(), league__level=1).first()
 
         context = {
             'roster': leader,
@@ -169,7 +169,7 @@ class AwardService():
         return BuliLeader(context)
 
     def get_cffc_leader(self):
-        leader = Roster.objects.filter(league_season=Season.get_active(), league__conference='CFFC').first()
+        leader = Roster.objects.filter(league__season=Season.get_active(), league__conference='CFFC').first()
 
         context = {
             'roster': leader,
@@ -180,7 +180,7 @@ class AwardService():
         return CFFCLeader(context)
 
     def get_affc_leader(self):
-        leader = Roster.objects.filter(league_season=Season.get_active(), league__conference='AFFC').first()
+        leader = Roster.objects.filter(league__season=Season.get_active(), league__conference='AFFC').first()
 
         context = {
             'roster': leader,

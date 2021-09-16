@@ -338,7 +338,7 @@ def some_quali(request):
 
 
 def facts_and_figures(request):
-    week = Matchup.objects.filter(season=Season.get_active()).aggregate(Max('week')).get('week__max')
+    week = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id')).aggregate(Max('week')).get('week__max')
     awards_service = AwardService(week)
     stat_service = StatService(week)
     stats = stat_service.get_all()
@@ -353,7 +353,7 @@ def facts_and_figures(request):
 
 def facts_and_figures_for_league(request, league_id, week=None):
     if not week:
-        week = Matchup.objects.filter(season=Season.get_active()).aggregate(Max('week')).get('week__max')
+        week = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id')).aggregate(Max('week')).get('week__max')
     awards_service = AwardService(week, league_id)
     stat_service = StatService(week, league_id)
     stats = stat_service.get_all_for_league()
@@ -370,7 +370,7 @@ def facts_and_figures_for_league(request, league_id, week=None):
 
 class StatService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA))
+        matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id'))
 
         if week:
             matchups = matchups.filter(week=week)

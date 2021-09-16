@@ -15,7 +15,7 @@ from DSTBundesliga.apps.services.awards_service import AwardService
 
 
 def home(request):
-    week = Matchup.objects.all().aggregate(Max('week')).get('week__max')
+    week = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id')).aggregate(Max('week')).get('week__max')
     awards_service = AwardService(week)
     awards = awards_service.get_random(4)
     news = News.objects.all().order_by('-date')[:3]
