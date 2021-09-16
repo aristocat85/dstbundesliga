@@ -371,14 +371,14 @@ def facts_and_figures_for_league(request, league_id, week=None):
 
 class StatService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.exclude(league_id=LISTENER_LEAGUE_ID)
+        matchups = Matchup.objects.filter(season=Season.get_active()).exclude(league_id=LISTENER_LEAGUE_ID)
 
         if week:
             matchups = matchups.filter(week=week)
 
         self.matchups = matchups
         self.league_id = league_id
-        self.rosters = Roster.objects.exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
+        self.rosters = Roster.objects.filter(league__season=Season.get_active()).exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
 
     def get_all_for_league(self):
         return [
