@@ -248,8 +248,6 @@ RSS_FEED = "https://anchor.fm/s/1ce78cc4/podcast/rss"
 PODCAST_NEWS_LOGO = "podcast.jpg"
 RSS_TIMESTAMP_FILE = ".rss_ts"
 
-LISTENER_LEAGUE_ID = "603961066644373504"
-
 SCHEDULE = {
     1: datetime.datetime(2021, 9, 15),
     2: datetime.datetime(2021, 9, 22),

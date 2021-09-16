@@ -14,7 +14,6 @@ from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, Playe
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
     UpsetAndStealPickTable, PlayerStatsTable
 from DSTBundesliga.apps.services.awards_service import AwardService
-from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
 class LeagueView(tables.SingleTableView):
@@ -296,7 +295,7 @@ def champions_league(request):
 
 def cl_quali(request):
     context = {}
-    cl_quali_rosters = Roster.objects.exclude(league_id=LISTENER_LEAGUE_ID).order_by("-fpts", "-fpts_decimal")
+    cl_quali_rosters = Roster.objects.filter(league__type=League.BUNDESLIGA).order_by("-fpts", "-fpts_decimal")
     top12_rosters = cl_quali_rosters[:12]
     in_the_hunt_rosters = cl_quali_rosters[12:100]
 
@@ -371,14 +370,14 @@ def facts_and_figures_for_league(request, league_id, week=None):
 
 class StatService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.filter(season=Season.get_active()).exclude(league_id=LISTENER_LEAGUE_ID)
+        matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA))
 
         if week:
             matchups = matchups.filter(week=week)
 
         self.matchups = matchups
         self.league_id = league_id
-        self.rosters = Roster.objects.filter(league__season=Season.get_active()).exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
+        self.rosters = Roster.objects.filter(league__season=Season.get_active(), league__type=League.BUNDESLIGA)
 
     def get_all_for_league(self):
         return [

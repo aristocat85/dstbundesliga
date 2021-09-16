@@ -13,7 +13,6 @@ from sleeper_wrapper import BaseApi
 from DSTBundesliga.apps.leagues.config import POSITIONS
 from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, \
     PlayoffMatchup, Season, PlayerDraftStats
-from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
 @dataclass
@@ -384,28 +383,30 @@ def update_players():
 
 
 def update_listener_league():
-    league_data = get_league_data(LISTENER_LEAGUE_ID)
+    listener_league_id = League.objects.get_active().get(type=League.LISTENER).sleeper_id
+    league_data = get_league_data(listener_league_id)
     try:
-        ls = LeagueSetting(id=LISTENER_LEAGUE_ID,
+        ls = LeagueSetting(id=listener_league_id,
                            name="DST Hörerliga",
                            level=99,
                            conference=None,
                            region=None)
         update_or_create_league(ls, league_data)
-        dst_player_data = get_dst_player_data(LISTENER_LEAGUE_ID)
-        update_dst_players_for_league(LISTENER_LEAGUE_ID, dst_player_data)
+        dst_player_data = get_dst_player_data(listener_league_id)
+        update_dst_players_for_league(listener_league_id, dst_player_data)
 
-        roster_data = get_roster_data(LISTENER_LEAGUE_ID)
-        update_rosters_for_league(LISTENER_LEAGUE_ID, roster_data, dst_player_data)
+        roster_data = get_roster_data(listener_league_id)
+        update_rosters_for_league(listener_league_id, roster_data, dst_player_data)
 
         week = get_current_week()
-        update_matchup_for_league(LISTENER_LEAGUE_ID, week)
+        update_matchup_for_league(listener_league_id, week)
     except AttributeError as e:
-        print(LISTENER_LEAGUE_ID, league_data.response)
+        print(listener_league_id, league_data.response)
 
 
 def update_listener_draft():
-    draft = update_drafts_for_league(LISTENER_LEAGUE_ID)
+    listener_league_id = League.objects.get_active().get(type=League.LISTENER).sleeper_id
+    draft = update_drafts_for_league(listener_league_id)
 
     picks_data = get_pick_data(draft.draft_id)
     update_picks_for_draft(draft.draft_id, picks_data)

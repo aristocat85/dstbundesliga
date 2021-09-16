@@ -5,12 +5,11 @@ from django.db.models import F, Sum
 from django.template.loader import get_template, select_template
 
 from DSTBundesliga.apps.leagues.models import Matchup, Roster, League, Season
-from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
 class AwardService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.filter(season=Season.get_active()).exclude(league_id=LISTENER_LEAGUE_ID)
+        matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA))
 
         if week:
             matchups = matchups.filter(week=week)
@@ -20,7 +19,7 @@ class AwardService():
 
         self.matchups = matchups
         self.narrow_matchups = matchups.annotate(point_difference=Abs(F('points_one') - F('points_two')))
-        self.rosters = Roster.objects.filter(league__season=Season.get_active()).exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
+        self.rosters = Roster.objects.filter(league__season=Season.get_active(), league__type=League.BUNDESLIGA)
 
     def get_all(self):
         return [
