@@ -4,13 +4,13 @@ from django.db.models.functions import Abs
 from django.db.models import F, Sum
 from django.template.loader import get_template, select_template
 
-from DSTBundesliga.apps.leagues.models import Matchup, Roster, League
+from DSTBundesliga.apps.leagues.models import Matchup, Roster, League, Season
 from DSTBundesliga.settings import LISTENER_LEAGUE_ID
 
 
 class AwardService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.exclude(league_id=LISTENER_LEAGUE_ID)
+        matchups = Matchup.objects.filter(season=Season.get_active()).exclude(league_id=LISTENER_LEAGUE_ID)
 
         if week:
             matchups = matchups.filter(week=week)
@@ -20,7 +20,7 @@ class AwardService():
 
         self.matchups = matchups
         self.narrow_matchups = matchups.annotate(point_difference=Abs(F('points_one') - F('points_two')))
-        self.rosters = Roster.objects.exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
+        self.rosters = Roster.objects.filter(league__season=Season.get_active()).exclude(league__sleeper_id=LISTENER_LEAGUE_ID)
 
     def get_all(self):
         return [
@@ -159,7 +159,7 @@ class AwardService():
         return CFFCvsAFFCAward(context)
 
     def get_buli_leader(self):
-        leader = Roster.objects.filter(league__level=1).first()
+        leader = Roster.objects.filter(league_season=Season.get_active(), league__level=1).first()
 
         context = {
             'roster': leader,
@@ -170,7 +170,7 @@ class AwardService():
         return BuliLeader(context)
 
     def get_cffc_leader(self):
-        leader = Roster.objects.filter(league__conference='CFFC').first()
+        leader = Roster.objects.filter(league_season=Season.get_active(), league__conference='CFFC').first()
 
         context = {
             'roster': leader,
@@ -181,7 +181,7 @@ class AwardService():
         return CFFCLeader(context)
 
     def get_affc_leader(self):
-        leader = Roster.objects.filter(league__conference='AFFC').first()
+        leader = Roster.objects.filter(league_season=Season.get_active(), league__conference='AFFC').first()
 
         context = {
             'roster': leader,
