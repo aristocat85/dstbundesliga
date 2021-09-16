@@ -295,7 +295,7 @@ def champions_league(request):
 
 def cl_quali(request):
     context = {}
-    cl_quali_rosters = Roster.objects.filter(league__type=League.BUNDESLIGA).order_by("-fpts", "-fpts_decimal")
+    cl_quali_rosters = Roster.objects.filter(league__season=Season.get_active(), league__type=League.BUNDESLIGA).order_by("-fpts", "-fpts_decimal")
     top12_rosters = cl_quali_rosters[:12]
     in_the_hunt_rosters = cl_quali_rosters[12:100]
 
