@@ -1,4 +1,5 @@
 import random
+from datetime import datetime, timedelta
 
 from django.db.models.functions import Abs
 from django.db.models import F, Sum, Count
@@ -10,11 +11,10 @@ from DSTBundesliga.apps.leagues.models import Matchup, Roster, League, Season, W
 class AwardService():
     def __init__(self, week=None, league_id=None):
         matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id'))
-        waivers = WaiverPickup.objects.filter(season=Season.get_active())
+        waivers = WaiverPickup.objects.filter(season=Season.get_active(), changed_ts__gte=datetime.now()-timedelta(days=7))
 
         if week:
             matchups = matchups.filter(week=week)
-            waivers = waivers.filter(week=week)
 
         if league_id:
             matchups = matchups.filter(league_id=league_id)
