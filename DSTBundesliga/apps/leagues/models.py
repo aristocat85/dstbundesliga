@@ -270,3 +270,13 @@ class PlayerDraftStats(models.Model):
     adp = models.DecimalField(max_digits=6, decimal_places=2)
     highest_pick = models.IntegerField()
     lowest_pick = models.IntegerField()
+
+
+class WaiverPickup(models.Model):
+    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+    week = models.IntegerField(default=1)
+    roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, db_index=True)
+    bid = models.IntegerField(default=0)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    changed_ts = models.DateTimeField(null=True)

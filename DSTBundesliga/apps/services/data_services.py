@@ -12,7 +12,7 @@ from sleeper_wrapper import BaseApi
 
 from DSTBundesliga.apps.leagues.config import POSITIONS
 from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, \
-    PlayoffMatchup, Season, PlayerDraftStats
+    PlayoffMatchup, Season, PlayerDraftStats, WaiverPickup
 
 
 @dataclass
@@ -605,6 +605,32 @@ def update_player_draft_stats_from_picks(season: Season):
             'highest_pick': min(player_stats['picked_positions']),
             'lowest_pick': max(player_stats['picked_positions'])
         })
+
+
+def update_trades(week=None):
+    for league in League.objects.filter(season=Season.get_active()):
+        print("Updating trades for {league}.".format(league=league))
+        update_trades_for_league(league.sleeper_id, week)
+
+
+def update_trades_for_league(league_id, week=None):
+    if not week:
+        week = get_current_week()
+
+    league_service = sleeper_wrapper.League(league_id)
+    trades = league_service.get_transactions(week)
+    for trade in trades:
+        if trade.get('type') == 'waiver':
+            roster = Roster.objects.get(league__sleeper_id=league_id, roster_id=trade.get('roster_ids')[0])
+            status = trade.get('status')
+            bid = trade.get('settings', {}).get('waiver_bid', 0)
+            player = Player.objects.get(sleeper_id=next(iter(trade.get('adds'))))
+            changed_ts = datetime.fromtimestamp(trade.get('status_updated') / 1000, tz=timezone('Europe/Berlin'))
+            WaiverPickup.objects.update_or_create(season=Season.get_active(), week=week, roster=roster, player=player, defaults={
+                'status': status,
+                'bid': bid,
+                'changed_ts': changed_ts
+            })
 
 
 class StatsService(BaseApi):

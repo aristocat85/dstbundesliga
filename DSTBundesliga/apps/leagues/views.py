@@ -357,7 +357,7 @@ def facts_and_figures_for_league(request, league_id, week=None):
     awards_service = AwardService(week, league_id)
     stat_service = StatService(week, league_id)
     stats = stat_service.get_all_for_league()
-    awards = awards_service.get_all_for_league()
+    awards = [award for award in awards_service.get_all_for_league() if award]
     league = League.objects.get(sleeper_id=league_id)
 
     return render(request, "stats/facts_and_figures.html", {

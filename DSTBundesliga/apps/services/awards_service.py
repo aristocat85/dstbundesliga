@@ -1,25 +1,31 @@
 import random
 
 from django.db.models.functions import Abs
-from django.db.models import F, Sum
+from django.db.models import F, Sum, Count
 from django.template.loader import get_template, select_template
 
-from DSTBundesliga.apps.leagues.models import Matchup, Roster, League, Season
+from DSTBundesliga.apps.leagues.models import Matchup, Roster, League, Season, WaiverPickup, Player
 
 
 class AwardService():
     def __init__(self, week=None, league_id=None):
         matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id'))
+        waivers = WaiverPickup.objects.filter(season=Season.get_active())
 
         if week:
             matchups = matchups.filter(week=week)
+            waivers = waivers.filter(week=week)
 
         if league_id:
             matchups = matchups.filter(league_id=league_id)
+            waivers = waivers.filter(roster__league__sleeper_id=league_id)
 
+        self.league_id = league_id
+        self.week = week
         self.matchups = matchups
         self.narrow_matchups = matchups.annotate(point_difference=Abs(F('points_one') - F('points_two')))
         self.rosters = Roster.objects.filter(league__season=Season.get_active(), league__type=League.BUNDESLIGA)
+        self.waivers = waivers
 
     def get_all(self):
         return [
@@ -31,7 +37,9 @@ class AwardService():
             self.get_buli_leader(),
             self.get_cffc_vs_affc(),
             self.get_cffc_leader(),
-            self.get_affc_leader()
+            self.get_affc_leader(),
+            self.get_most_wanted_waiver(),
+            self.get_highest_bid_waiver()
         ]
 
     def get_all_for_league(self):
@@ -40,7 +48,9 @@ class AwardService():
             self.get_lowscorer(),
             self.get_blowout_victory(),
             self.get_narrow_victory(),
-            self.get_shootout()
+            self.get_shootout(),
+            self.get_most_wanted_waiver(),
+            self.get_highest_bid_waiver()
         ]
 
     def get_random(self, count=99):
@@ -170,6 +180,8 @@ class AwardService():
 
     def get_cffc_leader(self):
         leader = Roster.objects.filter(league__season=Season.get_active(), league__conference='CFFC').first()
+        if not leader:
+            return None
 
         context = {
             'roster': leader,
@@ -181,6 +193,8 @@ class AwardService():
 
     def get_affc_leader(self):
         leader = Roster.objects.filter(league__season=Season.get_active(), league__conference='AFFC').first()
+        if not leader:
+            return None
 
         context = {
             'roster': leader,
@@ -189,6 +203,28 @@ class AwardService():
         }
 
         return AFFCLeader(context)
+
+    def get_most_wanted_waiver(self):
+        waiver_pickup = self.waivers.values('player').annotate(target_count=Count('player')).order_by('-target_count').first()
+
+        player = Player.objects.get(id=waiver_pickup.get("player"))
+
+        context = {
+            'player': player,
+            'bid': "{bids} bids".format(bids=waiver_pickup.get("target_count"))
+        }
+
+        return WaiverMostWanted(context)
+
+    def get_highest_bid_waiver(self):
+        waiver_pickup = self.waivers.filter(status='complete').order_by('-bid').first()
+
+        context = {
+            'player': waiver_pickup.player,
+            'bid': "{bid}$".format(bid=waiver_pickup.bid)
+        }
+
+        return WaiverMostSpent(context)
 
 
 class Award():
@@ -280,4 +316,18 @@ class AFFCLeader(Award):
     template_name = "awards/player_award.html"
 
     def __init__(self, context, title="#1 AFFC", icon="🔴"):
+        super().__init__(context, title, icon)
+
+
+class WaiverMostWanted(Award):
+    template_name = "awards/waiver_award.html"
+
+    def __init__(self, context, title="#1 Waiver Target", icon="📈"):
+        super().__init__(context, title, icon)
+
+
+class WaiverMostSpent(Award):
+    template_name = "awards/waiver_award.html"
+
+    def __init__(self, context, title="#1 Waiver Spent", icon="💸"):
         super().__init__(context, title, icon)
