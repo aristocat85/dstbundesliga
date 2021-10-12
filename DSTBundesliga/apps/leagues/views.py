@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 import django_tables2 as tables
@@ -10,9 +10,9 @@ from django.urls import reverse
 
 from DSTBundesliga.apps.leagues.config import LEVEL_MAP, LOGO_MAP
 from DSTBundesliga.apps.leagues.models import League, Roster, Draft, Pick, Player, DSTPlayer, Matchup, \
-    PlayoffMatchup, Season, PlayerDraftStats
+    PlayoffMatchup, Season, PlayerDraftStats, WaiverPickup
 from DSTBundesliga.apps.leagues.tables import LeagueTable, RosterTable, DraftsADPTable, NextDraftsTable, \
-    UpsetAndStealPickTable, PlayerStatsTable
+    UpsetAndStealPickTable, PlayerStatsTable, WaiverTopBids, WaiverTopPlayers
 from DSTBundesliga.apps.services.awards_service import AwardService
 
 
@@ -366,6 +366,40 @@ def facts_and_figures_for_league(request, league_id, week=None):
         "awards": awards,
         "league_name": league.sleeper_name
     })
+
+
+def waiver_stats(request):
+    waivers = WaiverPickup.objects.filter(season=Season.get_active(), changed_ts__gte=datetime.now()-timedelta(days=7))
+    waivers = waivers.filter(status='complete').order_by('-bid')
+
+    top20_bids_table = WaiverTopBids(waivers[:20])
+
+    waiver_sums = {}
+    for w in waivers:
+        data = waiver_sums.get(w.player.id, {})
+        sum = data.get('bid_sum', 0)
+        sum += w.bid
+
+        count = data.get('bid_count', 0)
+        count += 1
+
+        avg = sum / count
+
+        waiver_sums[w.player.id] = {
+            'player': w.player,
+            'bid_sum': sum,
+            'bid_count': count,
+            'bid_avg': avg
+        }
+
+    sorted_waivers = sorted(waiver_sums.values(), key=lambda item: -item.get('bid_sum'))
+    top20_players_table = WaiverTopPlayers(sorted_waivers[:20])
+
+    context = {}
+    context["top20_bids_table"] = top20_bids_table
+    context["top20_players_table"] = top20_players_table
+
+    return render(request, "stats/waiver.html", context)
 
 
 class StatService():

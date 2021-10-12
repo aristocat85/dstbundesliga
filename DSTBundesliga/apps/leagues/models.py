@@ -280,3 +280,7 @@ class WaiverPickup(models.Model):
     bid = models.IntegerField(default=0)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     changed_ts = models.DateTimeField(null=True)
+
+    @property
+    def owner(self):
+        return self.roster.owner

@@ -21,5 +21,6 @@ urlpatterns = [
     path('stats/cl_quali/', views.cl_quali, name='cl-quali'),
     path('stats/some_quali/', views.some_quali, name='some-quali'),
     path('stats/facts_and_figures/', views.facts_and_figures, name='facts_and_figures'),
+    path('stats/waiver/', views.waiver_stats, name='waiver_stats'),
     path('playoffs/<str:league_id>/', views.playoffs, name='playoffs')
 ]

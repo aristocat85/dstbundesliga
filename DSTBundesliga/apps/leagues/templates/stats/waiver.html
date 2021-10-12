@@ -1,0 +1,35 @@
+{% extends 'tables_base.html' %}
+
+{% load render_table from django_tables2 %}
+
+
+{% block content %}
+
+
+    <div class="ui container stats-container">
+        <h1 class="ui header">Facts & Figures{% if league_name %} - {{league_name}} {% endif %}</h1>
+        <br>
+    </div>
+    <div class="ui container stats-container">
+        <div class="title-container">
+            <h2 class="title">Waiver Stats</h2>
+        </div>
+        <div class="dst-spacer dst-spacer-100">
+            <div class="ui container stat-container">
+                <div class="stats-title-container">
+                    <h2 class="stats-title">Top Waiver-Bids</h2>
+                </div>
+                {% render_table top20_bids_table %}
+            </div>
+        </div>
+        <div class="dst-spacer dst-spacer-100">
+            <div class="ui container stat-container">
+                <div class="stats-title-container">
+                    <h2 class="stats-title">Top Waiver Players</h2>
+                </div>
+                {% render_table top20_players_table %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

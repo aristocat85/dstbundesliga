@@ -6,7 +6,7 @@ import django_tables2 as tables
 from django_tables2.utils import A
 import pytz
 
-from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft, Player, PlayerDraftStats
+from DSTBundesliga.apps.leagues.models import League, Roster, Pick, Draft, Player, PlayerDraftStats, WaiverPickup
 
 
 def _get_date(record):
@@ -149,4 +149,40 @@ class UpsetAndStealPickTable(tables.Table):
         return '{:0.1f}'.format(value)
 
 
+class WaiverTopBids(tables.Table):
 
+    class Meta:
+        empty_text = "Noch kein Waiver Daten vorhanden"
+        model = WaiverPickup
+        orderable = False
+        fields = ['ranking', 'player', 'bid', 'picked_up_by', 'league']
+
+    ranking = tables.Column(verbose_name='Platz', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
+    player = tables.TemplateColumn(verbose_name='Spieler',  template_name="Columns/player_pick.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
+    bid = tables.Column(verbose_name='Bid', empty_values=(), orderable=False, attrs={"td": {"class": "bid"}, "th": {"class": "bid"}}, )
+    picked_up_by = tables.TemplateColumn(verbose_name='Team Manager', template_name="Columns/team_manager.html", empty_values=(), attrs={"td": {"class": "team-manager"}, "th": {"class": "team-manager"}})
+    league = tables.Column(verbose_name='Liga', accessor="roster__league", attrs={"td": {"class": "league"}, "th": {"class": "league"}})
+
+    def render_ranking(self):
+        self.ranking = getattr(self, 'ranking', itertools.count(start=1))
+        return next(self.ranking)
+
+
+class WaiverTopPlayers(tables.Table):
+
+    class Meta:
+        empty_text = "Noch kein Waiver Daten vorhanden"
+        fields = ['ranking', 'player', 'bid_sum', 'bid_count']
+
+    ranking = tables.Column(verbose_name='Platz', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
+    player = tables.TemplateColumn(verbose_name='Spieler', orderable=False, template_name="Columns/player_pick.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
+    bid_sum = tables.Column(verbose_name='Summe Bids', empty_values=(), orderable=False, attrs={"td": {"class": "bid_sum"}, "th": {"class": "bid_sum"}}, )
+    bid_count = tables.Column(verbose_name='Anzahl Bids', empty_values=(), orderable=False, attrs={"td": {"class": "bid_count"}, "th": {"class": "bid_count"}}, )
+    bid_avg = tables.Column(verbose_name='Average Bid', empty_values=(), orderable=False, attrs={"td": {"class": "bid_avg"}, "th": {"class": "bid_avg"}}, )
+
+    def render_ranking(self):
+        self.ranking = getattr(self, 'ranking', itertools.count(start=1))
+        return next(self.ranking)
+
+    def render_bid_avg(self, value):
+        return '{:0.1f}'.format(value)
