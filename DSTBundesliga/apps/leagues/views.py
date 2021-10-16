@@ -371,8 +371,11 @@ def facts_and_figures_for_league(request, league_id, week=None):
 def waiver_stats(request):
     waivers = WaiverPickup.objects.filter(season=Season.get_active(), changed_ts__gte=datetime.now()-timedelta(days=7))
 
+    players_for_sum = waivers.values('player').annotate(sum=Sum('bid')).order_by('-sum')[:20]
+    waivers_for_sum = waivers.filter(player__in=[w.get('player') for w in players_for_sum])
+
     waiver_sums = {}
-    for w in waivers:
+    for w in waivers_for_sum:
         data = waiver_sums.get(w.player.id, {})
         sum = data.get('bid_sum', 0)
         sum += w.bid
