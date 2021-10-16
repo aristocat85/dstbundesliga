@@ -372,7 +372,7 @@ def waiver_stats(request):
     waivers = WaiverPickup.objects.filter(season=Season.get_active(), changed_ts__gte=datetime.now()-timedelta(days=7))
 
     waivers_for_sum = waivers.values('player').annotate(sum=Sum('bid'), count=Count('player'), avg=Avg('bid'), leagues=Count('roster__league', distinct=True)).order_by('-sum')[:20]
-    players = Player.objects.filter(id__in=waivers_for_sum.values('player'))
+    players = Player.objects.filter(id__in=[w.get('player') for w in waivers_for_sum])
 
     waivers = waivers.filter(status='complete').order_by('-bid')
     waivers_for_sum_success = waivers.values('player').annotate(sum=Sum('bid'), count=Count('player'), avg=Avg('bid'))
