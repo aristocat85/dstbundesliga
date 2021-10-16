@@ -203,9 +203,6 @@ class WaiverTopPlayers(tables.Table):
     def render_bid_avg_success(self, value):
         return '{:0.1f}$'.format(value)
 
-    def render_leagues(self, value):
-        return len(list(value))
-
 
 
 

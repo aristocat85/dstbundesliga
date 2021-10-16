@@ -371,46 +371,33 @@ def facts_and_figures_for_league(request, league_id, week=None):
 def waiver_stats(request):
     waivers = WaiverPickup.objects.filter(season=Season.get_active(), changed_ts__gte=datetime.now()-timedelta(days=7))
 
-    players_for_sum = waivers.values('player').annotate(sum=Sum('bid')).order_by('-sum')[:20]
-    waivers_for_sum = waivers.filter(player__in=[w.get('player') for w in players_for_sum])
-
-    waiver_sums = {}
-    for w in waivers_for_sum:
-        data = waiver_sums.get(w.player.id, {})
-        sum = data.get('bid_sum', 0)
-        sum += w.bid
-
-        count = data.get('bid_count', 0)
-        count += 1
-
-        sum_success = data.get('bid_sum_success', 0)
-        count_success = data.get('bid_count_success', 0)
-        leagues = data.get('leagues', set())
-        leagues.add(w.roster.league)
-
-        if w.status == 'complete':
-            sum_success += w.bid
-            count_success += 1
-
-        avg = sum / count
-        avg_success = sum_success / (count_success or 1)
-
-        waiver_sums[w.player.id] = {
-            'player': w.player,
-            'bid_sum': sum,
-            'bid_count': count,
-            'bid_avg': avg,
-            'bid_sum_success': sum_success,
-            'leagues': leagues,
-            'bid_count_success': count_success,
-            'bid_avg_success': avg_success
-        }
+    waivers_for_sum = waivers.values('player').annotate(sum=Sum('bid'), count=Count('player'), avg=Avg('bid'), leagues=Count('roster__league', distinct=True)).order_by('-sum')[:20]
+    players = Player.objects.filter(id__in=waivers_for_sum.values('player'))
 
     waivers = waivers.filter(status='complete').order_by('-bid')
-    top20_bids_table = WaiverTopBids(waivers[:20])
+    waivers_for_sum_success = waivers.values('player').annotate(sum=Sum('bid'), count=Count('player'), avg=Avg('bid'))
 
-    sorted_waivers = sorted(waiver_sums.values(), key=lambda item: -item.get('bid_sum'))
-    top20_players_table = WaiverTopPlayers(sorted_waivers[:20])
+    waiver_sums = []
+    for w in waivers_for_sum:
+        player = players.get(id=w.get('player'))
+        try:
+            pickup = waivers_for_sum_success.get(player=player.id)
+        except WaiverPickup.DoesNotExist:
+            pickup = {}
+
+        waiver_sums.append({
+            'player': player,
+            'bid_sum': w.get('sum'),
+            'bid_count': w.get('count'),
+            'bid_avg': w.get('avg'),
+            'bid_sum_success': pickup.get('sum', 0),
+            'leagues': w.get('leagues'),
+            'bid_count_success': pickup.get('count', 0),
+            'bid_avg_success': pickup.get('avg', 0)
+        })
+
+    top20_players_table = WaiverTopPlayers(waiver_sums)
+    top20_bids_table = WaiverTopBids(waivers[:20])
 
     context = {}
     context["top20_bids_table"] = top20_bids_table
