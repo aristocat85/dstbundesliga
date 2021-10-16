@@ -82,7 +82,7 @@ class LeaguesMenu(Menu):
         nodes.append(NavigationNode("CL Quali", reverse('cl-quali'), counter, stats_parent))
 
         counter += 1
-        nodes.append(NavigationNode("Waiver", reverse('waiver-stats'), counter, stats_parent))
+        nodes.append(NavigationNode("Waiver", reverse('waiver_stats'), counter, stats_parent))
 
         counter += 1
         nodes.append(NavigationNode("Draft", reverse('draft-stats'), counter, stats_parent))
