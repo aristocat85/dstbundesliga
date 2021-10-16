@@ -377,6 +377,10 @@ footer ul li {
     padding-bottom: 0.5em;
 }
 
+.waiver-players-container th {
+    max-width: 6em;
+}
+
 .award-container {
     background-color: white;
     padding: 0px;

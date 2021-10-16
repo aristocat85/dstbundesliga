@@ -167,22 +167,45 @@ class WaiverTopBids(tables.Table):
         self.ranking = getattr(self, 'ranking', itertools.count(start=1))
         return next(self.ranking)
 
+    def render_bid(self, value):
+        return '{:0}$'.format(value)
+
 
 class WaiverTopPlayers(tables.Table):
 
     class Meta:
         empty_text = "Noch kein Waiver Daten vorhanden"
-        fields = ['ranking', 'player', 'bid_sum', 'bid_count']
+        fields = ['ranking', 'player', 'bid_sum', 'bid_avg', 'bid_sum_success', 'bid_avg_success', 'bid_count', 'leagues']
 
     ranking = tables.Column(verbose_name='Platz', empty_values=(), orderable=False, attrs={"td": {"class": "ranking"}, "th": {"class": "ranking"}}, )
     player = tables.TemplateColumn(verbose_name='Spieler', orderable=False, template_name="Columns/player_pick.html", empty_values=(), attrs={"td": {"class": "player"}, "th": {"class": "player"}})
-    bid_sum = tables.Column(verbose_name='Summe Bids', empty_values=(), orderable=False, attrs={"td": {"class": "bid_sum"}, "th": {"class": "bid_sum"}}, )
-    bid_count = tables.Column(verbose_name='Anzahl Bids', empty_values=(), orderable=False, attrs={"td": {"class": "bid_count"}, "th": {"class": "bid_count"}}, )
-    bid_avg = tables.Column(verbose_name='Average Bid', empty_values=(), orderable=False, attrs={"td": {"class": "bid_avg"}, "th": {"class": "bid_avg"}}, )
+
+    bid_sum = tables.Column(verbose_name='Summe $FAAB', empty_values=(), orderable=False, attrs={"td": {"class": "bid_sum"}, "th": {"class": "bid_sum"}}, )
+    bid_sum_success = tables.Column(verbose_name='Summe $FAAB (erfolgreich)', empty_values=(), orderable=False, attrs={"td": {"class": "bid_sum"}, "th": {"class": "bid_sum"}}, )
+    bid_count = tables.Column(verbose_name='#Bids insgesamt', empty_values=(), orderable=False, attrs={"td": {"class": "bid_count"}, "th": {"class": "bid_count"}}, )
+    leagues = tables.Column(verbose_name='#Beteiligte Ligen', empty_values=(), orderable=False, attrs={"td": {"class": "bid_count"}, "th": {"class": "bid_count"}}, )
+    bid_avg = tables.Column(verbose_name='Ø $FAAB', empty_values=(), orderable=False, attrs={"td": {"class": "bid_avg"}, "th": {"class": "bid_avg"}}, )
+    bid_avg_success = tables.Column(verbose_name='Ø $FAAB (erfolgreich)', empty_values=(), orderable=False, attrs={"td": {"class": "bid_avg"}, "th": {"class": "bid_avg"}}, )
 
     def render_ranking(self):
         self.ranking = getattr(self, 'ranking', itertools.count(start=1))
         return next(self.ranking)
 
+    def render_bid_sum(self, value):
+        return '{:0}$'.format(value)
+
+    def render_bid_sum_success(self, value):
+        return '{:0}$'.format(value)
+
     def render_bid_avg(self, value):
-        return '{:0.1f}'.format(value)
+        return '{:0.1f}$'.format(value)
+
+    def render_bid_avg_success(self, value):
+        return '{:0.1f}$'.format(value)
+
+    def render_leagues(self, value):
+        return len(list(value))
+
+
+
+

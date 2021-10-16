@@ -370,9 +370,6 @@ def facts_and_figures_for_league(request, league_id, week=None):
 
 def waiver_stats(request):
     waivers = WaiverPickup.objects.filter(season=Season.get_active(), changed_ts__gte=datetime.now()-timedelta(days=7))
-    waivers = waivers.filter(status='complete').order_by('-bid')
-
-    top20_bids_table = WaiverTopBids(waivers[:20])
 
     waiver_sums = {}
     for w in waivers:
@@ -383,14 +380,31 @@ def waiver_stats(request):
         count = data.get('bid_count', 0)
         count += 1
 
+        sum_success = data.get('bid_sum_success', 0)
+        count_success = data.get('bid_count_success', 0)
+        leagues = data.get('leagues', set())
+        leagues.add(w.roster.league)
+
+        if w.status == 'complete':
+            sum_success += w.bid
+            count_success += 1
+
         avg = sum / count
+        avg_success = sum_success / (count_success or 1)
 
         waiver_sums[w.player.id] = {
             'player': w.player,
             'bid_sum': sum,
             'bid_count': count,
-            'bid_avg': avg
+            'bid_avg': avg,
+            'bid_sum_success': sum_success,
+            'leagues': leagues,
+            'bid_count_success': count_success,
+            'bid_avg_success': avg_success
         }
+
+    waivers = waivers.filter(status='complete').order_by('-bid')
+    top20_bids_table = WaiverTopBids(waivers[:20])
 
     sorted_waivers = sorted(waiver_sums.values(), key=lambda item: -item.get('bid_sum'))
     top20_players_table = WaiverTopPlayers(sorted_waivers[:20])
