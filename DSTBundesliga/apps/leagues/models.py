@@ -22,6 +22,12 @@ class Season(models.Model):
     @staticmethod
     def get_active():
         current_year = datetime.now().year
+        current_month = datetime.now().month
+
+        # Season ends in Feb
+        if current_month <= 2:
+            current_year -= 1
+
         season, _ = Season.objects.get_or_create(active=True, year=current_year, defaults={
             'year': current_year,
             'name': 'Saison {current_year}/{next_year}'.format(current_year=current_year, next_year=current_year+1)
