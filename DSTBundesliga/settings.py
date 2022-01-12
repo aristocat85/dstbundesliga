@@ -265,8 +265,7 @@ SCHEDULE = {
     14: datetime.datetime(2021, 12, 8),
     15: datetime.datetime(2021, 12, 15),
     16: datetime.datetime(2021, 12, 22),
-    17: datetime.datetime(2022, 1, 2),
-    18: datetime.datetime(2022, 1, 8)
+    17: datetime.datetime(2022, 1, 2)
 }
 
 LOGGING = {
