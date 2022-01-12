@@ -28,7 +28,7 @@ class AwardService():
         self.waivers = waivers
 
     def get_all(self):
-        return [
+        awards = [
             self.get_highscorer(),
             self.get_lowscorer(),
             self.get_blowout_victory(),
@@ -37,21 +37,37 @@ class AwardService():
             self.get_buli_leader(),
             self.get_cffc_vs_affc(),
             self.get_cffc_leader(),
-            self.get_affc_leader(),
-            self.get_most_wanted_waiver(),
-            self.get_highest_bid_waiver()
+            self.get_affc_leader()
         ]
 
+        if self.waivers.count() > 0:
+            awards.extend(
+                [
+                    self.get_most_wanted_waiver(),
+                    self.get_highest_bid_waiver()
+                ]
+            )
+
+        return awards
+
     def get_all_for_league(self):
-        return [
+        awards = [
             self.get_highscorer(),
             self.get_lowscorer(),
             self.get_blowout_victory(),
             self.get_narrow_victory(),
             self.get_shootout(),
-            self.get_most_wanted_waiver(),
-            self.get_highest_bid_waiver()
         ]
+
+        if self.waivers.count() > 0:
+            awards.extend(
+                [
+                    self.get_most_wanted_waiver(),
+                    self.get_highest_bid_waiver()
+                ]
+            )
+
+        return awards
 
     def get_random(self, count=99):
         return random.sample(self.get_all(), count)
