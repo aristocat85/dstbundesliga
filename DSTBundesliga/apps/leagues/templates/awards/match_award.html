@@ -8,13 +8,13 @@
         {% endif %}
         <div class="team-manager{% if score_one < score_two %} award-loser{% endif %}">
             <div class="avatar"
-                 style="{% if cookielaw.accepted %}background-image: url('https://sleepercdn.com/avatars/thumbs/{{ roster_one.owner.avatar_id }}') ;{% endif %}width: 40px; height: 40px; flex: 0 0 40px; background-size: contain;"></div>
+                 style="{% if cookielaw.rejected %}background-image: url('https://sleepercdn.com/avatars/thumbs/{{ roster_one.owner.avatar_id }}') ;{% endif %}width: 40px; height: 40px; flex: 0 0 40px; background-size: contain;"></div>
             <div class="owner_name">{% if roster_one.owner %}{{ roster_one.owner.display_name }}{% else %}TBD{% endif %}<span class="score">{{ score_one|stringformat:".2f" }}</span></div>
 
         </div>
         <div class="team-manager{% if score_one > score_two %} award-loser{% endif %}">
             <div class="avatar"
-                 style="{% if cookielaw.accepted %}background-image: url('https://sleepercdn.com/avatars/thumbs/{{ roster_two.owner.avatar_id }}') ;{% endif %}width: 40px; height: 40px; flex: 0 0 40px; background-size: contain;"></div>
+                 style="{% if cookielaw.rejected %}background-image: url('https://sleepercdn.com/avatars/thumbs/{{ roster_two.owner.avatar_id }}') ;{% endif %}width: 40px; height: 40px; flex: 0 0 40px; background-size: contain;"></div>
             <div class="owner_name">{% if roster_two.owner %}{{ roster_two.owner.display_name }}{% else %}TBD{% endif %}<span class="score">{{ score_two|stringformat:".2f" }}</span></div>
         </div>
     </div>

@@ -75,8 +75,8 @@ class LeaguesMenu(Menu):
         nodes.append(NavigationNode("Stats", '#', counter, attr={'li_class': "stats-node"}))
         stats_parent = counter
 
-        counter += 1
-        nodes.append(NavigationNode("Facts & Figures", reverse('facts_and_figures'), counter, stats_parent))
+        #counter += 1
+        #nodes.append(NavigationNode("Facts & Figures", reverse('facts_and_figures'), counter, stats_parent))
 
         counter += 1
         nodes.append(NavigationNode("CL Quali", reverse('cl-quali'), counter, stats_parent))
