@@ -22,7 +22,7 @@
         <meta name="theme-color" content="#ffffff">
         {% render_block "css" %}
         {% block css %}
-            <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css">
+            <link rel="stylesheet" type="text/css" href="{% static 'css/semanticui_2_3_0_min.css' %}">
             <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}?id={% settings_value 'CSS_VERSION_HASH' %}">
         {% endblock %}
     </head>
@@ -135,8 +135,8 @@
         </div>
         {% render_block js %}
         {% block js %}
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.js"></script>
+        <script type="text/javascript" src="{% static 'scripts/jquery_3_1_0_min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/semanticui_2_3_0_min.js' %}"></script>
         <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
         <script>
             $(function () {

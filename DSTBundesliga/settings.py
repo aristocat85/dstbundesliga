@@ -128,6 +128,7 @@ TEMPLATES = [
                 'sekizai.context_processors.sekizai',
                 'cms.context_processors.cms_settings',
                 'django.template.context_processors.i18n',
+                'cookielaw.context_processors.cookielaw'
             ],
         },
     },

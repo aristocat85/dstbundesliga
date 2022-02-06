@@ -15,7 +15,7 @@ djangocms-style
 django-allauth
 jsonfield
 django-tables2
-django-cookie-law
+django-cookie-law==2.1.1
 django-tinymce
 sleeper-api-wrapper
 feedparser
