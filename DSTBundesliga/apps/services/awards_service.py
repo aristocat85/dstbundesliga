@@ -31,17 +31,20 @@ class AwardService():
         self.request = request
 
     def get_all(self):
-        awards = [
-            self.get_highscorer(),
-            self.get_lowscorer(),
-            self.get_blowout_victory(),
-            self.get_narrow_victory(),
-            self.get_shootout(),
-            self.get_buli_leader(),
-            self.get_cffc_vs_affc(),
-            self.get_cffc_leader(),
-            self.get_affc_leader()
-        ]
+        awards = []
+
+        if self.matchups.count() > 0:
+            awards.extend([
+                self.get_highscorer(),
+                self.get_lowscorer(),
+                self.get_blowout_victory(),
+                self.get_narrow_victory(),
+                self.get_shootout(),
+                self.get_buli_leader(),
+                self.get_cffc_vs_affc(),
+                self.get_cffc_leader(),
+                self.get_affc_leader()
+            ])
 
         if self.waivers.count() > 0:
             awards.extend(
@@ -54,13 +57,16 @@ class AwardService():
         return awards
 
     def get_all_for_league(self):
-        awards = [
-            self.get_highscorer(),
-            self.get_lowscorer(),
-            self.get_blowout_victory(),
-            self.get_narrow_victory(),
-            self.get_shootout(),
-        ]
+        awards = []
+
+        if self.matchups.count() > 0:
+            awards.extend([
+                self.get_highscorer(),
+                self.get_lowscorer(),
+                self.get_blowout_victory(),
+                self.get_narrow_victory(),
+                self.get_shootout(),
+            ])
 
         if self.waivers.count() > 0:
             awards.extend(
