@@ -26,7 +26,7 @@ class Season(models.Model):
 
     @staticmethod
     def get_active():
-        current_season = state_servive.get_state().season
+        current_season = int(state_servive.get_state().season)
 
         season, _ = Season.objects.get_or_create(active=True, year=current_season, defaults={
             'year': current_season,
