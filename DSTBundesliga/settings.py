@@ -241,7 +241,7 @@ else:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "rediss://~/.redis/sock?db=0",
+            "LOCATION": "rediss:///home/dstffbl/.redis/sock?db=0",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }
