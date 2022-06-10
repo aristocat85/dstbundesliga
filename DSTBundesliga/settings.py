@@ -215,6 +215,16 @@ if os.getenv('DEV', 0) == '1':
             'NAME': 'mydatabase',
         }
     }
+
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://0.0.0.0:6379/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
 else:
     # Database
     # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -227,6 +237,19 @@ else:
             },
         }
     }
+
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "unix://~/.redis/sock?db=0",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
+
+
+
 
 
 import hashlib

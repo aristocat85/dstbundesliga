@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "dstbundesliga"
+version = "0.1.0"
+description = ""
+authors = ["Daniel Engelhardt <daniel85engelhardt@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+python-dotenv = "^0.20.0"
+Django = "<3.2"
+django-cms = "<4.0"
+django-filer = "^2.2"
+django-sekizai = "^3.0.1"
+django-polymorphic = "^3.1.0"
+djangocms-text-ckeditor = "^5.0.1"
+djangocms-link = "^3.0.0"
+djangocms-file = "^3.0.0"
+djangocms-picture = "^4.0.0"
+djangocms-video = "^3.0.0"
+djangocms-googlemap = "^2.0.0"
+djangocms-snippet = "^3.0.0"
+djangocms-style = "^3.0.0"
+django-allauth = "^0.50.0"
+jsonfield = "^3.1.0"
+django-tables2 = "^2.4.1"
+django-cookie-law = "2.1.1"
+django-tinymce = "^3.4.0"
+sleeper-api-wrapper = "^1.0.7"
+feedparser = "^6.0.10"
+python-dateutil = "^2.8.2"
+patreon = "^0.5.0"
+loguru = "^0.6.0"
+ipython = "^8.3.0"
+django-redis = "^5.2.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

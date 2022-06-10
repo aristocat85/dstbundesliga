@@ -4,6 +4,11 @@ from django.urls import reverse
 from jsonfield import JSONField
 from datetime import datetime
 
+from DSTBundesliga.apps.services.state_service import StateService
+
+
+state_servive = StateService()
+
 
 class Season(models.Model):
     year = models.IntegerField(default=datetime.now().year)
@@ -21,16 +26,11 @@ class Season(models.Model):
 
     @staticmethod
     def get_active():
-        current_year = datetime.now().year
-        current_month = datetime.now().month
+        current_season = state_servive.get_state().season
 
-        # Season ends in Feb
-        if current_month <= 2:
-            current_year -= 1
-
-        season, _ = Season.objects.get_or_create(active=True, year=current_year, defaults={
-            'year': current_year,
-            'name': 'Saison {current_year}/{next_year}'.format(current_year=current_year, next_year=current_year+1)
+        season, _ = Season.objects.get_or_create(active=True, year=current_season, defaults={
+            'year': current_season,
+            'name': 'Saison {current_year}/{next_year}'.format(current_year=current_season, next_year=current_season+1)
         })
 
         return season
@@ -41,10 +41,10 @@ class Season(models.Model):
 
     @staticmethod
     def get_last():
-        last_year = datetime.now().year - 1
+        previous_season = state_servive.get_state().previous_season
         season, _ = Season.objects.get_or_create(active=False, defaults={
-            'year': last_year,
-            'name': 'Saison {last_year}/{current_year}'.format(last_year=last_year, current_year=last_year+1)
+            'year': previous_season,
+            'name': 'Saison {last_year}/{current_year}'.format(last_year=previous_season, current_year=previous_season+1)
         })
 
         return season

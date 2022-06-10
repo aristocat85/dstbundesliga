@@ -3,7 +3,7 @@ Getting Started
 
 Install requirements:
 ```bash
-pip install -r requirements.txt
+poetry install
 ```
 
 Create local configuration files
@@ -14,12 +14,17 @@ cp local_settings_example.py local_settings.py
 
 Perform Database Migrations
 ```bash
-python manage.py migrate
+poetry run python manage.py migrate
 ```
 
 Start Server
 ```bash
-python manage.py runserver 127.0.0.1:8000
+poetry run python manage.py runserver 127.0.0.1:8000
+```
+
+Create requirements.txt
+```bash
+poetry export -f requirements.txt --without-hashes -o /src/requirements.txt 
 ```
 
 
@@ -27,6 +32,6 @@ Testdata
 ========
 
 Testdata is provided as a fixture:
-```
-python manage.py loaddata DSTBundesliga/apps/leagues/fixtures/Season2020Testdata.json
+```bash
+poetry run python manage.py loaddata DSTBundesliga/apps/leagues/fixtures/Season2020Testdata.json
 ```

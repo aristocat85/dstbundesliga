@@ -1,11 +1,9 @@
 from datetime import datetime
 from typing import List
-from attr import dataclass
+from dataclasses import dataclass
 from pytz import timezone
 
-from django.db import models
 from django.db.models import Count, Avg
-from django.conf import settings
 
 import sleeper_wrapper
 from sleeper_wrapper import BaseApi
@@ -13,6 +11,7 @@ from sleeper_wrapper import BaseApi
 from DSTBundesliga.apps.leagues.config import POSITIONS
 from DSTBundesliga.apps.leagues.models import League, DSTPlayer, Roster, Draft, Pick, Player, Team, Matchup, StatsWeek, \
     PlayoffMatchup, Season, PlayerDraftStats, WaiverPickup
+from DSTBundesliga.apps.services.state_service import StateService
 
 
 @dataclass
@@ -488,13 +487,7 @@ def create_playoff_matchup(league_id, matchup, bracket):
 
 
 def get_current_week():
-    today = datetime.today()
-    current_week = 1
-    for key, value in settings.SCHEDULE.items():
-        if value < today:
-            current_week = key
-
-    return current_week
+    return StateService().get_state().week
 
 
 def update_stats_for_position(position, week):
@@ -658,3 +651,5 @@ class StatsService(BaseApi):
             "{base_url}/{season}/{week}?season_type={season_type}&position[]={position}&order_by=pts_half_ppr".format(
                 base_url=self._base_projections_url, season=season, season_type=season_type, position=position,
                 week=week))
+
+
