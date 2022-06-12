@@ -1,4 +1,4 @@
-{% load cms_tags sekizai_tags menu_tags static cookielaw_tags league_tags get_announcements %}
+{% load cms_tags sekizai_tags menu_tags static cookielaw_tags league_tags dstffbl_tags %}
 <html>
     <head>
         <title>{% page_attribute "page_title" %}</title>
@@ -108,6 +108,10 @@
                 {% cookielaw_banner  %}
             </div>
             <div class="content">
+                <div class="countdown-container">
+                    <h1 id="countdown">TEST</h1>
+                    <h1>Bis zur Anmeldung für die Saison {% get_current_season %}. Stay Tuned!</h1>
+                </div>
                 <div class="announcements">
                     {% get_announcements as announcements %}
                     {% for announcement in announcements %}
@@ -116,6 +120,7 @@
                         {{ announcement.content|safe }}
                     </div>
                     {% endfor %}
+
                 </div>
                 {% block content %}
                 {% endblock %}
@@ -137,6 +142,7 @@
         {% block js %}
         <script type="text/javascript" src="{% static 'scripts/jquery_3_1_0_min.js' %}"></script>
         <script type="text/javascript" src="{% static 'scripts/semanticui_2_3_0_min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'scripts/moment.min.js' %}"></script>
         <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
         <script>
             $(function () {
@@ -247,6 +253,41 @@
                 });
             });
         </script>
+        {% if not is_registration_open %}
+            <script>
+                // Set the date we're counting down to
+                const countDownDate = moment("{% get_registration_starts %}", 'YYYY-MM-DD', 'de').toDate().getTime();
+                const countdownEl = document.getElementById("countdown");
+
+                function updateCountdown() {
+
+                    // Get today's date and time
+                    let now = new Date().getTime();
+
+                    // Find the distance between now and the count down date
+                    let distance = countDownDate - now;
+
+                    // Time calculations for days, hours, minutes and seconds
+                    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    // Display the result in the element with id="demo"
+                    countdownEl.innerHTML = days + "d " + hours + "h "
+                        + minutes + "m " + seconds + "s ";
+
+                    // If the count down is finished, write some text
+                    if (distance < 0) {
+                        clearInterval(x);
+                        countdownEl.innerHTML = "";
+                    }
+                }
+                // Update the count down every 1 second
+                let x = setInterval(updateCountdown, 1000);
+                updateCountdown();
+            </script>
+        {% endif %}
         {% endblock %}
     </body>
 </html>

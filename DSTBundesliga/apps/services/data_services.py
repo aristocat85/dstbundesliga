@@ -487,14 +487,14 @@ def create_playoff_matchup(league_id, matchup, bracket):
 
 
 def get_current_week():
-    return StateService().get_state().week
+    return StateService().get_current_week()
 
 
 def update_stats_for_position(position, week):
     print("Updating Stats for Position {position} in week {week}".format(position=position, week=week))
 
     season_type = "regular"
-    season = "2021"
+    season = StateService().get_season()
     stats_service = StatsService()
     position_stats = stats_service.get_week_stats(season_type, season, position, week)
 
@@ -530,7 +530,7 @@ def update_projections_for_position(position, week):
     print("Updating Projections for Position {position} in week {week}".format(position=position, week=week))
 
     season_type = "regular"
-    season = "2021"
+    season = StateService().get_season()
     stats_service = StatsService()
     position_stats = stats_service.get_week_projections(season_type, season, position, week)
 

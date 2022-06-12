@@ -1,5 +1,10 @@
+import logging
 import datetime
+
+from loguru import logger
 from smtplib import SMTPException
+from tinymce.models import HTMLField
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -7,13 +12,10 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 
-from tinymce.models import HTMLField
-from loguru import logger
-from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-
 from DSTBundesliga.apps.leagues.models import Season, DSTPlayer, League
+from DSTBundesliga.apps.services.state_service import StateService
 
-import logging
+state_service = StateService()
 
 
 class SeasonUser(models.Model):
@@ -33,7 +35,9 @@ class SeasonUser(models.Model):
     new_player = models.BooleanField(default=False)
     last_years_league = models.ForeignKey(League, null=True, on_delete=models.SET_NULL)
     possible_commish = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
     registration_ts = models.DateTimeField(auto_now_add=True)
+    confirm_ts = models.DateTimeField(auto_now_add=True)
 
     def email(self):
         return self.user.email
@@ -45,7 +49,7 @@ class SeasonInvitation(models.Model):
     EMAIL_TEXT = ''''
     Hallo {sleeper_name},
     
-    wir freuen uns sehr, dass du dich für die Saison 2021 der Down, Set, Talk! Fantasy Football Bundesliga angemeldet hast. Jetzt dürfen wir dich in deine Liga einladen.
+    wir freuen uns sehr, dass du dich für die Saison {season} der Down, Set, Talk! Fantasy Football Bundesliga angemeldet hast. Jetzt dürfen wir dich in deine Liga einladen.
     
     Du wirst in der <b>{league_name}</b> spielen.
     In deine Liga kommst du über diesen Link: {league_link}
@@ -62,7 +66,7 @@ class SeasonInvitation(models.Model):
     EMAIL_HTML = '''
     <p>Hallo {sleeper_name},</p>
     
-    <p>wir freuen uns sehr, dass du dich für die Saison 2021 der Down, Set, Talk! Fantasy Football Bundesliga angemeldet hast. Jetzt dürfen wir dich in deine Liga einladen.</p>
+    <p>wir freuen uns sehr, dass du dich für die Saison {season} der Down, Set, Talk! Fantasy Football Bundesliga angemeldet hast. Jetzt dürfen wir dich in deine Liga einladen.</p>
     
     <p>Du wirst in der <b>{league_name}</b> spielen.
     In deine Liga kommst du über diesen Link: <a href="{league_link}">{league_link}</a></p>
@@ -90,11 +94,15 @@ class SeasonInvitation(models.Model):
         return self.EMAIL_SUBJECT.format(current_season=Season.get_active())
 
     def get_email_text(self):
-        return self.EMAIL_TEXT.format(sleeper_name=self.sleeper_username, league_name=self.sleeper_league_name,
+        return self.EMAIL_TEXT.format(season=state_service.get_season(),
+                                      sleeper_name=self.sleeper_username,
+                                      league_name=self.sleeper_league_name,
                                       league_link=self.sleeper_league_link)
 
     def get_email_html(self):
-        return self.EMAIL_HTML.format(sleeper_name=self.sleeper_username, league_name=self.sleeper_league_name,
+        return self.EMAIL_HTML.format(season=state_service.get_season(),
+                                      sleeper_name=self.sleeper_username,
+                                      league_name=self.sleeper_league_name,
                                       league_link=self.sleeper_league_link)
 
     def get_email_to(self):

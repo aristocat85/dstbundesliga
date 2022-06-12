@@ -17,6 +17,11 @@ Perform Database Migrations
 poetry run python manage.py migrate
 ```
 
+Run Redis
+```bash
+docker run --name=redis --publish=6379:6379 --hostname=redis --restart=on-failure --detach redis:latest
+```
+
 Start Server
 ```bash
 poetry run python manage.py runserver 127.0.0.1:8000

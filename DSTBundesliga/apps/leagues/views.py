@@ -3,6 +3,7 @@ from decimal import Decimal
 
 import django_tables2 as tables
 import pytz
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg, ExpressionWrapper, F, IntegerField, Sum, Count, Min, Max, Window, Value, FloatField
 from django.db.models.functions import RowNumber
 from django.shortcuts import render
@@ -109,7 +110,7 @@ def draft_stats(request, position=None):
     drafts_done = drafts.filter(status='complete').count()
     drafts_running = drafts.filter(status__in=['drafting', 'paused']).count()
     drafts_overall = League.objects.get_active().filter(type=League.BUNDESLIGA).count()
-    drafts_done_percent = drafts_done / drafts_overall * 100
+    drafts_done_percent = drafts_done / max(drafts_overall, 1) * 100
 
     picks = Pick.objects.filter(draft__in=drafts)
     player_stats = PlayerDraftStats.objects.filter(season__active=True)
@@ -268,34 +269,49 @@ def playoffs(request, league_id):
 
 
 def listener_league(request):
-    league = League.objects.get(type=League.LISTENER, season=Season.get_active())
     title = "DST - Hörerliga"
-    table = RosterTable(Roster.objects.filter(league=league))
+    league = None
+
     context = {}
     context["title"] = title
+
+    try:
+        league = League.objects.get(type=League.LISTENER, season=Season.get_active())
+        context["draft_link"] = reverse('draft-board', kwargs={
+            'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
+    except ObjectDoesNotExist:
+        pass
+
+    table = RosterTable(Roster.objects.filter(league=league))
     context["table"] = table
-    context["draft_link"] = reverse('draft-board', kwargs={
-        'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
 
     return render(request, "leagues/custom_league.html", context)
 
 
 def champions_league(request):
-    league = League.objects.get(type=League.CL, season=Season.get_active())
     title = "Champions League"
-    table = RosterTable(Roster.objects.filter(league=league))
+    league = None
+
     context = {}
     context["title"] = title
+
+    try:
+        league = League.objects.get(type=League.CL, season=Season.get_active())
+        context["draft_link"] = reverse('draft-board', kwargs={
+            'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
+    except ObjectDoesNotExist:
+        pass
+
+    table = RosterTable(Roster.objects.filter(league=league))
     context["table"] = table
-    context["draft_link"] = reverse('draft-board', kwargs={
-        'league_id': league.sleeper_id}) if league.draft.status != 'pre_draft' else None
 
     return render(request, "leagues/custom_league.html", context)
 
 
 def cl_quali(request):
     context = {}
-    cl_quali_rosters = Roster.objects.filter(league__season=Season.get_active(), league__type=League.BUNDESLIGA).order_by("-fpts", "-fpts_decimal")
+    cl_quali_rosters = Roster.objects.filter(league__season=Season.get_active(),
+                                             league__type=League.BUNDESLIGA).order_by("-fpts", "-fpts_decimal")
     top12_rosters = cl_quali_rosters[:12]
     in_the_hunt_rosters = cl_quali_rosters[12:100]
 
@@ -338,7 +354,9 @@ def some_quali(request):
 
 
 def facts_and_figures(request):
-    week = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id')).aggregate(Max('week')).get('week__max')
+    week = Matchup.objects.filter(season=Season.get_active(),
+                                  league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list(
+                                      'sleeper_id')).aggregate(Max('week')).get('week__max')
     awards_service = AwardService(request, week)
     stat_service = StatService(week)
     stats = stat_service.get_all()
@@ -353,7 +371,9 @@ def facts_and_figures(request):
 
 def facts_and_figures_for_league(request, league_id, week=None):
     if not week:
-        week = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id')).aggregate(Max('week')).get('week__max')
+        week = Matchup.objects.filter(season=Season.get_active(),
+                                      league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list(
+                                          'sleeper_id')).aggregate(Max('week')).get('week__max')
     awards_service = AwardService(request, week, league_id)
     stat_service = StatService(week, league_id)
     stats = stat_service.get_all_for_league()
@@ -369,9 +389,12 @@ def facts_and_figures_for_league(request, league_id, week=None):
 
 
 def waiver_stats(request):
-    waivers = WaiverPickup.objects.filter(season=Season.get_active(), changed_ts__gte=datetime.now()-timedelta(days=7))
+    waivers = WaiverPickup.objects.filter(season=Season.get_active(),
+                                          changed_ts__gte=datetime.now() - timedelta(days=7))
 
-    waivers_for_sum = waivers.values('player').annotate(sum=Sum('bid'), count=Count('player'), avg=Avg('bid'), leagues=Count('roster__league', distinct=True)).order_by('-sum')[:20]
+    waivers_for_sum = waivers.values('player').annotate(sum=Sum('bid'), count=Count('player'), avg=Avg('bid'),
+                                                        leagues=Count('roster__league', distinct=True)).order_by(
+        '-sum')[:20]
     players = Player.objects.filter(id__in=[w.get('player') for w in waivers_for_sum])
 
     waivers = waivers.filter(status='complete').order_by('-bid')
@@ -408,7 +431,9 @@ def waiver_stats(request):
 
 class StatService():
     def __init__(self, week=None, league_id=None):
-        matchups = Matchup.objects.filter(season=Season.get_active(), league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list('sleeper_id'))
+        matchups = Matchup.objects.filter(season=Season.get_active(),
+                                          league_id__in=League.objects.filter(type=League.BUNDESLIGA).values_list(
+                                              'sleeper_id'))
 
         if week:
             matchups = matchups.filter(week=week)
@@ -427,10 +452,13 @@ class StatService():
         ]
 
     def get_all(self):
-        return [
-            {'title': 'Ø-Punkte/Matchup', 'value': self.avg_points()},
-            {'title': 'Ø-FAAB/Spieler', 'value': self.avg_faab()},
-        ]
+        if len(self.matchups) > 0:
+            return [
+                {'title': 'Ø-Punkte/Matchup', 'value': self.avg_points()},
+                {'title': 'Ø-FAAB/Spieler', 'value': self.avg_faab()},
+            ]
+        else:
+            return []
 
     def avg_faab(self):
         rosters = self.rosters

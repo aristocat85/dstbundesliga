@@ -262,7 +262,9 @@ def md5(fname):
 
 
 CSS_VERSION_HASH = md5(os.path.join(BASE_DIR, "staticfiles/css/base.css"))
-REGISTRATION_OPEN = os.getenv('REGISTRATION_OPEN', 0) == '1'
+REGISTRATION_STARTS = "2022-08-01"
+REGISTRATION_STOPS = "2022-08-10"
+MAX_PLAYERS = 1404
 
 DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
 
@@ -272,25 +274,6 @@ RSS_FEED = "https://anchor.fm/s/1ce78cc4/podcast/rss"
 PODCAST_NEWS_LOGO = "podcast.jpg"
 RSS_TIMESTAMP_FILE = ".rss_ts"
 
-SCHEDULE = {
-    1: datetime.datetime(2021, 9, 15),
-    2: datetime.datetime(2021, 9, 22),
-    3: datetime.datetime(2021, 9, 29),
-    4: datetime.datetime(2021, 10, 6),
-    5: datetime.datetime(2021, 10, 13),
-    6: datetime.datetime(2021, 10, 20),
-    7: datetime.datetime(2021, 10, 27),
-    8: datetime.datetime(2021, 11, 3),
-    9: datetime.datetime(2021, 11, 10),
-    10: datetime.datetime(2021, 11, 17),
-    11: datetime.datetime(2021, 11, 20),
-    12: datetime.datetime(2021, 11, 27),
-    13: datetime.datetime(2021, 12, 1),
-    14: datetime.datetime(2021, 12, 8),
-    15: datetime.datetime(2021, 12, 15),
-    16: datetime.datetime(2021, 12, 22),
-    17: datetime.datetime(2022, 1, 2)
-}
 
 LOGGING = {
     'version': 1,

@@ -942,9 +942,19 @@ button:hover {
     margin-top: 0 !important;
 }
 
+.countdown-container {
+    padding: 1em;
+    background: #000D2B !important;
+    color: white !important;
+}
 
+.countdown-container h1 {
+    text-align: center;
+}
 
-
+.countdown-container h1:first-child {
+    font-size: 3em;
+}
 
 
 

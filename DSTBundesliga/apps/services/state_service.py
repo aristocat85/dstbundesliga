@@ -1,8 +1,23 @@
-from dataclasses import dataclass
-from datetime import datetime
+import datetime
 
+from dataclasses import dataclass
+
+from django.conf import settings
 from django.core.cache import cache
 from sleeper_wrapper import BaseApi
+
+
+@dataclass
+class NflState:
+    week: int
+    season_type: str
+    season_start_date: datetime.datetime.date
+    season: str
+    previous_season: str
+    leg: int
+    league_season: str
+    league_create_season: str
+    display_week: int
 
 
 class StateService(BaseApi):
@@ -17,15 +32,11 @@ class StateService(BaseApi):
 
         return NflState(**state_data)
 
+    def get_season(self):
+        return self.get_state().season
 
-@dataclass
-class NflState:
-    week: int
-    season_type: str
-    season_start_date: datetime.date
-    season: str
-    previous_season: str
-    leg: int
-    league_season: str
-    league_create_season: str
-    display_week: int
+    def get_previous_season(self):
+        return self.get_state().previous_season
+
+    def get_current_week(self):
+        return self.get_state().week

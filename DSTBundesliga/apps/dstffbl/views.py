@@ -1,3 +1,4 @@
+import datetime
 from urllib.parse import urlencode
 
 from django.db.models import Max
@@ -76,7 +77,7 @@ def register(request):
             if not form:
                 form = RegisterForm()
 
-        if settings.REGISTRATION_OPEN:
+        if datetime.date.fromisoformat(settings.REGISTRATION_OPEN) :
             return render(request, 'dstffbl/register.html', {'form': form, 'region_choices': SeasonUser.REGIONS, 'current_season': Season.get_active(), 'season_user': season_user})
         else:
             return render(request, 'dstffbl/waiting_for_register.html')

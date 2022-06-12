@@ -26,7 +26,7 @@ class Season(models.Model):
 
     @staticmethod
     def get_active():
-        current_season = int(state_servive.get_state().season)
+        current_season = int(state_servive.get_season())
 
         season, _ = Season.objects.get_or_create(active=True, year=current_season, defaults={
             'year': current_season,
@@ -41,7 +41,7 @@ class Season(models.Model):
 
     @staticmethod
     def get_last():
-        previous_season = state_servive.get_state().previous_season
+        previous_season = state_servive.get_previous_season()
         season, _ = Season.objects.get_or_create(active=False, defaults={
             'year': previous_season,
             'name': 'Saison {last_year}/{current_year}'.format(last_year=previous_season, current_year=previous_season+1)

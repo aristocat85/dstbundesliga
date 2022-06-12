@@ -1,10 +1,9 @@
 import random
 from datetime import datetime, timedelta
 
-from django.db.models.functions import Abs
 from django.db.models import F, Sum, Count
-from django.template import RequestContext
-from django.template.loader import get_template, select_template, render_to_string
+from django.db.models.functions import Abs
+from django.template.loader import render_to_string
 
 from DSTBundesliga.apps.leagues.models import Matchup, Roster, League, Season, WaiverPickup, Player
 
