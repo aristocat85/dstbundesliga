@@ -51,7 +51,7 @@ def register(request, early_bird=False):
                 except:
                     pass
 
-                season_user, created = SeasonRegistration.objects.get_or_create(
+                season_registration, created = SeasonRegistration.objects.get_or_create(
                     user=user,
                     season=Season.get_active(),
                     defaults={
@@ -69,27 +69,28 @@ def register(request, early_bird=False):
                     "display_name": sleeper_username
                 })
 
-                season_user.dst_player = dst_player
-                season_user.save()
+                season_registration.dst_player = dst_player
+                season_registration.save()
                 if created:
-                    season_user.create_mail()
+                    season_registration.create_mail()
 
         elif request.method == 'GET':
             try:
-                season_registration = SeasonRegistration.objects.get(user=user)
+                season_registration = SeasonRegistration.objects.get(user=user, season=Season.get_active())
+                season_user = SeasonUser.objects.get(user=user, season=Season.get_active())
             except SeasonRegistration.DoesNotExist as e:
                 season_registration = None
             if not form:
                 form = RegisterForm()
 
         if is_registration_open() or early_bird:
-            if season_user:
+            if season_registration and not season_user:
                 return render(request, 'dstffbl/registration_success.html')
             else:
                 return render(request, 'dstffbl/register.html',
                               {'form': form, 'region_choices': SeasonRegistration.REGIONS,
                                'current_season': Season.get_active(),
-                               'season_registration': season_registration})
+                               'season_user': season_user})
         else:
             return render(request, 'dstffbl/waiting_for_register.html')
 
