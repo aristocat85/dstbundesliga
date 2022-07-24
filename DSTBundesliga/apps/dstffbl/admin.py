@@ -3,7 +3,7 @@ import csv
 from django.contrib import admin
 from django.http import HttpResponse
 
-from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser, SeasonInvitation
+from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser, SeasonInvitation, SeasonRegistration
 
 
 def download_season_users_csv(modeladmin, request, queryset):
@@ -19,14 +19,18 @@ def download_season_users_csv(modeladmin, request, queryset):
     response['Content-Disposition'] = 'attachment;filename=season_users.csv'
     writer = csv.writer(response)
 
-    writer.writerow(["Email", "Sleeper Username", "Sleeper ID", "Region", "Neuer Spieler", "Liga letzte Saison", "Liga letzte Saison ID", "Potentieller Komissioner", "Anmeldezeitpunkt"])
+    writer.writerow(["Email", "Sleeper Username", "Sleeper ID", "Region", "Neuer Spieler", "Liga letzte Saison",
+                     "Liga letzte Saison ID", "Potentieller Komissioner", "Anmeldezeitpunkt"])
 
     for su in queryset:
         new_player = "Ja" if su.new_player else "Nein"
-        league, league_id = (su.last_years_league.sleeper_name, su.last_years_league.sleeper_id) if su.last_years_league else ("", "")
+        league, league_id = (
+        su.last_years_league.sleeper_name, su.last_years_league.sleeper_id) if su.last_years_league else ("", "")
         commish = "Ja" if su.possible_commish else "Nein"
         region = REGION.get(su.region)
-        writer.writerow([su.user.email, su.dst_player.display_name, su.sleeper_id, region, new_player, league, league_id, commish, su.registration_ts.strftime("%d.%m.%Y, %H:%M:%S")])
+        writer.writerow(
+            [su.user.email, su.dst_player.display_name, su.sleeper_id, region, new_player, league, league_id, commish,
+             su.registration_ts.strftime("%d.%m.%Y, %H:%M:%S")])
 
     return response
 
@@ -47,21 +51,33 @@ class SeasonUserAdmin(admin.ModelAdmin):
 
     get_sleeper_username.short_description = 'Sleeper Username'
 
-    list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'last_years_league', 'possible_commish', 'registration_ts']
+    list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'last_years_league',
+                    'possible_commish', 'confirm_ts']
     search_fields = ['user__email', 'dst_player__display_name', 'sleeper_id', 'last_years_league__sleeper_name']
     actions = [download_season_users_csv]
+
+
+class SeasonRegistrationAdmin(admin.ModelAdmin):
+    def get_sleeper_username(self, obj):
+        return obj.dst_player.display_name
+
+    get_sleeper_username.short_description = 'Sleeper Username'
+
+    list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'last_years_league',
+                    'possible_commish', 'registration_ts']
+    search_fields = ['user__email', 'dst_player__display_name', 'sleeper_id', 'last_years_league__sleeper_name']
 
 
 class SeasonInvitationAdmin(admin.ModelAdmin):
     def get_sleeper_username(self, obj):
         return obj.season_user.dst_player.display_name
 
-    list_display = ['get_sleeper_username', 'sleeper_league_name', 'sleeper_league_id', 'sleeper_league_link', 'send_ts', 'has_erros', 'error_message']
-    ordering = ['-send_ts', 'sleeper_league_id']
+    list_display = ['get_sleeper_username', 'sleeper_league_name', 'sleeper_league_id', 'sleeper_league_link', 'created']
+    ordering = ['-created', 'sleeper_league_id']
 
 
 admin.site.register(News, NewsAdmin)
 admin.site.register(Announcement, AnnouncementAdmin)
 admin.site.register(SeasonUser, SeasonUserAdmin)
+admin.site.register(SeasonRegistration, SeasonRegistrationAdmin)
 admin.site.register(SeasonInvitation, SeasonInvitationAdmin)
-

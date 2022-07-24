@@ -3,9 +3,9 @@ from smtplib import SMTPException
 
 import sleeper_wrapper
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
 
-from DSTBundesliga.apps.dstffbl.models import SeasonUser, SeasonInvitation
+
+from DSTBundesliga.apps.dstffbl.models import SeasonUser, SeasonInvitation, SeasonRegistration, DSTEmail
 from DSTBundesliga.apps.leagues.models import DSTPlayer, League, Season
 
 
@@ -74,15 +74,14 @@ def create_season_users(users):
         })
 
 
-def send_invitation_chunk(chunk_size=12):
-    open_invitations = SeasonInvitation.objects.filter(send_ts=None).order_by('sleeper_league_id')[:chunk_size]
-    for invitation in open_invitations:
-        success = invitation.send_invitation()
+def send_email_chunk(chunk_size=12):
+    open_mails = DSTEmail.objects.filter(send_ts=None)[:chunk_size]
+    for mail in open_mails:
+        success = mail.send_mail()
         if success:
-            print("Invitation send to {sleeper_name} for league {sleeper_league_id} - {sleeper_league_name}".format(
-                sleeper_name=invitation.sleeper_username,
-                sleeper_league_id=invitation.sleeper_league_id,
-                sleeper_league_name=invitation.sleeper_league_name
+            print("{type} send to {email}".format(
+                type=mail.type,
+                email=mail.recipient
             ))
 
 
@@ -124,6 +123,7 @@ def import_invitations(filepath):
                             sleeper_league_link=league_link
                         )
                         if created:
+                            su.create_mail()
                             counter += 1
                     except SeasonUser.DoesNotExist:
                         print("SeasonUser for Sleeper-Name {sleeper_name} does not exist!".format(sleeper_name=player))

@@ -1,6 +1,8 @@
 import logging
 import datetime
+import uuid
 
+from django.urls import reverse
 from loguru import logger
 from smtplib import SMTPException
 from tinymce.models import HTMLField
@@ -18,6 +20,161 @@ from DSTBundesliga.apps.services.state_service import StateService
 state_service = StateService()
 
 
+EMAIL_TYPES = (
+    (1, "CONFIRM_REGISTRATION"),
+    (2, "REGISTRATION_SUCCESSFUL"),
+    (3, "LEAGUE_INVITATION")
+)
+
+
+class DSTEmail(models.Model):
+    type = models.IntegerField(choices=EMAIL_TYPES)
+    recipient = models.EmailField()
+    subject = models.CharField(max_length=998)
+    text = models.TextField()
+    html = models.TextField()
+    send_ts = models.DateTimeField(null=True)
+    has_erros = models.BooleanField(default=False)
+    error_message = models.CharField(max_length=500)
+
+    def send_mail(self):
+        success = False
+
+        self.has_erros = False
+        self.error_message = ""
+        try:
+            print("Sending Mail to {mail}".format(mail=self.recipient))
+            send_mail(
+                self.subject,
+                self.text,
+                None,
+                [self.recipient],
+                False,
+                None,
+                None,
+                None,
+                self.html
+            )
+            success = True
+
+        except SMTPException as e:
+            self.has_erros = True
+            self.error_message = str(e)
+
+            logging.exception(self.error_message, exc_info=e)
+
+        except models.ObjectDoesNotExist as e:
+            self.has_erros = True
+            self.error_message = "No Email for this User!"
+
+            logging.exception(self.error_message, exc_info=e)
+
+        except Exception as e:
+            self.has_erros = True
+            self.error_message = str(e)
+
+            logging.exception(self.error_message, exc_info=e)
+
+        finally:
+            self.send_ts = timezone.now()
+            self.save()
+
+        return success
+
+
+class EmailCreationMixin:
+
+    def get_email_to(self):
+        pass
+
+    def get_email_subject(self):
+        pass
+
+    def get_email_text(self):
+        pass
+
+    def get_email_html(self):
+        pass
+
+    def create_mail(self):
+        DSTEmail.objects.create(
+            recipient=self.get_email_to(),
+            subject=self.get_email_subject(),
+            text=self.get_email_text(),
+            html=self.get_email_html(),
+            type=self.get_email_type()
+        )
+
+
+class SeasonRegistration(models.Model, EmailCreationMixin):
+    EMAIL_SUBJECT = 'Bitte bestätige deine Anmmeldung zur Down, Set, Talk! Fantasy Football Bundesliga {current_season}'
+
+    EMAIL_TEXT = ''''
+    Hallo {sleeper_name},
+    
+    bitte bestätige deine Anmeldung zur Saison {current_season}, indem du den folgenden Link aufrufst:
+    {confirm_link}
+    
+    Beste Grüße von
+    Michael und dem gesamten Organisationsteam der DSTFanFooBL
+    '''
+
+    EMAIL_HTML = '''
+    <p>Hallo {sleeper_name},</p>
+    
+    <p>bitte bestätige deine Anmeldung zur Saison {current_season}, indem du den folgenden Link aufrufst:</p>
+    
+    <p><a href="{confirm_link}">{confirm_link}</a></p>
+    
+    <p>Beste Grüße von<br>
+    Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
+    '''
+
+    REGIONS = (
+        (1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'),
+        (2, 'Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)'),
+        (3, 'Süd (Bayern, Baden-Württemberg)'),
+        (4, 'West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)'),
+        (5, 'Ausland'),
+    )
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
+    season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, default=Season.get_active)
+    sleeper_id = models.CharField(max_length=50)
+    region = models.IntegerField(choices=REGIONS)
+    new_player = models.BooleanField(default=False)
+    last_years_league = models.ForeignKey(League, null=True, on_delete=models.SET_NULL)
+    possible_commish = models.BooleanField(default=False)
+    registration_ts = models.DateTimeField(auto_now_add=True)
+
+    def email(self):
+        return self.user.email
+
+    def get_email_subject(self):
+        return self.EMAIL_SUBJECT.format(current_season=Season.get_active())
+
+    def get_confirm_link(self):
+        return "https://dstffbl.uber.space" + reverse('dstffbl:accept_invite', kwargs={"registration_id": self.id})
+
+    def get_email_text(self):
+        return self.EMAIL_TEXT.format(current_season=state_service.get_season(),
+                                      sleeper_name=self.dst_player.display_name,
+                                      confirm_link=self.get_confirm_link())
+
+    def get_email_html(self):
+        return self.EMAIL_HTML.format(current_season=state_service.get_season(),
+                                      sleeper_name=self.dst_player.display_name,
+                                      confirm_link=self.get_confirm_link())
+
+    def get_email_to(self):
+        return self.user.email
+
+    def get_email_type(self):
+        return 1
+
+
 class SeasonUser(models.Model):
     REGIONS = (
         (1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'),
@@ -27,23 +184,22 @@ class SeasonUser(models.Model):
         (5, 'Ausland'),
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
+    registration = models.ForeignKey(SeasonRegistration, on_delete=models.CASCADE, null=True)
     season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, default=Season.get_active)
     sleeper_id = models.CharField(max_length=50)
     region = models.IntegerField(choices=REGIONS)
     new_player = models.BooleanField(default=False)
     last_years_league = models.ForeignKey(League, null=True, on_delete=models.SET_NULL)
     possible_commish = models.BooleanField(default=False)
-    confirmed = models.BooleanField(default=False)
-    registration_ts = models.DateTimeField(auto_now_add=True)
-    confirm_ts = models.DateTimeField(auto_now_add=True)
+    confirm_ts = models.DateTimeField(auto_now_add=True, null=True)
 
     def email(self):
         return self.user.email
 
 
-class SeasonInvitation(models.Model):
+class SeasonInvitation(models.Model, EmailCreationMixin):
     EMAIL_SUBJECT = 'Deine Einladung zur Down, Set, Talk! Fantasy Football Bundesliga {current_season}'
 
     EMAIL_TEXT = ''''
@@ -86,9 +242,7 @@ class SeasonInvitation(models.Model):
     sleeper_league_name = models.CharField(max_length=100)
     sleeper_league_id = models.CharField(max_length=50)
     sleeper_league_link = models.CharField(max_length=500)
-    send_ts = models.DateTimeField(null=True)
-    has_erros = models.BooleanField(default=False)
-    error_message = models.CharField(max_length=500)
+    created = models.DateTimeField(auto_now=True)
 
     def get_email_subject(self):
         return self.EMAIL_SUBJECT.format(current_season=Season.get_active())
@@ -108,48 +262,8 @@ class SeasonInvitation(models.Model):
     def get_email_to(self):
         return self.season_user.user.email
 
-    def send_invitation(self):
-        success = False
-
-        self.has_erros = False
-        self.error_message = ""
-        try:
-            send_mail(
-                self.get_email_subject(),
-                self.get_email_text(),
-                None,
-                [self.get_email_to()],
-                False,
-                None,
-                None,
-                None,
-                self.get_email_html()
-            )
-            success = True
-
-        except SMTPException as e:
-            self.has_erros = True
-            self.error_message = str(e)
-
-            logging.error(e)
-
-        except models.ObjectDoesNotExist as e:
-            self.has_erros = True
-            self.error_message = "No Email for this User!"
-
-            logging.error(e)
-
-        except Exception as e:
-            self.has_erros = True
-            self.error_message = str(e)
-
-            logging.error(e)
-
-        finally:
-            self.send_ts = timezone.now()
-            self.save()
-
-        return success
+    def get_email_type(self):
+        return 3
 
 
 class AnnouncementManager(models.Manager):

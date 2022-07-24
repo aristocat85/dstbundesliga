@@ -32,6 +32,11 @@ Create requirements.txt
 poetry export -f requirements.txt --without-hashes -o /src/requirements.txt 
 ```
 
+Create new migrations
+```bash
+poetry run python manage.py makemigrations
+```
+
 
 Testdata
 ========

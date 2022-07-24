@@ -203,6 +203,9 @@ ADMIN_MEDIA_PREFIX = "/static/admin/"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+REGISTRATION_STARTS = "2022-08-01"
+REGISTRATION_STOPS = "2022-08-10"
+
 if os.getenv('DEV', 0) == '1':
     from local_settings import *
 
@@ -249,9 +252,6 @@ else:
     }
 
 
-
-
-
 import hashlib
 def md5(fname):
     hash_md5 = hashlib.md5()
@@ -262,8 +262,7 @@ def md5(fname):
 
 
 CSS_VERSION_HASH = md5(os.path.join(BASE_DIR, "staticfiles/css/base.css"))
-REGISTRATION_STARTS = "2022-08-01"
-REGISTRATION_STOPS = "2022-08-10"
+
 MAX_PLAYERS = 1404
 
 DEFAULT_LEAGUE_SETTINGS_PATH = os.path.join(BASE_DIR, "Ligaübersicht.csv")
@@ -294,6 +293,7 @@ EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 25))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_SSL = True
 
 DST_PATREON_CAMPAIGN_ID = '2708731'
 
