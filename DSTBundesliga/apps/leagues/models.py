@@ -6,7 +6,6 @@ from datetime import datetime
 
 from DSTBundesliga.apps.services.state_service import StateService
 
-
 state_servive = StateService()
 
 
@@ -30,7 +29,8 @@ class Season(models.Model):
 
         season, _ = Season.objects.get_or_create(active=True, year=current_season, defaults={
             'year': current_season,
-            'name': 'Saison {current_year}/{next_year}'.format(current_year=current_season, next_year=current_season+1)
+            'name': 'Saison {current_year}/{next_year}'.format(current_year=current_season,
+                                                               next_year=current_season + 1)
         })
 
         return season
@@ -42,10 +42,13 @@ class Season(models.Model):
     @staticmethod
     def get_last():
         previous_season = int(state_servive.get_previous_season())
-        season, _ = Season.objects.get_or_create(active=False, defaults={
-            'year': previous_season,
-            'name': 'Saison {last_year}/{current_year}'.format(last_year=previous_season, current_year=previous_season+1)
-        })
+        season, _ = Season.objects.get_or_create(active=False, year=previous_season,
+                                                 defaults={
+                                                     'year': previous_season,
+                                                     'name': 'Saison {last_year}/{current_year}'.format(
+                                                         last_year=previous_season, current_year=previous_season + 1)
+                                                 }
+                                                 )
 
         return season
 
@@ -60,7 +63,6 @@ class LeagueManager(models.Manager):
 
 
 class League(models.Model):
-
     class Meta:
         ordering = ['-level', 'sleeper_name']
 
