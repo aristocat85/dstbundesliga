@@ -80,6 +80,8 @@ def register(request, early_bird=False):
                 season_user = SeasonUser.objects.get(user=user, season=Season.get_active())
             except SeasonRegistration.DoesNotExist as e:
                 season_registration = None
+            except SeasonUser.DoesNotExist as e:
+                season_user = None
             if not form:
                 form = RegisterForm()
 
