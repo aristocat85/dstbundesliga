@@ -3,7 +3,8 @@ import csv
 from django.contrib import admin
 from django.http import HttpResponse
 
-from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser, SeasonInvitation, SeasonRegistration
+from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser, SeasonInvitation, SeasonRegistration, \
+    DSTEmail
 
 
 def download_season_users_csv(modeladmin, request, queryset):
@@ -76,8 +77,14 @@ class SeasonInvitationAdmin(admin.ModelAdmin):
     ordering = ['-created', 'sleeper_league_id']
 
 
+class DSTEmailAdmin(admin.ModelAdmin):
+    list_display = ['type', 'recipient', 'subject', 'subject', 'has_erros']
+    ordering = ['-send_ts']
+
+
 admin.site.register(News, NewsAdmin)
 admin.site.register(Announcement, AnnouncementAdmin)
 admin.site.register(SeasonUser, SeasonUserAdmin)
 admin.site.register(SeasonRegistration, SeasonRegistrationAdmin)
 admin.site.register(SeasonInvitation, SeasonInvitationAdmin)
+admin.site.register(DSTEmail, DSTEmailAdmin)
