@@ -14,6 +14,9 @@ class Season(models.Model):
     name = models.CharField(max_length=50)
     active = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ["-year"]
+
     def save(self, *args, **kwargs):
         if self.active:
             Season.objects.filter(active=True).update(active=False)
