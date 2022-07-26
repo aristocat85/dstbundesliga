@@ -55,6 +55,7 @@ class SeasonUserAdmin(admin.ModelAdmin):
     list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'last_years_league',
                     'possible_commish', 'confirm_ts']
     search_fields = ['user__email', 'dst_player__display_name', 'sleeper_id', 'last_years_league__sleeper_name']
+    list_filter = ('season', 'region', 'new_player', 'possible_commish')
     actions = [download_season_users_csv]
 
 
@@ -67,6 +68,7 @@ class SeasonRegistrationAdmin(admin.ModelAdmin):
     list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'last_years_league',
                     'possible_commish', 'registration_ts']
     search_fields = ['user__email', 'dst_player__display_name', 'sleeper_id', 'last_years_league__sleeper_name']
+    list_filter = ('season', 'region', 'new_player', 'possible_commish')
 
 
 class SeasonInvitationAdmin(admin.ModelAdmin):
