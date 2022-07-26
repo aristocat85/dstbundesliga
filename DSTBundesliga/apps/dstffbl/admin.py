@@ -81,6 +81,7 @@ class SeasonInvitationAdmin(admin.ModelAdmin):
 
 class DSTEmailAdmin(admin.ModelAdmin):
     list_display = ['type', 'recipient', 'subject', 'send_ts', 'has_erros']
+    list_filter = ('type', 'has_erros')
     ordering = ['-send_ts']
 
 
