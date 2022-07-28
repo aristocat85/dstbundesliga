@@ -19,7 +19,7 @@
             </div>
             <div class="ui container">
                 <div class="ui segment">
-                    <h4>Hinweis</h4>
+                    <h4>Wichtig</h4>
                     <p>Der Spielbetrieb wird über die App <a href="https://sleeper.app/">Sleeper</a> durchgeführt. Für die Anmeldung benötigt ihr daher schon einen entsprechenden Account. Falls ihr noch keinen Sleeper-Account besitzt, so könnt ihr euch <a href="https://sleeper.app/create">hier</a> kostenfrei einen erstellen.</p>
                     <form class="ui form" action="/anmeldung/" method="post">
                         {% csrf_token %}
@@ -32,7 +32,7 @@
                         </div>
                         <div class="fields">
                             <div class="ten wide field">
-                                <label for="region">In welcher Region wohnst du?</label>
+                                <label for="region">Für welche Region trittst du an? Mitspieler außerhalb Deutschlands dürfen sich eine Region aussuchen.</label>
                                 <select class="ui fluid search dropdown" name="region" id="region">
                                     {% for value, region in region_choices %}
                                     <option value="{{value}}" {% if value == form.region.value %}selected{% endif %}>{{region}}</option>

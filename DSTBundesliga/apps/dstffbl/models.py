@@ -26,6 +26,13 @@ EMAIL_TYPES = (
     (3, "LEAGUE_INVITATION")
 )
 
+REGIONS = (
+    (1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'),
+    (2, 'Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)'),
+    (3, 'Süd (Bayern, Baden-Württemberg)'),
+    (4, 'West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)'),
+)
+
 
 class DSTEmail(models.Model):
     type = models.IntegerField(choices=EMAIL_TYPES)
@@ -130,14 +137,6 @@ class SeasonRegistration(models.Model, EmailCreationMixin):
     Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
     '''
 
-    REGIONS = (
-        (1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'),
-        (2, 'Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)'),
-        (3, 'Süd (Bayern, Baden-Württemberg)'),
-        (4, 'West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)'),
-        (5, 'Ausland'),
-    )
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
@@ -176,14 +175,6 @@ class SeasonRegistration(models.Model, EmailCreationMixin):
 
 
 class SeasonUser(models.Model):
-    REGIONS = (
-        (1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'),
-        (2, 'Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)'),
-        (3, 'Süd (Bayern, Baden-Württemberg)'),
-        (4, 'West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)'),
-        (5, 'Ausland'),
-    )
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
     registration = models.ForeignKey(SeasonRegistration, on_delete=models.CASCADE, null=True)

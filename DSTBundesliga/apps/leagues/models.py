@@ -298,3 +298,21 @@ class WaiverPickup(models.Model):
     @property
     def owner(self):
         return self.roster.owner
+
+
+class FinalSeasonStanding(models.Model):
+
+    class Meta:
+        ordering = ["points_ranking_overall", "points_ranking_on_level", "points_ranking_in_league"]
+
+    dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE)
+    league = models.ForeignKey(League, on_delete=models.CASCADE)
+    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE, db_index=True)
+    rank_in_league = models.IntegerField(default=0)
+    points = models.IntegerField(default=0)
+    points_decimal = models.IntegerField(default=0)
+    points_ranking_overall = models.IntegerField(default=0, verbose_name="#overall")
+    points_ranking_on_level = models.IntegerField(default=0, verbose_name="#level")
+    points_ranking_in_league = models.IntegerField(default=0, verbose_name="#league")
+
+

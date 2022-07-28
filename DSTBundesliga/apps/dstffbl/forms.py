@@ -2,12 +2,12 @@ import sleeper_wrapper
 from django import forms
 from django.utils.translation import gettext as _
 
-from DSTBundesliga.apps.dstffbl.models import SeasonUser
+from DSTBundesliga.apps.dstffbl.models import REGIONS
 
 
 class RegisterForm(forms.Form):
     sleeper_username = forms.CharField(max_length=100)
-    region = forms.ChoiceField(choices=SeasonUser.REGIONS)
+    region = forms.ChoiceField(choices=REGIONS)
     possible_commish = forms.BooleanField(required=False)
 
     def clean_sleeper_username(self):

@@ -8,7 +8,7 @@ import sleeper_wrapper
 from django.urls import reverse
 
 from DSTBundesliga.apps.dstffbl.forms import RegisterForm
-from DSTBundesliga.apps.dstffbl.models import SeasonUser, News, SeasonRegistration, DSTEmail
+from DSTBundesliga.apps.dstffbl.models import SeasonUser, News, SeasonRegistration, DSTEmail, REGIONS
 from DSTBundesliga.apps.dstffbl.services import season_service
 from DSTBundesliga.apps.leagues.models import Matchup, Season, DSTPlayer, League
 from DSTBundesliga.apps.services.awards_service import AwardService
@@ -90,7 +90,7 @@ def register(request, early_bird=False):
                 return render(request, 'dstffbl/registration_success.html')
             else:
                 return render(request, 'dstffbl/register.html',
-                              {'form': form, 'region_choices': SeasonRegistration.REGIONS,
+                              {'form': form, 'region_choices': REGIONS,
                                'current_season': Season.get_active(),
                                'season_user': season_user})
         else:
