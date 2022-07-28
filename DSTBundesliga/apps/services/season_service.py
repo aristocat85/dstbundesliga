@@ -50,7 +50,7 @@ def calc_final_standings(season: Season):
 
 
     # Add ranks per league
-    all_bundesliga_league_ids = League.objects.filter(type=league.BUNDESLIGA, season=season).values_list("sleeper_id", flat=True)
+    all_bundesliga_league_ids = League.objects.filter(type=League.BUNDESLIGA, season=season).values_list("sleeper_id", flat=True)
     all_mus = PlayoffMatchup.objects.filter(season=season, league_id__in=all_bundesliga_league_ids)
 
     for rank in [1, 3, 5]:
