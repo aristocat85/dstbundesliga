@@ -9,7 +9,9 @@ class SeasonAdmin(admin.ModelAdmin):
 
 class FinalSeasonStandingAdmin(admin.ModelAdmin):
     def get_owner(self, obj):
-        return obj.dst_player
+        if obj.dst_player:
+            return str(obj.dst_player)
+        return "deleted"
 
     list_display = ['points_ranking_overall', 'points_ranking_on_level', 'points_ranking_in_league', 'get_owner', 'league', 'season', 'rank_in_league', 'points', 'points_decimal']
     list_filter = ('season', 'league__level', 'points_ranking_on_level', 'points_ranking_in_league')
