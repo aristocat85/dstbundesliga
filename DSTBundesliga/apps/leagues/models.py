@@ -305,7 +305,7 @@ class FinalSeasonStanding(models.Model):
     class Meta:
         ordering = ["points_ranking_overall", "points_ranking_on_level", "points_ranking_in_league"]
 
-    dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
+    roster = models.ForeignKey(Roster, on_delete=models.CASCADE, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
     season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE, db_index=True)
     rank_in_league = models.IntegerField(default=0)
