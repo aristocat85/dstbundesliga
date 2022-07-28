@@ -55,7 +55,7 @@ def calc_final_standings(season: Season):
 
     for rank in [1, 3, 5]:
         for mu in all_mus.filter(bracket="Playoffs", rank=rank):
-            winner = Roster.objects.get(league__id=mu.league_id, roster_id=mu.winner)
+            winner = Roster.objects.get(league__sleeper_id=mu.league_id, roster_id=mu.winner)
             season_ranking_winner = FinalSeasonStanding.objects.get(
                 season=season,
                 roster=winner
@@ -63,7 +63,7 @@ def calc_final_standings(season: Season):
             season_ranking_winner.rank_in_league = rank
             season_ranking_winner.save()
 
-            loser = Roster.objects.get(league__id=mu.league_id, roster_id=mu.loser)
+            loser = Roster.objects.get(league__sleeper_id=mu.league_id, roster_id=mu.loser)
             season_ranking_loser = FinalSeasonStanding.objects.get(
                 season=season,
                 roster=loser
@@ -73,7 +73,7 @@ def calc_final_standings(season: Season):
 
     for rank in [1, 3, 5]:
         for mu in all_mus.filter(bracket="Toilet Bowl", rank=rank):
-            winner = Roster.objects.get(league__id=mu.league_id, roster_id=mu.winner)
+            winner = Roster.objects.get(league__sleeper_id=mu.league_id, roster_id=mu.winner)
             season_ranking_winner = FinalSeasonStanding.objects.get(
                 season=season,
                 roster=winner
@@ -81,7 +81,7 @@ def calc_final_standings(season: Season):
             season_ranking_winner.rank_in_league = 13 - rank
             season_ranking_winner.save()
 
-            loser = Roster.objects.get(league__id=mu.league_id, roster_id=mu.loser)
+            loser = Roster.objects.get(league__sleeper_id=mu.league_id, roster_id=mu.loser)
             season_ranking_loser = FinalSeasonStanding.objects.get(
                 season=season,
                 roster=loser
