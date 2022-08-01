@@ -1,23 +1,40 @@
 import csv
-from smtplib import SMTPException
 
 import sleeper_wrapper
 from django.contrib.auth.models import User
 
-
 from DSTBundesliga.apps.dstffbl.models import SeasonUser, SeasonInvitation, SeasonRegistration, DSTEmail
 from DSTBundesliga.apps.leagues.models import DSTPlayer, League, Season
-
-
-import logging
-
 from DSTBundesliga.apps.services.data_services import LeagueSetting, guess_level, guess_conference, guess_region, \
     update_or_create_league, get_league_data
+
+EMAIL_SUBJECT = 'Anmeldung erfolgreich!'
+
+EMAIL_TEXT = ''''
+    Hallo {sleeper_name},
+    
+    Du bist für die Saison {current_season} angemeldet! Weitere Infos folgen in einigen Tagen per Mail und über unsere 
+    Social Media Seiten.
+    
+    Beste Grüße von
+    Michael und dem gesamten Organisationsteam der DSTFanFooBL
+    '''
+
+EMAIL_HTML = '''
+    <p>Hallo {sleeper_name},</p>
+    
+    <p>Du bist für die Saison {current_season} angemeldet! Weitere Infos folgen in einigen Tagen per Mail und über 
+    unsere Social Media Seiten.</p>
+    
+    <p>Beste Grüße von<br>
+    Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
+    '''
 
 
 def get_last_years_league(player: DSTPlayer):
     try:
-        return League.objects.filter(season=Season.get_last(), id__in=[r.league.id for r in player.roster_set.all()]).get(type=League.BUNDESLIGA)
+        return League.objects.filter(season=Season.get_last(),
+                                     id__in=[r.league.id for r in player.roster_set.all()]).get(type=League.BUNDESLIGA)
     except League.DoesNotExist:
         return None
 
@@ -58,7 +75,18 @@ def create_season_users(users):
 
         dummy_user, _ = User.objects.get_or_create(username=email, email=email)
 
-        SeasonUser.objects.get_or_create(
+        SeasonRegistration.objects.get_or_create(
+            user=dummy_user,
+            dst_player=dst_player,
+            season=Season.get_active(),
+            sleeper_id=sleeper_id,
+            new_player=new_player,
+            last_years_league=last_years_league,
+            region=region,
+            possible_commish=commish
+        )
+
+        su, _ = SeasonUser.objects.get_or_create(
             user=dummy_user,
             dst_player=dst_player,
             season=Season.get_active(),
@@ -72,6 +100,20 @@ def create_season_users(users):
         DSTPlayer.objects.update_or_create(sleeper_id=sleeper_id, defaults={
             "display_name": sleeper_username
         })
+
+        DSTEmail.objects.create(
+            recipient=su.user.email,
+            subject=EMAIL_SUBJECT,
+            text=EMAIL_TEXT.format(
+                sleeper_name=su.dst_player.display_name,
+                current_season=su.season
+            ),
+            html=EMAIL_HTML.format(
+                sleeper_name=su.dst_player.display_name,
+                current_season=su.season
+            ),
+            type=2
+        )
 
 
 def send_email_chunk(chunk_size=12):
@@ -109,9 +151,11 @@ def import_invitations(filepath):
             ]
 
             if not all(players):
-                print(f"League {league_id} - {league_name} incomplete!".format(league_id=league_id, league_name=league_name))
+                print(f"League {league_id} - {league_name} incomplete!".format(league_id=league_id,
+                                                                               league_name=league_name))
             else:
-                print("Creating Invitations for league {league_id} - {league_name}".format(league_id=league_id, league_name=league_name))
+                print("Creating Invitations for league {league_id} - {league_name}".format(league_id=league_id,
+                                                                                           league_name=league_name))
                 counter = 0
                 for player in players:
                     try:
@@ -130,7 +174,8 @@ def import_invitations(filepath):
 
                 print("Created {count} Invitations".format(count=counter))
 
-        print("All done! There are now {count} open invitations".format(count=SeasonInvitation.objects.filter(send_ts=None).count()))
+        print("All done! There are now {count} open invitations".format(
+            count=SeasonInvitation.objects.filter(send_ts=None).count()))
 
 
 def create_leagues_from_invitations():
@@ -146,3 +191,6 @@ def create_leagues_from_invitations():
         league_data = get_league_data(si.sleeper_league_id)
 
         update_or_create_league(league_settings, league_data)
+
+
+
