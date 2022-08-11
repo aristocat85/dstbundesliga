@@ -191,6 +191,3 @@ def create_leagues_from_invitations():
         league_data = get_league_data(si.sleeper_league_id)
 
         update_or_create_league(league_settings, league_data)
-
-
-
