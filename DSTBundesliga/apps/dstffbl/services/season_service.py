@@ -161,7 +161,8 @@ def import_invitations(filepath):
                 for player in players:
                     try:
                         su, created = SeasonInvitation.objects.get_or_create(
-                            season_user=SeasonUser.objects.get(dst_player__display_name=player),
+                            season_user=SeasonUser.objects.get(dst_player__display_name=player,
+                                                               season=Season.get_active()),
                             sleeper_username=player,
                             sleeper_league_name=league_name,
                             sleeper_league_id=league_id,
