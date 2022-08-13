@@ -75,7 +75,7 @@ def create_season_users(users):
 
         dummy_user, _ = User.objects.get_or_create(username=email, email=email)
 
-        SeasonRegistration.objects.get_or_create(
+        sr, _ = SeasonRegistration.objects.get_or_create(
             user=dummy_user,
             dst_player=dst_player,
             season=Season.get_active(),
@@ -88,6 +88,7 @@ def create_season_users(users):
 
         su, _ = SeasonUser.objects.get_or_create(
             user=dummy_user,
+            registration=sr,
             dst_player=dst_player,
             season=Season.get_active(),
             sleeper_id=sleeper_id,
@@ -174,8 +175,7 @@ def import_invitations(filepath):
 
                 print("Created {count} Invitations".format(count=counter))
 
-        print("All done! There are now {count} open invitations".format(
-            count=SeasonInvitation.objects.filter(send_ts=None).count()))
+        print("All done!")
 
 
 def create_leagues_from_invitations():
