@@ -1,4 +1,5 @@
 from datetime import datetime
+import requests
 from typing import List
 from dataclasses import dataclass
 from pytz import timezone
@@ -236,7 +237,13 @@ def update_or_create_draft(league_id, draft_data):
 
 def get_draft_data(league_id):
     league_service = sleeper_wrapper.League(league_id)
-    return league_service.get_all_drafts()
+    response = league_service.get_all_drafts()
+    if isinstance(response, requests.exceptions.HTTPError):
+        print(f"Error for league {league_id}")
+        return []
+
+    return response
+
 
 
 def update_drafts_for_league(league_id):
