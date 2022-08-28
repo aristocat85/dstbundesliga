@@ -1,5 +1,6 @@
 import csv
 
+import pytz
 from django.contrib import admin
 from django.http import HttpResponse
 
@@ -31,7 +32,7 @@ def download_season_users_csv(modeladmin, request, queryset):
         region = REGION.get(su.region)
         writer.writerow(
             [su.user.email, su.dst_player.display_name, su.sleeper_id, region, new_player, league, league_id, commish,
-             su.registration.registration_ts.strftime("%d.%m.%Y, %H:%M:%S")])
+             su.registration.registration_ts.astimezone(pytz.timezone('Europe/Berlin')).strftime("%d.%m.%Y, %H:%M:%S")])
 
     return response
 

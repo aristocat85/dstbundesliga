@@ -2,6 +2,8 @@ import csv
 
 import sleeper_wrapper
 from django.contrib.auth.models import User
+from django.db.models import Window, F
+from django.db.models.functions import RowNumber
 
 from DSTBundesliga.apps.dstffbl.models import SeasonUser, SeasonInvitation, SeasonRegistration, DSTEmail
 from DSTBundesliga.apps.leagues.models import DSTPlayer, League, Season
@@ -186,9 +188,15 @@ def create_leagues_from_invitations():
             name=si.sleeper_league_name,
             level=guess_level(si.sleeper_league_name),
             conference=guess_conference(si.sleeper_league_name),
-            region=guess_region(si.sleeper_league_name)
+            region=guess_region(si.sleeper_league_name),
+            type=League.BUNDESLIGA
         )
 
         league_data = get_league_data(si.sleeper_league_id)
 
         update_or_create_league(league_settings, league_data)
+
+
+def get_waiting_list():
+    return SeasonUser.objects.exclude(id__in=SeasonInvitation.objects.values_list('season_user', flat=True)).filter(
+        season=Season.get_active()).order_by('registration__registration_ts', 'sleeper_id')
