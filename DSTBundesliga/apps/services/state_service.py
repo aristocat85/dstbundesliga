@@ -30,7 +30,17 @@ class StateService(BaseApi):
             state_data = self._call(self._base_state_url)
             cache.set("NflState", state_data, timeout=60 * 60 * 24)
 
-        return NflState(**state_data)
+        return NflState(
+            week=state_data.get("week"),
+            season_type=state_data.get("season_type"),
+            season_start_date=state_data.get("season_start_date"),
+            season=state_data.get("season"),
+            previous_season=state_data.get("previous_season"),
+            leg=state_data.get("leg"),
+            league_season=state_data.get("league_season"),
+            league_create_season=state_data.get("league_create_season"),
+            display_week=state_data.get("display_week")
+        )
 
     def get_season(self):
         return self.get_state().season
