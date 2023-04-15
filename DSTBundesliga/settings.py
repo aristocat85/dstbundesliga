@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['dstffbl.uber.space', '.downsettalk.de', 'fantasybundesliga.de']
+ALLOWED_HOSTS = ['dstffbl.uber.space', '.downsettalk.de', '.fantasybundesliga.de']
 
 SITE_ID = 1
 
