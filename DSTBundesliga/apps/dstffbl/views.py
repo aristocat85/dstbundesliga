@@ -182,7 +182,7 @@ def profile(request):
     season_user = None
     season_registration = None
     message = ""
-    season_data = {}
+    season_data = None
     registration_open = is_registration_open()
 
     try:
@@ -223,12 +223,15 @@ def profile(request):
             message = "Deine Daten wurden erfolgreich gespeichert!"
 
     else:
-        form = ProfileForm(data={
-            "sleeper_username": season_data.dst_player.display_name,
-            "email": season_data.user.email,
-            "possible_commish": season_data.possible_commish,
-            "region": season_data.region
-        })
+        if season_data:
+            form = ProfileForm(data={
+                "sleeper_username": season_data.dst_player.display_name,
+                "email": season_data.user.email,
+                "possible_commish": season_data.possible_commish,
+                "region": season_data.region
+            })
+        else:
+            form = ProfileForm()
 
     return render(request, "dstffbl/profile.html", {
         "season": season,
