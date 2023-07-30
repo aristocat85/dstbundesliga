@@ -1,0 +1,91 @@
+{% extends 'tables_base.html' %}
+
+{% block content %}
+
+    <div class="ui container">
+        <div class="dst-spacer dst-spacer-100">
+            <div class="ui container home-container">
+                {{ season }}
+                {% if season_user %}
+                    <div class="title-container">
+                        <h2 class="title">Let's gooo!</h2>
+                    </div>
+                    <div class="ui segment">
+                        <h3>Du bist für die {{ current_season }} angemeldet! </h3>
+                        <p>Weitere Infos folgen bald.</p>
+                    </div>
+                {% else %}
+                    <div class="title-container">
+                        <h2 class="title">Anmeldung zu {{current_season}}</h2>
+                    </div>
+                    <div class="ui container">
+                        <div class="ui segment">
+                            <h4>Wichtig</h4>
+                            <p>Der Spielbetrieb wird über die App <a href="https://sleeper.app/">Sleeper</a> durchgeführt. Für die Anmeldung benötigt ihr daher schon einen entsprechenden Account. Falls ihr noch keinen Sleeper-Account besitzt, so könnt ihr euch <a href="https://sleeper.app/create">hier</a> kostenfrei einen erstellen.</p>
+                            <form class="ui form" action="/anmeldung/" method="post">
+                                {% csrf_token %}
+                                <div class="fields">
+                                    <div class="six wide field">
+                                        <label for="sleeper_username">Wie lautet dein Sleeper Benutzername?</label>
+                                        <input type="text" id="sleeper_username" name="sleeper_username" maxlength="50"
+                                               placeholder="Benutzername oder ID" value="{{form.sleeper_username.value|default_if_none:'' }}">
+                                    </div>
+                                </div>
+                                <div class="fields">
+                                    <div class="ten wide field">
+                                        <label for="region">Für welche Region trittst du an? Mitspieler außerhalb Deutschlands dürfen sich eine Region aussuchen.</label>
+                                        <select class="ui fluid search dropdown" name="region" id="region">
+                                            {% for value, region in region_choices %}
+                                                <option value="{{value}}" {% if value == form.region.value %}selected{% endif %}>{{region}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="fields">
+                                    <div class="ten wide field">
+                                        <div class="ui checkbox {% if form.possible_commish.value == True %}checked{% endif %}">
+                                            <input type="checkbox" {% if form.possible_commish.value == True %}checked=""{% endif %} name="possible_commish">
+                                            <label>Ich kann mir vorstellen in meiner Liga die Rolle des Comissioners zu übernehmen</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fields">
+                                    <div class="ten wide field">
+                                        {% if form.errors %}
+                                            {% for field in form %}
+                                                {% for error in field.errors %}
+                                                    <div class="ui negative message">
+                                                        <strong>{{ error|escape }}</strong>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endfor %}
+                                            {% for error in form.non_field_errors %}
+                                                <div class="ui negative message">
+                                                    <strong>{{ error|escape }}</strong>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="dst-spacer-25">
+                                    <button class="ui approve submit button">Absenden</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        $('select.dropdown').dropdown('set selected', '{{form.region.value}}');
+        $('.ui.radio.checkbox').checkbox();
+
+    </script>
+{% endblock %}
