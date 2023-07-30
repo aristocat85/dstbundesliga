@@ -16,11 +16,11 @@
                     {% if registration_status == "not_registered" %}
                         {% if registration_open %}
                             Du bist noch nicht zur Saison {{ season }} angemeldet.
-                            Jetzt anmelden
+                            <a href="{{ register_url }}">Jetzt anmelden</a>
                         {% else %}
                             Die Anmeldung zur Saison {{ season }} ist noch nicht gestartet.
                         {% endif %}
-    {#              {% else %}
+                    {% else %}
                         {% if registration_status == "pending" %}
                             <h2 class="ui header">
                                 <div class="content">

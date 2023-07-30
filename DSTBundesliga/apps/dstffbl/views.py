@@ -241,7 +241,8 @@ def profile(request):
         'region_choices': REGIONS,
         "form": form,
         "message": message,
-        "resend_url": reverse("dstffbl:resend_invite")
+        "resend_url": reverse("dstffbl:resend_invite"),
+        "register_url": reverse("dstffbl:anmeldung")
     })
 
 
