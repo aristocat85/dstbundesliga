@@ -91,6 +91,9 @@ class LeaguesMenu(Menu):
         counter += 1
         nodes.append(NavigationNode("DST - Hörerliga", reverse('dst-league'), counter))
 
+        counter += 1
+        nodes.append(NavigationNode("Deine Anmeldung", reverse('dstffbl:profile'), counter, attr={'visible_for_anonymous': False}))
+
         return nodes
 
 

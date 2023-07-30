@@ -5,76 +5,116 @@
     <div class="ui container">
         <div class="dst-spacer dst-spacer-100">
             <div class="ui container home-container">
-                {{ season }}
-                {% if season_user %}
-                    <div class="title-container">
-                        <h2 class="title">Let's gooo!</h2>
-                    </div>
-                    <div class="ui segment">
-                        <h3>Du bist für die {{ current_season }} angemeldet! </h3>
-                        <p>Weitere Infos folgen bald.</p>
-                    </div>
-                {% else %}
-                    <div class="title-container">
-                        <h2 class="title">Anmeldung zu {{current_season}}</h2>
-                    </div>
-                    <div class="ui container">
-                        <div class="ui segment">
-                            <h4>Wichtig</h4>
-                            <p>Der Spielbetrieb wird über die App <a href="https://sleeper.app/">Sleeper</a> durchgeführt. Für die Anmeldung benötigt ihr daher schon einen entsprechenden Account. Falls ihr noch keinen Sleeper-Account besitzt, so könnt ihr euch <a href="https://sleeper.app/create">hier</a> kostenfrei einen erstellen.</p>
-                            <form class="ui form" action="/anmeldung/" method="post">
-                                {% csrf_token %}
-                                <div class="fields">
-                                    <div class="six wide field">
-                                        <label for="sleeper_username">Wie lautet dein Sleeper Benutzername?</label>
-                                        <input type="text" id="sleeper_username" name="sleeper_username" maxlength="50"
-                                               placeholder="Benutzername oder ID" value="{{form.sleeper_username.value|default_if_none:'' }}">
+                <div class="ui segment">
+                    {% if message %}
+                        <h2 class="ui header">
+                            <div class="content">
+                                Deine Daten wurden erfolgreich gespeichert!
+                            </div>
+                        </h2>
+                    {% endif %}
+                    {% if registration_status == "not_registered" %}
+                        {% if registration_open %}
+                            Du bist noch nicht zur Saison {{ season }} angemeldet.
+                            Jetzt anmelden
+                        {% else %}
+                            Die Anmeldung zur Saison {{ season }} ist noch nicht gestartet.
+                        {% endif %}
+    {#              {% else %}
+                        {% if registration_status == "pending" %}
+                            <h2 class="ui header">
+                                <div class="content">
+                                    Du bist vorregistriert, hast aber deine Anmeldung noch nicht bestätigt!
+                                </div>
+
+                            </h2>
+                            <div class="content">
+                                Bitte nutze den Link in der Email, die wir dir zugesandt haben.
+
+                                Du kannst hier deine Anmeldedaten prüfen, anpassen und dir erneut eine Email zusenden lassen.
+                                Bitte beachte, dass es ein wenig dauern kann, bis die Email bei dir eingegangen ist. Sieh im Zweifel auch in deinem Spamordner nach.
+                                Solltest du nach 24h noch nichts erhalten haben, so wende dich bitte direkt an uns!
+                            </div>
+                        {% else %}
+                            <h2 class="ui header">
+                                <div class="content">
+                                    Du bist erfolgreich für die Saison {{ season }} angemeldet!
+                                </div>
+                            </h2>
+                        {% endif %}
+                        <form class="ui form" action="/profile/" method="post">
+                        {% csrf_token %}
+                            <div class="fields">
+                                <div class="six wide field">
+                                    <label for="sleeper_username">Sleeper Benutzername:</label>
+                                    <input type="text" id="sleeper_username" name="sleeper_username" maxlength="50"
+                                           placeholder="Benutzername oder ID" value="{{ form.sleeper_username.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="fields">
+                                <div class="six wide field">
+                                    <label for="email">Email für Kontaktaufnahme:</label>
+                                    <input type="email" id="email" name="email"
+                                           placeholder="you@example.com" value="{{ form.email.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="fields">
+                                <div class="ten wide field">
+                                    <label for="region">Für welche Region trittst du an? Mitspieler außerhalb Deutschlands dürfen sich eine Region aussuchen.</label>
+                                    <select class="ui fluid search dropdown" name="region" id="region">
+                                        {% for value, region in region_choices %}
+                                            <option value="{{value}}" {% if value == form.region.value %}selected{% endif %}>{{region}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="fields">
+                                <div class="ten wide field">
+                                    <div class="ui checkbox {% if form.possible_commish.value %}checked{% endif %}">
+                                        <input type="checkbox" {% if form.possible_commish.value %}checked=""{% endif %} name="possible_commish">
+                                        <label>Ich kann mir vorstellen in meiner Liga die Rolle des Comissioners zu übernehmen</label>
                                     </div>
                                 </div>
-                                <div class="fields">
-                                    <div class="ten wide field">
-                                        <label for="region">Für welche Region trittst du an? Mitspieler außerhalb Deutschlands dürfen sich eine Region aussuchen.</label>
-                                        <select class="ui fluid search dropdown" name="region" id="region">
-                                            {% for value, region in region_choices %}
-                                                <option value="{{value}}" {% if value == form.region.value %}selected{% endif %}>{{region}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="fields">
-                                    <div class="ten wide field">
-                                        <div class="ui checkbox {% if form.possible_commish.value == True %}checked{% endif %}">
-                                            <input type="checkbox" {% if form.possible_commish.value == True %}checked=""{% endif %} name="possible_commish">
-                                            <label>Ich kann mir vorstellen in meiner Liga die Rolle des Comissioners zu übernehmen</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="fields">
-                                    <div class="ten wide field">
-                                        {% if form.errors %}
-                                            {% for field in form %}
-                                                {% for error in field.errors %}
-                                                    <div class="ui negative message">
-                                                        <strong>{{ error|escape }}</strong>
-                                                    </div>
-                                                {% endfor %}
-                                            {% endfor %}
-                                            {% for error in form.non_field_errors %}
+                            </div>
+                            <div class="fields">
+                                <div class="ten wide field">
+                                    {% if form.errors %}
+                                        {% for field in form %}
+                                            {% for error in field.errors %}
                                                 <div class="ui negative message">
                                                     <strong>{{ error|escape }}</strong>
                                                 </div>
                                             {% endfor %}
-                                        {% endif %}
-                                    </div>
+                                        {% endfor %}
+                                        {% for error in form.non_field_errors %}
+                                            <div class="ui negative message">
+                                                <strong>{{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
-                                <div class="dst-spacer-25">
-                                    <button class="ui approve submit button">Absenden</button>
-                                </div>
-                            </form>
+                            </div>
+                            <div class="dst-spacer-25">
+                                <button class="ui approve submit button">Anmeldung aktualisieren</button>
+                            </div>
+
+                      </form>
+                    {% endif %}
+                </div>
+
+                {% if registration_status == "pending" %}
+                    <div class="ui segment">
+                        <div class="dst-spacer-50">
+                            <a href="{{ resend_url }}" class="ui approve submit button">Bestätigungslink erneut zusenden</a>
                         </div>
+                        <p>
+                            <br>
+                            Wenn du deine email Adresse ändern möchtest, speichere bitte zunächst deine Änderungen!
+                        </p>
 
                     </div>
                 {% endif %}
+
             </div>
         </div>
     </div>

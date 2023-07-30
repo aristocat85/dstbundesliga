@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 import sleeper_wrapper
 from django.urls import reverse
 
-from DSTBundesliga.apps.dstffbl.forms import RegisterForm
+from DSTBundesliga.apps.dstffbl.forms import RegisterForm, ProfileForm
 from DSTBundesliga.apps.dstffbl.models import SeasonUser, News, SeasonRegistration, DSTEmail, REGIONS
 from DSTBundesliga.apps.dstffbl.services import season_service
 from DSTBundesliga.apps.leagues.models import Matchup, Season, DSTPlayer, League
@@ -173,3 +173,80 @@ def login(request):
         return redirect(next)
 
     return render(request, 'dstffbl/login.html', {'next': next})
+
+
+def profile(request):
+    user = request.user
+    season = Season.get_active()
+
+    season_user = None
+    season_registration = None
+    message = ""
+    season_data = {}
+    registration_open = is_registration_open()
+
+    try:
+        season_user = SeasonUser.objects.get(user=user, season=season)
+        season_data = season_user
+        registration_status = "confirmed"
+    except SeasonUser.DoesNotExist:
+        try:
+            season_registration = SeasonRegistration.objects.get(user=user, season=Season.get_active())
+            season_data = season_registration
+            registration_status = "pending"
+        except SeasonRegistration.DoesNotExist:
+
+            registration_status = "not_registered"
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST)
+
+        if form.is_valid():
+            submitted_sleeper_id = form.cleaned_data.get('sleeper_username')
+            sleeper_user = sleeper_wrapper.User(submitted_sleeper_id)
+            sleeper_id = sleeper_user.get_user_id()
+            sleeper_username = sleeper_user.get_username()
+            dst_player, _ = DSTPlayer.objects.update_or_create(sleeper_id=sleeper_id, defaults={
+                "display_name": sleeper_username
+            })
+
+            season_data.sleeper_id = sleeper_id
+            season_data.dst_player.display_name = sleeper_username
+
+            season_data.user.email = form.cleaned_data.get('email')
+            season_data.region = form.cleaned_data.get('region')
+            season_data.possible_commish = form.cleaned_data.get('possible_commish')
+            season_data.save()
+            season_data.user.save()
+            season_data.dst_player.save()
+
+            message = "Deine Daten wurden erfolgreich gespeichert!"
+
+    else:
+        form = ProfileForm(data={
+            "sleeper_username": season_data.dst_player.display_name,
+            "email": season_data.user.email,
+            "possible_commish": season_data.possible_commish,
+            "region": season_data.region
+        })
+
+    return render(request, "dstffbl/profile.html", {
+        "season": season,
+        "season_data": season_data,
+        "registration_status": registration_status,
+        "registration_open": registration_open,
+        'region_choices': REGIONS,
+        "form": form,
+        "message": message,
+        "resend_url": reverse("dstffbl:resend_invite")
+    })
+
+
+def resend_invite(request):
+    try:
+        season_registration = SeasonRegistration.objects.get(user=request.user, season=Season.get_active())
+        season_registration.create_mail()
+    except SeasonRegistration.DoesNotExist:
+        pass
+
+    return render(request, 'dstffbl/registration_success.html')

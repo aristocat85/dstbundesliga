@@ -203,8 +203,8 @@ ADMIN_MEDIA_PREFIX = "/static/admin/"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-REGISTRATION_STARTS = "2022-08-01"
-REGISTRATION_STOPS = "2022-08-10"
+REGISTRATION_STARTS = "2023-07-31"
+REGISTRATION_STOPS = "2023-08-11"
 
 if os.getenv('DEV', 0) == '1':
     from local_settings import *
@@ -285,7 +285,7 @@ LOGGING = {
     },
 }
 
-DEFAULT_FROM_EMAIL = 'DSTFanFooBL - Down Set Talk! Fantasy Football Bundesliga <noreply@dstffbl.uber.space>'
+DEFAULT_FROM_EMAIL = 'DSTFanFooBL - Down Set Talk! Fantasy Football Bundesliga <info@fantasybundesliga.de>'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 25))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')

@@ -155,7 +155,7 @@ class SeasonRegistration(models.Model, EmailCreationMixin):
         return self.EMAIL_SUBJECT.format(current_season=Season.get_active())
 
     def get_confirm_link(self):
-        return "https://dstffbl.uber.space" + reverse('dstffbl:accept_invite', kwargs={"registration_id": self.id})
+        return "https://www.fantasybundesliga.de" + reverse('dstffbl:accept_invite', kwargs={"registration_id": self.id})
 
     def get_email_text(self):
         return self.EMAIL_TEXT.format(current_season=state_service.get_season(),
