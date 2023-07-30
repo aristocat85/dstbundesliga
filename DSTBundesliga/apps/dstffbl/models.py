@@ -138,7 +138,7 @@ class SeasonRegistration(models.Model, EmailCreationMixin):
     '''
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
     season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, default=Season.get_active)
     sleeper_id = models.CharField(max_length=50)
