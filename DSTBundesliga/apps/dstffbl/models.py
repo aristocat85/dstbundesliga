@@ -173,6 +173,10 @@ class SeasonRegistration(models.Model, EmailCreationMixin):
     def get_email_type(self):
         return 1
 
+    @property
+    def url(self):
+        return reverse("dstffbl:accept_invite", kwargs={"registration_id": self.id})
+
 
 class SeasonUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

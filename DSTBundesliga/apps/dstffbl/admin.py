@@ -3,6 +3,8 @@ import csv
 import pytz
 from django.contrib import admin
 from django.http import HttpResponse
+from django.urls import reverse
+from django.utils.html import format_html
 
 from DSTBundesliga.apps.dstffbl.models import News, Announcement, SeasonUser, SeasonInvitation, SeasonRegistration, \
     DSTEmail
@@ -67,9 +69,12 @@ class SeasonRegistrationAdmin(admin.ModelAdmin):
     get_sleeper_username.short_description = 'Sleeper Username'
 
     list_display = ['email', 'get_sleeper_username', 'sleeper_id', 'region', 'new_player', 'last_years_league',
-                    'possible_commish', 'registration_ts']
+                    'possible_commish', 'registration_ts', "confirm_registration"]
     search_fields = ['user__email', 'dst_player__display_name', 'sleeper_id', 'last_years_league__sleeper_name']
     list_filter = ('season', 'region', 'new_player', 'possible_commish')
+
+    def confirm_registration(self, obj):
+        return format_html("<a href='{url}'>Registrierung bestätigen</a>", url=obj.url)
 
 
 class SeasonInvitationAdmin(admin.ModelAdmin):
@@ -83,6 +88,7 @@ class SeasonInvitationAdmin(admin.ModelAdmin):
 class DSTEmailAdmin(admin.ModelAdmin):
     list_display = ['type', 'recipient', 'subject', 'send_ts', 'has_erros']
     list_filter = ('type', 'has_erros')
+    search_fields = ["recipient"]
     ordering = ['-send_ts']
 
 
