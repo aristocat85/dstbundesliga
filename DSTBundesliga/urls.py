@@ -16,7 +16,7 @@ urlpatterns = [
     path('tinymce/', include('tinymce.urls')),
     path('admin/', admin.site.urls),
     url(r'^shared/', include('filer.urls')),
-    path('commishguide/', views.commishguide),
+    path('regelwerk/', views.regelwerk),
     re_path(r'^', include('cms.urls')),
 ]
 
