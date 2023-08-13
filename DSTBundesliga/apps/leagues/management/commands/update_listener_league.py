@@ -4,7 +4,7 @@ from DSTBundesliga.apps.services.data_services import update_listener_league
 
 
 class Command(BaseCommand):
-    help = 'Update Hörerliga'
+    help = "Update Hörerliga"
 
     def handle(self, *args, **options):
         update_listener_league()

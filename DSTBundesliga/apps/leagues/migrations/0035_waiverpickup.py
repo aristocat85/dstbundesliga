@@ -6,23 +6,47 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0034_playerdraftstats'),
+        ("leagues", "0034_playerdraftstats"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='WaiverPickup',
+            name="WaiverPickup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('week', models.IntegerField(default=1)),
-                ('status', models.CharField(db_index=True, max_length=20)),
-                ('bid', models.IntegerField(default=0)),
-                ('changed_ts', models.DateTimeField(null=True)),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='leagues.player')),
-                ('roster', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='leagues.roster')),
-                ('season', models.ForeignKey(default=DSTBundesliga.apps.leagues.models.Season.get_active_id, on_delete=django.db.models.deletion.CASCADE, to='leagues.season')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("week", models.IntegerField(default=1)),
+                ("status", models.CharField(db_index=True, max_length=20)),
+                ("bid", models.IntegerField(default=0)),
+                ("changed_ts", models.DateTimeField(null=True)),
+                (
+                    "player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="leagues.player"
+                    ),
+                ),
+                (
+                    "roster",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="leagues.roster"
+                    ),
+                ),
+                (
+                    "season",
+                    models.ForeignKey(
+                        default=DSTBundesliga.apps.leagues.models.Season.get_active_id,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="leagues.season",
+                    ),
+                ),
             ],
         ),
     ]

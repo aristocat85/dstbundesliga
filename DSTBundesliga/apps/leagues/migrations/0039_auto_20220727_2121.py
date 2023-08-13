@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0038_auto_20220727_2036'),
+        ("leagues", "0038_auto_20220727_2036"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='points_ranking_in_league',
+            model_name="finalseasonstanding",
+            name="points_ranking_in_league",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='points_ranking_on_level',
+            model_name="finalseasonstanding",
+            name="points_ranking_on_level",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='points_ranking_overall',
+            model_name="finalseasonstanding",
+            name="points_ranking_overall",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='rank_in_league',
+            model_name="finalseasonstanding",
+            name="rank_in_league",
             field=models.IntegerField(default=0),
         ),
     ]

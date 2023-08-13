@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dstffbl', '0011_auto_20220720_1852'),
+        ("dstffbl", "0011_auto_20220720_1852"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='seasonregistration',
-            name='send_ts',
+            model_name="seasonregistration",
+            name="send_ts",
             field=models.DateTimeField(null=True),
         ),
     ]

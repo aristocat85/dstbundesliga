@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dstffbl', '0008_auto_20210725_0938'),
+        ("dstffbl", "0008_auto_20210725_0938"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='seasonuser',
-            name='registration_ts',
+            model_name="seasonuser",
+            name="registration_ts",
             field=models.DateTimeField(auto_now_add=True),
         ),
     ]

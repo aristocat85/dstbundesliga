@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0011_news'),
+        ("leagues", "0011_news"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='news',
-            options={'verbose_name_plural': 'News'},
+            name="news",
+            options={"verbose_name_plural": "News"},
         ),
         migrations.AlterField(
-            model_name='news',
-            name='date',
+            model_name="news",
+            name="date",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

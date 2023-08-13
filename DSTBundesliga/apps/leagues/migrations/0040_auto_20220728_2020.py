@@ -5,34 +5,43 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0039_auto_20220727_2121'),
+        ("leagues", "0039_auto_20220727_2121"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='finalseasonstanding',
-            options={'ordering': ['points_ranking_overall', 'points_ranking_on_level', 'points_ranking_in_league']},
+            name="finalseasonstanding",
+            options={
+                "ordering": [
+                    "points_ranking_overall",
+                    "points_ranking_on_level",
+                    "points_ranking_in_league",
+                ]
+            },
         ),
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='dst_player',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='leagues.dstplayer'),
+            model_name="finalseasonstanding",
+            name="dst_player",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="leagues.dstplayer",
+            ),
         ),
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='points_ranking_in_league',
-            field=models.IntegerField(default=0, verbose_name='#league'),
+            model_name="finalseasonstanding",
+            name="points_ranking_in_league",
+            field=models.IntegerField(default=0, verbose_name="#league"),
         ),
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='points_ranking_on_level',
-            field=models.IntegerField(default=0, verbose_name='#level'),
+            model_name="finalseasonstanding",
+            name="points_ranking_on_level",
+            field=models.IntegerField(default=0, verbose_name="#level"),
         ),
         migrations.AlterField(
-            model_name='finalseasonstanding',
-            name='points_ranking_overall',
-            field=models.IntegerField(default=0, verbose_name='#overall'),
+            model_name="finalseasonstanding",
+            name="points_ranking_overall",
+            field=models.IntegerField(default=0, verbose_name="#overall"),
         ),
     ]

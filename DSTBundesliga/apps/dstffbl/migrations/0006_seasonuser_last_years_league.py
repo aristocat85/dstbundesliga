@@ -5,16 +5,19 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0029_league_type'),
-        ('dstffbl', '0005_seasonuser_registration_ts'),
+        ("leagues", "0029_league_type"),
+        ("dstffbl", "0005_seasonuser_registration_ts"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='seasonuser',
-            name='last_years_league',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='leagues.league'),
+            model_name="seasonuser",
+            name="last_years_league",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="leagues.league",
+            ),
         ),
     ]

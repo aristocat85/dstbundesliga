@@ -4,16 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dstffbl', '0014_dstemail'),
+        ("dstffbl", "0014_dstemail"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dstemail',
-            name='type',
-            field=models.IntegerField(choices=[(1, 'CONFIRM_REGISTRATION'), (2, 'REGISTRATION_SUCCESSFUL'), (3, 'LEAGUE_INVITATION')], default=1),
+            model_name="dstemail",
+            name="type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "CONFIRM_REGISTRATION"),
+                    (2, "REGISTRATION_SUCCESSFUL"),
+                    (3, "LEAGUE_INVITATION"),
+                ],
+                default=1,
+            ),
             preserve_default=False,
         ),
     ]

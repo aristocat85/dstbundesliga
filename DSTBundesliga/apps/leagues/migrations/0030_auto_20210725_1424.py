@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0029_league_type'),
+        ("leagues", "0029_league_type"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='league',
-            options={'ordering': ['-level', 'sleeper_name']},
+            name="league",
+            options={"ordering": ["-level", "sleeper_name"]},
         ),
     ]

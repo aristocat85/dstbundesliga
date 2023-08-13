@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0035_waiverpickup'),
+        ("leagues", "0035_waiverpickup"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='waiverpickup',
-            name='changed_ts',
+            model_name="waiverpickup",
+            name="changed_ts",
             field=models.DateTimeField(db_index=True, null=True),
         ),
     ]

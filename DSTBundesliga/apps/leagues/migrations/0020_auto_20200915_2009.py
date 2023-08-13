@@ -5,21 +5,20 @@ import jsonfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0019_auto_20200915_1913'),
+        ("leagues", "0019_auto_20200915_1913"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='statsweek',
-            name='projected_points',
+            model_name="statsweek",
+            name="projected_points",
             field=models.DecimalField(decimal_places=3, default=0, max_digits=6),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='statsweek',
-            name='projected_stats',
+            model_name="statsweek",
+            name="projected_stats",
             field=jsonfield.fields.JSONField(default={}),
             preserve_default=False,
         ),

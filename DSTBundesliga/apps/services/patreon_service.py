@@ -6,7 +6,7 @@ def read_patreon_file(filepath=None):
     with open(filepath) as csv_file:
         dialect = csv.Sniffer().sniff(csv_file.readline())
         csv_file.seek(0)
-        patreon_reader = csv.DictReader(csv_file,  dialect=dialect)
+        patreon_reader = csv.DictReader(csv_file, dialect=dialect)
 
         return [row for row in patreon_reader]
 
@@ -28,7 +28,11 @@ def get_emails(patreon_data):
 
 
 def get_discord(patreon_data):
-    return [row.get("Discord").split("#")[0].strip().upper() for row in patreon_data if '#' in row.get("Discord")]
+    return [
+        row.get("Discord").split("#")[0].strip().upper()
+        for row in patreon_data
+        if "#" in row.get("Discord")
+    ]
 
 
 def find_missing_users(patreon_filepath, ffbl_filepath):
@@ -53,10 +57,10 @@ def find_missing_users(patreon_filepath, ffbl_filepath):
     no_second_run_hit = []
 
     for name in no_direct_hit:
-        stripped_name = re.sub(r'\([^)]*\)', '', name).replace(" ", "").strip()
+        stripped_name = re.sub(r"\([^)]*\)", "", name).replace(" ", "").strip()
         stripped_email = stripped_name
         if "(" in name and ")" in name:
-            stripped_email = name[name.find("(")+1:name.find(")")]
+            stripped_email = name[name.find("(") + 1 : name.find(")")]
 
         if stripped_name in second_run_names:
             second_run_names.remove(stripped_name)
@@ -88,9 +92,9 @@ def find_missing_users(patreon_filepath, ffbl_filepath):
                     print("name:", name, "pat_mail:", patreon_email)
                 no_last_run_hit.remove(name)
 
-    found = set(names_to_find)-set(no_direct_hit)
-    likely_found = set(no_direct_hit)-set(no_second_run_hit)
-    maybe_found = set(no_second_run_hit)-set(no_last_run_hit)
+    found = set(names_to_find) - set(no_direct_hit)
+    likely_found = set(no_direct_hit) - set(no_second_run_hit)
+    maybe_found = set(no_second_run_hit) - set(no_last_run_hit)
     not_found = no_last_run_hit
 
     with open("local/maybe_found.txt", "w") as file:
@@ -102,6 +106,3 @@ def find_missing_users(patreon_filepath, ffbl_filepath):
             file.write(name + "\n")
 
     return list(found), list(likely_found), list(maybe_found), not_found
-
-
-

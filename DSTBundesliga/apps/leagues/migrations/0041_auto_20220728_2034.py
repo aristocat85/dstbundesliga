@@ -5,19 +5,22 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0040_auto_20220728_2020'),
+        ("leagues", "0040_auto_20220728_2020"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='finalseasonstanding',
-            name='dst_player',
+            model_name="finalseasonstanding",
+            name="dst_player",
         ),
         migrations.AddField(
-            model_name='finalseasonstanding',
-            name='roster',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='leagues.roster'),
+            model_name="finalseasonstanding",
+            name="roster",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="leagues.roster",
+            ),
         ),
     ]

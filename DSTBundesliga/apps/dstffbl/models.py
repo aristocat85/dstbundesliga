@@ -14,7 +14,13 @@ from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 
-from DSTBundesliga.apps.leagues.models import Season, DSTPlayer, League
+from DSTBundesliga.apps.leagues.models import (
+    Season,
+    DSTPlayer,
+    League,
+    Roster,
+    FinalSeasonStanding,
+)
 from DSTBundesliga.apps.services.state_service import StateService
 
 state_service = StateService()
@@ -23,14 +29,17 @@ state_service = StateService()
 EMAIL_TYPES = (
     (1, "CONFIRM_REGISTRATION"),
     (2, "REGISTRATION_SUCCESSFUL"),
-    (3, "LEAGUE_INVITATION")
+    (3, "LEAGUE_INVITATION"),
 )
 
 REGIONS = (
-    (1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'),
-    (2, 'Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)'),
-    (3, 'Süd (Bayern, Baden-Württemberg)'),
-    (4, 'West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)'),
+    (
+        1,
+        "Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)",
+    ),
+    (2, "Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)"),
+    (3, "Süd (Bayern, Baden-Württemberg)"),
+    (4, "West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)"),
 )
 
 
@@ -60,7 +69,7 @@ class DSTEmail(models.Model):
                 None,
                 None,
                 None,
-                self.html
+                self.html,
             )
             success = True
 
@@ -90,7 +99,6 @@ class DSTEmail(models.Model):
 
 
 class EmailCreationMixin:
-
     def get_email_to(self):
         pass
 
@@ -109,38 +117,40 @@ class EmailCreationMixin:
             subject=self.get_email_subject(),
             text=self.get_email_text(),
             html=self.get_email_html(),
-            type=self.get_email_type()
+            type=self.get_email_type(),
         )
 
 
 class SeasonRegistration(models.Model, EmailCreationMixin):
-    EMAIL_SUBJECT = 'Bitte bestätige deine Anmmeldung zur Down, Set, Talk! Fantasy Football Bundesliga {current_season}'
+    EMAIL_SUBJECT = "Bitte bestätige deine Anmmeldung zur Down, Set, Talk! Fantasy Football Bundesliga {current_season}"
 
-    EMAIL_TEXT = ''''
+    EMAIL_TEXT = """'
     Hallo {sleeper_name},
-    
+
     bitte bestätige deine Anmeldung zur Saison {current_season}, indem du den folgenden Link aufrufst:
     {confirm_link}
-    
+
     Beste Grüße von
     Michael und dem gesamten Organisationsteam der DSTFanFooBL
-    '''
+    """
 
-    EMAIL_HTML = '''
+    EMAIL_HTML = """
     <p>Hallo {sleeper_name},</p>
-    
+
     <p>bitte bestätige deine Anmeldung zur Saison {current_season}, indem du den folgenden Link aufrufst:</p>
-    
+
     <p><a href="{confirm_link}">{confirm_link}</a></p>
-    
+
     <p>Beste Grüße von<br>
     Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
-    '''
+    """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
-    season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, default=Season.get_active)
+    season = models.ForeignKey(
+        Season, on_delete=models.DO_NOTHING, default=Season.get_active
+    )
     sleeper_id = models.CharField(max_length=50)
     region = models.IntegerField(choices=REGIONS)
     new_player = models.BooleanField(default=False)
@@ -155,17 +165,23 @@ class SeasonRegistration(models.Model, EmailCreationMixin):
         return self.EMAIL_SUBJECT.format(current_season=Season.get_active())
 
     def get_confirm_link(self):
-        return "https://www.fantasybundesliga.de" + reverse('dstffbl:accept_invite', kwargs={"registration_id": self.id})
+        return "https://www.fantasybundesliga.de" + reverse(
+            "dstffbl:accept_invite", kwargs={"registration_id": self.id}
+        )
 
     def get_email_text(self):
-        return self.EMAIL_TEXT.format(current_season=state_service.get_season(),
-                                      sleeper_name=self.dst_player.display_name,
-                                      confirm_link=self.get_confirm_link())
+        return self.EMAIL_TEXT.format(
+            current_season=state_service.get_season(),
+            sleeper_name=self.dst_player.display_name,
+            confirm_link=self.get_confirm_link(),
+        )
 
     def get_email_html(self):
-        return self.EMAIL_HTML.format(current_season=state_service.get_season(),
-                                      sleeper_name=self.dst_player.display_name,
-                                      confirm_link=self.get_confirm_link())
+        return self.EMAIL_HTML.format(
+            current_season=state_service.get_season(),
+            sleeper_name=self.dst_player.display_name,
+            confirm_link=self.get_confirm_link(),
+        )
 
     def get_email_to(self):
         return self.user.email
@@ -181,8 +197,12 @@ class SeasonRegistration(models.Model, EmailCreationMixin):
 class SeasonUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dst_player = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
-    registration = models.ForeignKey(SeasonRegistration, on_delete=models.CASCADE, null=True)
-    season = models.ForeignKey(Season, on_delete=models.DO_NOTHING, default=Season.get_active)
+    registration = models.ForeignKey(
+        SeasonRegistration, on_delete=models.CASCADE, null=True
+    )
+    season = models.ForeignKey(
+        Season, on_delete=models.DO_NOTHING, default=Season.get_active
+    )
     sleeper_id = models.CharField(max_length=50)
     region = models.IntegerField(choices=REGIONS)
     new_player = models.BooleanField(default=False)
@@ -193,44 +213,56 @@ class SeasonUser(models.Model):
     def email(self):
         return self.user.email
 
+    def get_last_season_roster(self):
+        try:
+            return Roster.objects.get(season=Season.get_last(), owner=self.dst_player)
+        except Roster.DoesNotExist:
+            return None
+
+    def get_last_season_standing(self):
+        try:
+            FinalSeasonStanding.objects.get(roster=self.get_last_season_roster())
+        except FinalSeasonStanding.DoesNotExist:
+            return None
+
 
 class SeasonInvitation(models.Model, EmailCreationMixin):
-    EMAIL_SUBJECT = 'Deine Einladung zur Down, Set, Talk! Fantasy Football Bundesliga {current_season}'
+    EMAIL_SUBJECT = "Deine Einladung zur Down, Set, Talk! Fantasy Football Bundesliga {current_season}"
 
-    EMAIL_TEXT = ''''
+    EMAIL_TEXT = """'
     Hallo {sleeper_name},
-    
+
     wir freuen uns sehr, dass du dich für die Saison {season} der Down, Set, Talk! Fantasy Football Bundesliga angemeldet hast. Jetzt dürfen wir dich in deine Liga einladen.
-    
+
     Du wirst in der <b>{league_name}</b> spielen.
     In deine Liga kommst du über diesen Link: {league_link}
-    
+
     Weitere Informationen findest du als angepinnte Nachricht in deiner Liga.
     Bitte beachte, dass du die Einladung in deine Liga bis zum 20. August 2022 um 24:00 Uhr angenommen haben musst. Ansonsten müssen wir deinen Platz leider an eine(n) andere(n) Mitspieler(in) vergeben. Da wir aber davon ausgehen, dass dies nicht erfolgen muss, wünschen wir dir viel Erfolg und vor allem Spaß in der kommenden Fantasy-Saison.
-    
+
     Beste Grüße von
     Michael und dem gesamten Organisationsteam der DSTFanFooBL
-    
-    PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei Twitter und Instagram unter @dstfanfoobl. Hört auch gerne mal in unseren Podcast zur DSTFanFooBL rein: https://anchor.fm/dstfanfoobl   
-    '''
 
-    EMAIL_HTML = '''
+    PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei Twitter und Instagram unter @dstfanfoobl. Hört auch gerne mal in unseren Podcast zur DSTFanFooBL rein: https://anchor.fm/dstfanfoobl
+    """
+
+    EMAIL_HTML = """
     <p>Hallo {sleeper_name},</p>
-    
+
     <p>wir freuen uns sehr, dass du dich für die Saison {season} der Down, Set, Talk! Fantasy Football Bundesliga angemeldet hast. Jetzt dürfen wir dich in deine Liga einladen.</p>
-    
+
     <p>Du wirst in der <b>{league_name}</b> spielen.
     In deine Liga kommst du über diesen Link: <a href="{league_link}">{league_link}</a></p>
-    
+
     <p>Weitere Informationen findest du als angepinnte Nachricht in deiner Liga.
     Bitte beachte, dass du die Einladung in deine Liga bis zum <b>20. August 2022 um 24:00 Uhr</b> angenommen haben musst. Ansonsten müssen wir deinen Platz leider an eine(n) andere(n) Mitspieler(in) vergeben. Da wir aber davon ausgehen, dass dies nicht erfolgen muss, wünschen wir dir viel Erfolg und vor allem Spaß in der kommenden Fantasy-Saison.</p>
-    
+
     <p>Beste Grüße von<br>
     Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
-    
+
     <br>
-    <p>PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei <a href="https://twitter.com/dstfanfoobl">Twitter</a> und <a href="https://www.instagram.com/dstfanfoobl/">Instagram</a> unter @dstfanfoobl. Hör auch gerne mal in unseren <a href="https://anchor.fm/dstfanfoobl">Podcast zur DSTFanFooBL</a> rein!</p>   
-    '''
+    <p>PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei <a href="https://twitter.com/dstfanfoobl">Twitter</a> und <a href="https://www.instagram.com/dstfanfoobl/">Instagram</a> unter @dstfanfoobl. Hör auch gerne mal in unseren <a href="https://anchor.fm/dstfanfoobl">Podcast zur DSTFanFooBL</a> rein!</p>
+    """
 
     season_user = models.ForeignKey(SeasonUser, on_delete=models.SET_NULL, null=True)
     sleeper_username = models.CharField(max_length=50)
@@ -243,16 +275,20 @@ class SeasonInvitation(models.Model, EmailCreationMixin):
         return self.EMAIL_SUBJECT.format(current_season=Season.get_active())
 
     def get_email_text(self):
-        return self.EMAIL_TEXT.format(season=state_service.get_season(),
-                                      sleeper_name=self.sleeper_username,
-                                      league_name=self.sleeper_league_name,
-                                      league_link=self.sleeper_league_link)
+        return self.EMAIL_TEXT.format(
+            season=state_service.get_season(),
+            sleeper_name=self.sleeper_username,
+            league_name=self.sleeper_league_name,
+            league_link=self.sleeper_league_link,
+        )
 
     def get_email_html(self):
-        return self.EMAIL_HTML.format(season=state_service.get_season(),
-                                      sleeper_name=self.sleeper_username,
-                                      league_name=self.sleeper_league_name,
-                                      league_link=self.sleeper_league_link)
+        return self.EMAIL_HTML.format(
+            season=state_service.get_season(),
+            sleeper_name=self.sleeper_username,
+            league_name=self.sleeper_league_name,
+            league_link=self.sleeper_league_link,
+        )
 
     def get_email_to(self):
         return self.season_user.user.email
@@ -284,28 +320,34 @@ class News(models.Model):
 
     title = models.TextField()
     content = HTMLField()
-    image = models.CharField(null=False, blank=False, default=settings.DEFAULT_NEWS_LOGO, max_length=255)
+    image = models.CharField(
+        null=False, blank=False, default=settings.DEFAULT_NEWS_LOGO, max_length=255
+    )
     date = models.DateTimeField(auto_now=True)
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
-
     def populate_user(self, request, sociallogin, data):
         user = super().populate_user(request, sociallogin, data)
         user.username = user.email
         return user
 
     def authentication_error(
-            self,
-            request,
-            provider_id,
-            error=None,
-            exception=None,
-            extra_context=None,
+        self,
+        request,
+        provider_id,
+        error=None,
+        exception=None,
+        extra_context=None,
     ):
         import traceback
+
         logger.exception(
             "\nerror: {error}\nexception: {exception}\nextra_content: {extra_context}\nstacktrace: {trace}\nrequest: {request}".format(
-                error=error, exception=exception, extra_context=extra_context, trace=traceback.format_exc(),
-                request=request.__dict__)
+                error=error,
+                exception=exception,
+                extra_context=extra_context,
+                trace=traceback.format_exc(),
+                request=request.__dict__,
+            )
         )

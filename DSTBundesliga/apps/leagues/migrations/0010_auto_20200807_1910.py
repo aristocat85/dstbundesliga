@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0009_auto_20200806_2116'),
+        ("leagues", "0009_auto_20200806_2116"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='draft',
-            name='start_time',
+            model_name="draft",
+            name="start_time",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

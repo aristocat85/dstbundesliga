@@ -4,7 +4,7 @@ from DSTBundesliga.apps.services.data_services import update_playoffs
 
 
 class Command(BaseCommand):
-    help = 'Updates all Playoffs from Sleeper-API'
+    help = "Updates all Playoffs from Sleeper-API"
 
     def handle(self, *args, **options):
         update_playoffs()

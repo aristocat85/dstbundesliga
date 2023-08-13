@@ -27,10 +27,12 @@ def get_registration_starts():
 
 @register.simple_tag()
 def show_registration_countdown():
-    return datetime.date.fromisoformat(settings.REGISTRATION_STARTS) > datetime.date.today()
+    return (
+        datetime.date.fromisoformat(settings.REGISTRATION_STARTS)
+        > datetime.date.today()
+    )
 
 
 @register.simple_tag()
 def get_current_season():
     return StateService().get_season()
-

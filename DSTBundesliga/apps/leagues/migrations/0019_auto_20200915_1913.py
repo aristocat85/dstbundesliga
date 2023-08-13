@@ -6,26 +6,38 @@ import jsonfield.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0018_matchup'),
+        ("leagues", "0018_matchup"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='roster',
-            options={'ordering': ['-wins', '-ties', '-fpts', '-fpts_decimal']},
+            name="roster",
+            options={"ordering": ["-wins", "-ties", "-fpts", "-fpts_decimal"]},
         ),
         migrations.CreateModel(
-            name='StatsWeek',
+            name="StatsWeek",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('week', models.IntegerField(db_index=True)),
-                ('season_type', models.CharField(max_length=30)),
-                ('season', models.IntegerField(default=2020)),
-                ('points', models.DecimalField(decimal_places=3, max_digits=6)),
-                ('stats', jsonfield.fields.JSONField()),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='leagues.Player')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("week", models.IntegerField(db_index=True)),
+                ("season_type", models.CharField(max_length=30)),
+                ("season", models.IntegerField(default=2020)),
+                ("points", models.DecimalField(decimal_places=3, max_digits=6)),
+                ("stats", jsonfield.fields.JSONField()),
+                (
+                    "player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="leagues.Player"
+                    ),
+                ),
             ],
         ),
     ]

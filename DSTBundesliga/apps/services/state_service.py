@@ -39,7 +39,7 @@ class StateService(BaseApi):
             leg=state_data.get("leg"),
             league_season=state_data.get("league_season"),
             league_create_season=state_data.get("league_create_season"),
-            display_week=state_data.get("display_week")
+            display_week=state_data.get("display_week"),
         )
 
     def get_season(self):

@@ -6,29 +6,54 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0037_auto_20220720_1847'),
+        ("leagues", "0037_auto_20220720_1847"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='season',
-            options={'ordering': ['-year']},
+            name="season",
+            options={"ordering": ["-year"]},
         ),
         migrations.CreateModel(
-            name='FinalSeasonStanding',
+            name="FinalSeasonStanding",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rank_in_league', models.IntegerField()),
-                ('points', models.IntegerField(default=0)),
-                ('points_decimal', models.IntegerField(default=0)),
-                ('points_ranking_overall', models.IntegerField()),
-                ('points_ranking_on_level', models.IntegerField()),
-                ('points_ranking_in_league', models.IntegerField()),
-                ('dst_player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='leagues.dstplayer')),
-                ('league', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='leagues.league')),
-                ('season', models.ForeignKey(default=DSTBundesliga.apps.leagues.models.Season.get_active_id, on_delete=django.db.models.deletion.CASCADE, to='leagues.season')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("rank_in_league", models.IntegerField()),
+                ("points", models.IntegerField(default=0)),
+                ("points_decimal", models.IntegerField(default=0)),
+                ("points_ranking_overall", models.IntegerField()),
+                ("points_ranking_on_level", models.IntegerField()),
+                ("points_ranking_in_league", models.IntegerField()),
+                (
+                    "dst_player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="leagues.dstplayer",
+                    ),
+                ),
+                (
+                    "league",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="leagues.league"
+                    ),
+                ),
+                (
+                    "season",
+                    models.ForeignKey(
+                        default=DSTBundesliga.apps.leagues.models.Season.get_active_id,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="leagues.season",
+                    ),
+                ),
             ],
         ),
     ]

@@ -9,15 +9,17 @@ from DSTBundesliga import views
 admin.autodiscover()
 
 urlpatterns = [
-    path('', include(('DSTBundesliga.apps.dstffbl.urls', 'dstffbl'), namespace='dstffbl')),
-    path('auth/', include('django.contrib.auth.urls')),
-    path('accounts/', include('allauth.urls')),
-    path('leagues/', include('DSTBundesliga.apps.leagues.urls')),
-    path('tinymce/', include('tinymce.urls')),
-    path('admin/', admin.site.urls),
-    url(r'^shared/', include('filer.urls')),
-    path('regelwerk/', views.regelwerk),
-    re_path(r'^', include('cms.urls')),
+    path(
+        "", include(("DSTBundesliga.apps.dstffbl.urls", "dstffbl"), namespace="dstffbl")
+    ),
+    path("auth/", include("django.contrib.auth.urls")),
+    path("accounts/", include("allauth.urls")),
+    path("leagues/", include("DSTBundesliga.apps.leagues.urls")),
+    path("tinymce/", include("tinymce.urls")),
+    path("admin/", admin.site.urls),
+    url(r"^shared/", include("filer.urls")),
+    path("regelwerk/", views.regelwerk),
+    re_path(r"^", include("cms.urls")),
 ]
 
 if settings.DEBUG:

@@ -4,20 +4,51 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dstffbl', '0016_auto_20220724_1336'),
+        ("dstffbl", "0016_auto_20220724_1336"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='seasonregistration',
-            name='region',
-            field=models.IntegerField(choices=[(1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'), (2, 'Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)'), (3, 'Süd (Bayern, Baden-Württemberg)'), (4, 'West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)')]),
+            model_name="seasonregistration",
+            name="region",
+            field=models.IntegerField(
+                choices=[
+                    (
+                        1,
+                        "Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)",
+                    ),
+                    (
+                        2,
+                        "Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)",
+                    ),
+                    (3, "Süd (Bayern, Baden-Württemberg)"),
+                    (
+                        4,
+                        "West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)",
+                    ),
+                ]
+            ),
         ),
         migrations.AlterField(
-            model_name='seasonuser',
-            name='region',
-            field=models.IntegerField(choices=[(1, 'Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)'), (2, 'Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)'), (3, 'Süd (Bayern, Baden-Württemberg)'), (4, 'West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)')]),
+            model_name="seasonuser",
+            name="region",
+            field=models.IntegerField(
+                choices=[
+                    (
+                        1,
+                        "Nord (Niedersachsen, Bremen, Hamburg, Mecklenburg-Vorpommern , Schleswig-Holstein)",
+                    ),
+                    (
+                        2,
+                        "Ost (Thüringen, Berlin, Sachsen, Sachsen-Anhalt, Brandenburg)",
+                    ),
+                    (3, "Süd (Bayern, Baden-Württemberg)"),
+                    (
+                        4,
+                        "West (Nordrhein-Westfalen, Hessen, Saarland, Rheinland-Pfalz)",
+                    ),
+                ]
+            ),
         ),
     ]

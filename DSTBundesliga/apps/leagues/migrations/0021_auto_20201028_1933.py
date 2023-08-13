@@ -5,25 +5,28 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0020_auto_20200915_2009'),
+        ("leagues", "0020_auto_20200915_2009"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='roster',
-            name='league',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rosters', to='leagues.League'),
+            model_name="roster",
+            name="league",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="rosters",
+                to="leagues.League",
+            ),
         ),
         migrations.AlterField(
-            model_name='statsweek',
-            name='points',
+            model_name="statsweek",
+            name="points",
             field=models.DecimalField(decimal_places=3, default=0, max_digits=6),
         ),
         migrations.AlterField(
-            model_name='statsweek',
-            name='projected_points',
+            model_name="statsweek",
+            name="projected_points",
             field=models.DecimalField(decimal_places=3, default=0, max_digits=6),
         ),
     ]

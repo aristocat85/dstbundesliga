@@ -4,60 +4,59 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0001_initial'),
+        ("leagues", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='roster',
-            name='fpts',
+            model_name="roster",
+            name="fpts",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='fpts_against',
+            model_name="roster",
+            name="fpts_against",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='fpts_against_decimal',
+            model_name="roster",
+            name="fpts_against_decimal",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='fpts_decimal',
+            model_name="roster",
+            name="fpts_decimal",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='losses',
+            model_name="roster",
+            name="losses",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='ties',
+            model_name="roster",
+            name="ties",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='total_moves',
+            model_name="roster",
+            name="total_moves",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='waiver_budget_used',
+            model_name="roster",
+            name="waiver_budget_used",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='waiver_position',
+            model_name="roster",
+            name="waiver_position",
             field=models.IntegerField(default=1),
         ),
         migrations.AddField(
-            model_name='roster',
-            name='wins',
+            model_name="roster",
+            name="wins",
             field=models.IntegerField(default=0),
         ),
     ]

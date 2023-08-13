@@ -4,70 +4,69 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0006_auto_20200806_1711'),
+        ("leagues", "0006_auto_20200806_1711"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='player',
-            name='type',
-            field=models.IntegerField(choices=[(1, 'Player'), (2, 'Team')], default=1),
+            model_name="player",
+            name="type",
+            field=models.IntegerField(choices=[(1, "Player"), (2, "Team")], default=1),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='age',
+            model_name="player",
+            name="age",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='fantasy_positions',
-            field=models.CharField(default='', max_length=50),
+            model_name="player",
+            name="fantasy_positions",
+            field=models.CharField(default="", max_length=50),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='first_name',
-            field=models.CharField(default='', max_length=50),
+            model_name="player",
+            name="first_name",
+            field=models.CharField(default="", max_length=50),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='hashtag',
+            model_name="player",
+            name="hashtag",
             field=models.CharField(max_length=50, null=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='height',
+            model_name="player",
+            name="height",
             field=models.CharField(max_length=10, null=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='last_name',
-            field=models.CharField(default='', max_length=50),
+            model_name="player",
+            name="last_name",
+            field=models.CharField(default="", max_length=50),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='number',
+            model_name="player",
+            name="number",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='position',
+            model_name="player",
+            name="position",
             field=models.CharField(max_length=50, null=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='sleeper_id',
+            model_name="player",
+            name="sleeper_id",
             field=models.CharField(db_index=True, max_length=10, unique=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='status',
+            model_name="player",
+            name="status",
             field=models.CharField(max_length=20, null=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='weight',
+            model_name="player",
+            name="weight",
             field=models.IntegerField(default=0),
         ),
     ]

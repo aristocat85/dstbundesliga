@@ -6,25 +6,39 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0033_auto_20210808_1101'),
+        ("leagues", "0033_auto_20210808_1101"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PlayerDraftStats',
+            name="PlayerDraftStats",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('player_id', models.CharField(max_length=10, null=True)),
-                ('player_name', models.CharField(max_length=100)),
-                ('player_team', models.CharField(max_length=10)),
-                ('player_position', models.CharField(max_length=10)),
-                ('pick_count', models.IntegerField(default=0)),
-                ('adp', models.DecimalField(decimal_places=2, max_digits=6)),
-                ('highest_pick', models.IntegerField()),
-                ('lowest_pick', models.IntegerField()),
-                ('season', models.ForeignKey(default=DSTBundesliga.apps.leagues.models.Season.get_active_id, on_delete=django.db.models.deletion.CASCADE, to='leagues.season')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("player_id", models.CharField(max_length=10, null=True)),
+                ("player_name", models.CharField(max_length=100)),
+                ("player_team", models.CharField(max_length=10)),
+                ("player_position", models.CharField(max_length=10)),
+                ("pick_count", models.IntegerField(default=0)),
+                ("adp", models.DecimalField(decimal_places=2, max_digits=6)),
+                ("highest_pick", models.IntegerField()),
+                ("lowest_pick", models.IntegerField()),
+                (
+                    "season",
+                    models.ForeignKey(
+                        default=DSTBundesliga.apps.leagues.models.Season.get_active_id,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="leagues.season",
+                    ),
+                ),
             ],
         ),
     ]

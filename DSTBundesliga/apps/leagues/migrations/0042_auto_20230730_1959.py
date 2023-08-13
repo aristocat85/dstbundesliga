@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0041_auto_20220728_2034'),
+        ("leagues", "0041_auto_20220728_2034"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='season',
-            name='year',
+            model_name="season",
+            name="year",
             field=models.IntegerField(default=2023),
         ),
     ]

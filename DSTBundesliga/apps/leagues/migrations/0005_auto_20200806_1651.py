@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0004_auto_20200806_1650'),
+        ("leagues", "0004_auto_20200806_1650"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='player',
-            name='depth_chart_position',
+            model_name="player",
+            name="depth_chart_position",
             field=models.CharField(max_length=50, null=True),
         ),
     ]

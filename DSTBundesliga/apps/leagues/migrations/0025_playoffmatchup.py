@@ -4,24 +4,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0024_news_image'),
+        ("leagues", "0024_news_image"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PlayoffMatchup',
+            name="PlayoffMatchup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('bracket', models.CharField(db_index=True, max_length=20)),
-                ('round', models.IntegerField(db_index=True)),
-                ('matchup_id', models.IntegerField(db_index=True)),
-                ('league_id', models.CharField(db_index=True, max_length=50)),
-                ('roster_id_one', models.IntegerField(null=True)),
-                ('roster_id_two', models.IntegerField(null=True)),
-                ('winner', models.IntegerField(null=True)),
-                ('loser', models.IntegerField(null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("bracket", models.CharField(db_index=True, max_length=20)),
+                ("round", models.IntegerField(db_index=True)),
+                ("matchup_id", models.IntegerField(db_index=True)),
+                ("league_id", models.CharField(db_index=True, max_length=50)),
+                ("roster_id_one", models.IntegerField(null=True)),
+                ("roster_id_two", models.IntegerField(null=True)),
+                ("winner", models.IntegerField(null=True)),
+                ("loser", models.IntegerField(null=True)),
             ],
         ),
     ]

@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0027_season'),
-        ('dstffbl', '0003_auto_20210501_1939'),
+        ("leagues", "0027_season"),
+        ("dstffbl", "0003_auto_20210501_1939"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='News',
+            name="News",
         ),
     ]

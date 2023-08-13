@@ -4,25 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0007_auto_20200806_1857'),
+        ("leagues", "0007_auto_20200806_1857"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='draft',
-            name='last_message_id',
+            model_name="draft",
+            name="last_message_id",
             field=models.CharField(max_length=50, null=True),
         ),
         migrations.AlterField(
-            model_name='draft',
-            name='last_message_time',
+            model_name="draft",
+            name="last_message_time",
             field=models.DateTimeField(null=True),
         ),
         migrations.AlterField(
-            model_name='draft',
-            name='last_picked',
+            model_name="draft",
+            name="last_picked",
             field=models.DateTimeField(null=True),
         ),
     ]

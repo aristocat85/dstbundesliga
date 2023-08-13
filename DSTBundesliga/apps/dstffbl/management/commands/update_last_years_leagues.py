@@ -4,7 +4,7 @@ from DSTBundesliga.apps.dstffbl.services.season_service import update_last_years
 
 
 class Command(BaseCommand):
-    help = 'Updates Season Users last years leagues'
+    help = "Updates Season Users last years leagues"
 
     def handle(self, *args, **options):
         update_last_years_leagues()

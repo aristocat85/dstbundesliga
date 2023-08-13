@@ -5,19 +5,23 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0013_auto_20200809_1141'),
+        ("leagues", "0013_auto_20200809_1141"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='pick',
-            name='user',
+            model_name="pick",
+            name="user",
         ),
         migrations.AddField(
-            model_name='pick',
-            name='owner',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='picks', to='leagues.DSTPlayer'),
+            model_name="pick",
+            name="owner",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="picks",
+                to="leagues.DSTPlayer",
+            ),
         ),
     ]

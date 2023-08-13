@@ -4,31 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dstffbl', '0012_seasonregistration_send_ts'),
+        ("dstffbl", "0012_seasonregistration_send_ts"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='seasoninvitation',
-            name='error_message',
+            model_name="seasoninvitation",
+            name="error_message",
         ),
         migrations.RemoveField(
-            model_name='seasoninvitation',
-            name='has_erros',
+            model_name="seasoninvitation",
+            name="has_erros",
         ),
         migrations.RemoveField(
-            model_name='seasoninvitation',
-            name='send_ts',
+            model_name="seasoninvitation",
+            name="send_ts",
         ),
         migrations.RemoveField(
-            model_name='seasonregistration',
-            name='send_ts',
+            model_name="seasonregistration",
+            name="send_ts",
         ),
         migrations.AddField(
-            model_name='seasoninvitation',
-            name='created',
+            model_name="seasoninvitation",
+            name="created",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

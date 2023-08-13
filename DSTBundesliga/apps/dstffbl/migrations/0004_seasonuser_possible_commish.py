@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dstffbl', '0003_auto_20210501_1939'),
+        ("dstffbl", "0003_auto_20210501_1939"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='seasonuser',
-            name='possible_commish',
+            model_name="seasonuser",
+            name="possible_commish",
             field=models.BooleanField(default=False),
         ),
     ]

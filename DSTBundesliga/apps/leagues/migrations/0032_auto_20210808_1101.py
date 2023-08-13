@@ -6,30 +6,45 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0031_auto_20210808_1100'),
+        ("leagues", "0031_auto_20210808_1100"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='league',
-            name='season',
-            field=models.ForeignKey(default=DSTBundesliga.apps.leagues.models.Season.get_last_id, on_delete=django.db.models.deletion.CASCADE, to='leagues.season'),
+            model_name="league",
+            name="season",
+            field=models.ForeignKey(
+                default=DSTBundesliga.apps.leagues.models.Season.get_last_id,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="leagues.season",
+            ),
         ),
         migrations.AddField(
-            model_name='matchup',
-            name='season',
-            field=models.ForeignKey(default=DSTBundesliga.apps.leagues.models.Season.get_last_id, on_delete=django.db.models.deletion.CASCADE, to='leagues.season'),
+            model_name="matchup",
+            name="season",
+            field=models.ForeignKey(
+                default=DSTBundesliga.apps.leagues.models.Season.get_last_id,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="leagues.season",
+            ),
         ),
         migrations.AddField(
-            model_name='playoffmatchup',
-            name='season',
-            field=models.ForeignKey(default=DSTBundesliga.apps.leagues.models.Season.get_last_id, on_delete=django.db.models.deletion.CASCADE, to='leagues.season'),
+            model_name="playoffmatchup",
+            name="season",
+            field=models.ForeignKey(
+                default=DSTBundesliga.apps.leagues.models.Season.get_last_id,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="leagues.season",
+            ),
         ),
         migrations.AddField(
-            model_name='statsweek',
-            name='season',
-            field=models.ForeignKey(default=DSTBundesliga.apps.leagues.models.Season.get_last_id, on_delete=django.db.models.deletion.CASCADE, to='leagues.season'),
+            model_name="statsweek",
+            name="season",
+            field=models.ForeignKey(
+                default=DSTBundesliga.apps.leagues.models.Season.get_last_id,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="leagues.season",
+            ),
         ),
     ]

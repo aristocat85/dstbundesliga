@@ -23,15 +23,13 @@ def update():
 
 def create_news(entry):
     News.objects.create(
-        title=entry.title,
-        content=get_content(entry),
-        image=settings.PODCAST_NEWS_LOGO
+        title=entry.title, content=get_content(entry), image=settings.PODCAST_NEWS_LOGO
     )
 
 
 def get_last_update_ts():
     try:
-        with open(settings.RSS_TIMESTAMP_FILE, 'r') as ts_file:
+        with open(settings.RSS_TIMESTAMP_FILE, "r") as ts_file:
             ts = ts_file.readline().strip()
             dt = parse(ts)
     except Exception as e:
@@ -42,9 +40,11 @@ def get_last_update_ts():
 
 
 def set_last_update_ts(dt):
-    with open(settings.RSS_TIMESTAMP_FILE, 'w') as ts_file:
+    with open(settings.RSS_TIMESTAMP_FILE, "w") as ts_file:
         ts_file.write(str(dt))
 
 
 def get_content(entry):
-    return entry.summary + "<p><a href='{link}'>Hier geht's zur neuen Folge</a>".format(link=entry.link)
+    return entry.summary + "<p><a href='{link}'>Hier geht's zur neuen Folge</a>".format(
+        link=entry.link
+    )

@@ -5,15 +5,12 @@ from DSTBundesliga.apps.services.season_service import calc_final_standings
 
 
 class Command(BaseCommand):
-    help = 'Calculate the final standings for the given season'
+    help = "Calculate the final standings for the given season"
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'season',
-            type=int
-        )
+        parser.add_argument("season", type=int)
 
     def handle(self, *args, **options):
-        season = Season.objects.get(year=options['season'])
+        season = Season.objects.get(year=options["season"])
 
         calc_final_standings(season)

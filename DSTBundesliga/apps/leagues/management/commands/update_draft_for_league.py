@@ -1,21 +1,23 @@
 from django.core.management import BaseCommand
 
-from DSTBundesliga.apps.services.data_services import get_draft_data, update_drafts_for_league, \
-    get_pick_data, update_picks_for_draft
+from DSTBundesliga.apps.services.data_services import (
+    get_draft_data,
+    update_drafts_for_league,
+    get_pick_data,
+    update_picks_for_draft,
+)
 
 
 class Command(BaseCommand):
-    help = 'Update Draft for selected League'
+    help = "Update Draft for selected League"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'league_id',
-            type=str,
-            help='Force delete (instead of dry run)'
+            "league_id", type=str, help="Force delete (instead of dry run)"
         )
 
     def handle(self, *args, **options):
-        league_id = options['league_id']
+        league_id = options["league_id"]
         draft = update_drafts_for_league(league_id)
 
         picks_data = get_pick_data(draft.draft_id)

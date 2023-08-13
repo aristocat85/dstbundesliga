@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('leagues', '0023_auto_20201107_1629'),
+        ("leagues", "0023_auto_20201107_1629"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='news',
-            name='image',
-            field=models.CharField(default='dst_logo_96.png', max_length=255),
+            model_name="news",
+            name="image",
+            field=models.CharField(default="dst_logo_96.png", max_length=255),
         ),
     ]

@@ -30,11 +30,16 @@ class Season(models.Model):
     def get_active():
         current_season = int(state_servive.get_season())
 
-        season, _ = Season.objects.get_or_create(active=True, year=current_season, defaults={
-            'year': current_season,
-            'name': 'Saison {current_year}/{next_year}'.format(current_year=current_season,
-                                                               next_year=current_season + 1)
-        })
+        season, _ = Season.objects.get_or_create(
+            active=True,
+            year=current_season,
+            defaults={
+                "year": current_season,
+                "name": "Saison {current_year}/{next_year}".format(
+                    current_year=current_season, next_year=current_season + 1
+                ),
+            },
+        )
 
         return season
 
@@ -45,13 +50,16 @@ class Season(models.Model):
     @staticmethod
     def get_last():
         previous_season = int(state_servive.get_previous_season())
-        season, _ = Season.objects.get_or_create(active=False, year=previous_season,
-                                                 defaults={
-                                                     'year': previous_season,
-                                                     'name': 'Saison {last_year}/{current_year}'.format(
-                                                         last_year=previous_season, current_year=previous_season + 1)
-                                                 }
-                                                 )
+        season, _ = Season.objects.get_or_create(
+            active=False,
+            year=previous_season,
+            defaults={
+                "year": previous_season,
+                "name": "Saison {last_year}/{current_year}".format(
+                    last_year=previous_season, current_year=previous_season + 1
+                ),
+            },
+        )
 
         return season
 
@@ -67,21 +75,23 @@ class LeagueManager(models.Manager):
 
 class League(models.Model):
     class Meta:
-        ordering = ['-level', 'sleeper_name']
+        ordering = ["-level", "sleeper_name"]
 
     BUNDESLIGA = 1
     CL = 2
     LISTENER = 3
 
     TYPES = [
-        (BUNDESLIGA, 'Bundesliga'),
-        (CL, 'Champions League'),
-        (LISTENER, 'Hörerliga'),
+        (BUNDESLIGA, "Bundesliga"),
+        (CL, "Champions League"),
+        (LISTENER, "Hörerliga"),
     ]
 
     objects = LeagueManager()
 
-    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+    season = models.ForeignKey(
+        Season, default=Season.get_active_id, on_delete=models.CASCADE
+    )
 
     type = models.IntegerField(choices=TYPES, default=BUNDESLIGA)
     level = models.IntegerField(default=0)
@@ -111,7 +121,7 @@ class League(models.Model):
 
     @property
     def url(self):
-        return reverse('league-detail', kwargs={'league_id': self.sleeper_id})
+        return reverse("league-detail", kwargs={"league_id": self.sleeper_id})
 
 
 class DSTPlayer(models.Model):
@@ -122,7 +132,9 @@ class DSTPlayer(models.Model):
     leagues = models.ManyToManyField(League)
 
     def __str__(self):
-        return "{display_name} - {sleeper_id}".format(display_name=self.display_name, sleeper_id=self.sleeper_id)
+        return "{display_name} - {sleeper_id}".format(
+            display_name=self.display_name, sleeper_id=self.sleeper_id
+        )
 
 
 class Team(models.Model):
@@ -136,17 +148,14 @@ class Team(models.Model):
 class Player(models.Model):
     PLAYER = 1
     TEAM = 2
-    TYPES = [
-        (PLAYER, 'Player'),
-        (TEAM, 'Team')
-    ]
+    TYPES = [(PLAYER, "Player"), (TEAM, "Team")]
 
     type = models.IntegerField(choices=TYPES, default=PLAYER)
     # Sleeper Data
     sleeper_id = models.CharField(max_length=10, db_index=True, unique=True)
-    last_name = models.CharField(max_length=50, default='')
-    first_name = models.CharField(max_length=50, default='')
-    fantasy_positions = models.CharField(max_length=50, default='')
+    last_name = models.CharField(max_length=50, default="")
+    first_name = models.CharField(max_length=50, default="")
+    fantasy_positions = models.CharField(max_length=50, default="")
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
     hashtag = models.CharField(max_length=50, null=True)
     depth_chart_position = models.CharField(max_length=50, null=True)
@@ -161,7 +170,9 @@ class Player(models.Model):
 
     @property
     def name(self):
-        return "{first_name} {last_name}".format(first_name=self.first_name, last_name=self.last_name)
+        return "{first_name} {last_name}".format(
+            first_name=self.first_name, last_name=self.last_name
+        )
 
     def __str__(self):
         return self.name
@@ -189,7 +200,7 @@ class Roster(models.Model):
     reserve = models.CharField(max_length=100, null=True)
     players = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(DSTPlayer, on_delete=models.CASCADE, null=True)
-    league = models.ForeignKey(League, related_name='rosters', on_delete=models.CASCADE)
+    league = models.ForeignKey(League, related_name="rosters", on_delete=models.CASCADE)
 
     @property
     def points(self):
@@ -217,7 +228,9 @@ class Draft(models.Model):
 class Pick(models.Model):
     # Sleeper Data
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="picks")
-    owner = models.ForeignKey(DSTPlayer, related_name="picks", on_delete=models.CASCADE, null=True)
+    owner = models.ForeignKey(
+        DSTPlayer, related_name="picks", on_delete=models.CASCADE, null=True
+    )
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
     draft = models.ForeignKey(Draft, related_name="picks", on_delete=models.CASCADE)
     round = models.IntegerField(default=1)
@@ -226,14 +239,18 @@ class Pick(models.Model):
     metadata = JSONField()
 
     def __str__(self):
-        return "{round}.{draft_slot} ({pick_no}) - {player}".format(round=self.round,
-                                                                    draft_slot=self.draft_slot,
-                                                                    pick_no=self.pick_no,
-                                                                    player=self.player.name)
+        return "{round}.{draft_slot} ({pick_no}) - {player}".format(
+            round=self.round,
+            draft_slot=self.draft_slot,
+            pick_no=self.pick_no,
+            player=self.player.name,
+        )
 
 
 class Matchup(models.Model):
-    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+    season = models.ForeignKey(
+        Season, default=Season.get_active_id, on_delete=models.CASCADE
+    )
 
     week = models.IntegerField(db_index=True)
     matchup_id = models.IntegerField(db_index=True)
@@ -249,7 +266,9 @@ class Matchup(models.Model):
 
 
 class PlayoffMatchup(models.Model):
-    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+    season = models.ForeignKey(
+        Season, default=Season.get_active_id, on_delete=models.CASCADE
+    )
 
     bracket = models.CharField(max_length=20, db_index=True)
     round = models.IntegerField(db_index=True)
@@ -263,7 +282,9 @@ class PlayoffMatchup(models.Model):
 
 
 class StatsWeek(models.Model):
-    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+    season = models.ForeignKey(
+        Season, default=Season.get_active_id, on_delete=models.CASCADE
+    )
 
     week = models.IntegerField(db_index=True)
     season_type = models.CharField(max_length=30)
@@ -275,7 +296,9 @@ class StatsWeek(models.Model):
 
 
 class PlayerDraftStats(models.Model):
-    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE)
+    season = models.ForeignKey(
+        Season, default=Season.get_active_id, on_delete=models.CASCADE
+    )
     player_id = models.CharField(max_length=10, null=True)
     player_name = models.CharField(max_length=100)
     player_team = models.CharField(max_length=10)
@@ -287,7 +310,9 @@ class PlayerDraftStats(models.Model):
 
 
 class WaiverPickup(models.Model):
-    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE, db_index=True)
+    season = models.ForeignKey(
+        Season, default=Season.get_active_id, on_delete=models.CASCADE, db_index=True
+    )
     week = models.IntegerField(default=1)
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, db_index=True)
@@ -301,18 +326,21 @@ class WaiverPickup(models.Model):
 
 
 class FinalSeasonStanding(models.Model):
-
     class Meta:
-        ordering = ["points_ranking_overall", "points_ranking_on_level", "points_ranking_in_league"]
+        ordering = [
+            "points_ranking_overall",
+            "points_ranking_on_level",
+            "points_ranking_in_league",
+        ]
 
     roster = models.ForeignKey(Roster, on_delete=models.CASCADE, null=True)
     league = models.ForeignKey(League, on_delete=models.CASCADE)
-    season = models.ForeignKey(Season, default=Season.get_active_id, on_delete=models.CASCADE, db_index=True)
+    season = models.ForeignKey(
+        Season, default=Season.get_active_id, on_delete=models.CASCADE, db_index=True
+    )
     rank_in_league = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
     points_decimal = models.IntegerField(default=0)
     points_ranking_overall = models.IntegerField(default=0, verbose_name="#overall")
     points_ranking_on_level = models.IntegerField(default=0, verbose_name="#level")
     points_ranking_in_league = models.IntegerField(default=0, verbose_name="#league")
-
-

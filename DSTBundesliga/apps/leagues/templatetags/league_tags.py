@@ -13,6 +13,7 @@ def modulo(num, val):
 def times(number):
     return range(number)
 
+
 # settings value
 @register.simple_tag
 def settings_value(name):

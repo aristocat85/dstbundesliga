@@ -4,8 +4,8 @@ from django.db import migrations
 
 
 def assign_dst_players_to_season_users(apps, schema_editor):
-    SeasonUser = apps.get_model('dstffbl', 'SeasonUser')
-    DSTPlayer = apps.get_model('leagues', 'DSTPlayer')
+    SeasonUser = apps.get_model("dstffbl", "SeasonUser")
+    DSTPlayer = apps.get_model("leagues", "DSTPlayer")
 
     for su in SeasonUser.objects.all():
         try:
@@ -17,9 +17,8 @@ def assign_dst_players_to_season_users(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dstffbl', '0007_seasonuser_dst_player'),
+        ("dstffbl", "0007_seasonuser_dst_player"),
     ]
 
     operations = [
