@@ -77,6 +77,9 @@ def create_season_users(users):
         new_player = True
 
         email, sleeper_username, commish, region = user_tuple
+        print(f"Creating season user for {email}...")
+
+
         sleeper_user = sleeper_wrapper.User(sleeper_username)
 
         sleeper_id = sleeper_user.get_user_id()
@@ -130,6 +133,8 @@ def create_season_users(users):
             ),
             type=2,
         )
+
+        print("...done!")
 
 
 def send_email_chunk(chunk_size=12):
