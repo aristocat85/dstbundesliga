@@ -185,6 +185,7 @@ class SeasonRegistrationAdmin(admin.ModelAdmin):
         "last_years_league__sleeper_name",
     ]
     list_filter = ("season", "region", "new_player", "possible_commish")
+    actions = [download_season_registrations_csv]
 
     def confirm_registration(self, obj):
         return format_html("<a href='{url}'>Registrierung bestätigen</a>", url=obj.url)
