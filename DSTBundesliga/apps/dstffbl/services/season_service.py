@@ -137,7 +137,8 @@ def create_season_users(users):
         print("...done!")
 
 
-def send_email_chunk(chunk_size=12):
+# Rate limit is 500/h
+def send_email_chunk(chunk_size=500):
     open_mails = DSTEmail.objects.filter(send_ts=None)[:chunk_size]
     for mail in open_mails:
         success = mail.send_mail()
