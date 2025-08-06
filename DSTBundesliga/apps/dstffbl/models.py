@@ -44,6 +44,10 @@ REGIONS = (
 )
 
 
+class Patron(models.Model):
+    pledge_id = models.CharField(max_length=50)
+
+
 class DSTEmail(models.Model):
     type = models.IntegerField(choices=EMAIL_TYPES)
     recipient = models.EmailField()

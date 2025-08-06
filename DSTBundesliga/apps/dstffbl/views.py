@@ -19,6 +19,7 @@ from DSTBundesliga.apps.dstffbl.services import season_service
 from DSTBundesliga.apps.leagues.models import Matchup, Season, DSTPlayer, League
 from DSTBundesliga.apps.services.awards_service import AwardService
 from DSTBundesliga.apps.services.season_service import is_registration_open
+from DSTBundesliga.apps.dstffbl.services.patreon_service import check_patreon_status
 
 
 def home(request):
@@ -70,7 +71,7 @@ def register(request, early_bird=False):
                     season=Season.get_active(),
                     defaults={
                         "sleeper_id": sleeper_id,
-                        "region": form.cleaned_data.get("region"),
+                        "region": 1,
                         "new_player": dst_player is None,
                         "last_years_league": last_years_league,
                         "possible_commish": form.cleaned_data.get("possible_commish"),
@@ -104,6 +105,8 @@ def register(request, early_bird=False):
                 form = RegisterForm()
 
         if is_registration_open() or early_bird:
+            if not check_patreon_status(user):
+                return render(request, "dstffbl/no_patreon.html")
             if season_registration and not season_user:
                 return render(request, "dstffbl/registration_success.html")
             else:
@@ -112,7 +115,6 @@ def register(request, early_bird=False):
                     "dstffbl/register.html",
                     {
                         "form": form,
-                        "region_choices": REGIONS,
                         "current_season": Season.get_active(),
                         "season_user": season_user,
                     },
@@ -249,7 +251,6 @@ def profile(request):
             season_data.dst_player.display_name = sleeper_username
 
             season_data.user.email = form.cleaned_data.get("email")
-            season_data.region = form.cleaned_data.get("region")
             season_data.possible_commish = form.cleaned_data.get("possible_commish")
             season_data.save()
             season_data.user.save()
@@ -264,7 +265,6 @@ def profile(request):
                     "sleeper_username": season_data.dst_player.display_name,
                     "email": season_data.user.email,
                     "possible_commish": season_data.possible_commish,
-                    "region": season_data.region,
                 }
             )
         else:
@@ -278,7 +278,6 @@ def profile(request):
             "season_data": season_data,
             "registration_status": registration_status,
             "registration_open": registration_open,
-            "region_choices": REGIONS,
             "form": form,
             "message": message,
             "resend_url": reverse("dstffbl:resend_invite"),

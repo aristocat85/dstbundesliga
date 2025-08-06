@@ -1,5 +1,13 @@
 import csv
 import re
+import patreon
+import time
+
+from django.conf import settings
+
+from DSTBundesliga.apps.dstffbl.models import (
+    Patron
+)
 
 
 def read_patreon_file(filepath=None):
@@ -106,3 +114,41 @@ def find_missing_users(patreon_filepath, ffbl_filepath):
             file.write(name + "\n")
 
     return list(found), list(likely_found), list(maybe_found), not_found
+
+
+def check_patreon_status(user):
+    return len(set([sa.uid for sa in user.socialaccount_set.all()]) & set(list(Patron.objects.all().values_list("pledge_id", flat=True)))) > 0
+
+
+def update_patrons():
+    print("Updating Patrons")
+    api_client = patreon.API(settings.PATREON_TOKEN)
+
+    campaign_response = api_client.fetch_campaign()
+    campaign_id = campaign_response.data()[0].id()
+
+    pledges = []
+    cursor = None
+    retries = 10
+    while True:
+        if retries == 0:
+            break
+        try:
+            pledges_response = api_client.fetch_page_of_pledges(campaign_id, page_size=1000, cursor=cursor)
+            pledges += pledges_response.data()
+            time.sleep(1)
+            cursor = api_client.extract_cursor(pledges_response)
+            print(len(pledges), cursor)
+        except:
+            retries -= 1
+            print("An error occured. ", retries, " retries left.")
+        if not cursor:
+            break
+
+    print("Found ", len(pledges), " Patrons!")
+    print("Updating Database")
+
+    Patron.objects.all().delete()
+
+    for pledge in pledges:
+        Patron.objects.update_or_create(pledge_id=pledge.relationship("patron").id())

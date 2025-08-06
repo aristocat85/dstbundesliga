@@ -32,16 +32,6 @@
                         </div>
                         <div class="fields">
                             <div class="ten wide field">
-                                <label for="region">Für welche Region trittst du an? Mitspieler außerhalb Deutschlands dürfen sich eine Region aussuchen.</label>
-                                <select class="ui fluid search dropdown" name="region" id="region">
-                                    {% for value, region in region_choices %}
-                                    <option value="{{value}}" {% if value == form.region.value %}selected{% endif %}>{{region}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="fields">
-                            <div class="ten wide field">
                                 <div class="ui checkbox {% if form.possible_commish.value == True %}checked{% endif %}">
                                     <input type="checkbox" {% if form.possible_commish.value == True %}checked=""{% endif %} name="possible_commish">
                                     <label>Ich kann mir vorstellen in meiner Liga die Rolle des Comissioners zu übernehmen</label>

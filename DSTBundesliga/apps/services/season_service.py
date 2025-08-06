@@ -19,6 +19,9 @@ def is_registration_open():
     )
 
 
+
+
+
 def calc_final_standings(season: Season):
     # Add per league points
     for league in League.objects.filter(season=season, type=League.BUNDESLIGA):
