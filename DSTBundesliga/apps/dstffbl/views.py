@@ -74,7 +74,7 @@ def register(request, early_bird=False):
                         "region": 1,
                         "new_player": dst_player is None,
                         "last_years_league": last_years_league,
-                        "possible_commish": form.cleaned_data.get("possible_commish"),
+                        "possible_commish": False,
                     },
                 )
 

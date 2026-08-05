@@ -7,7 +7,6 @@ from DSTBundesliga.apps.dstffbl.models import REGIONS
 
 class RegisterForm(forms.Form):
     sleeper_username = forms.CharField(max_length=100)
-    possible_commish = forms.BooleanField(required=False)
 
     def clean_sleeper_username(self):
         data = self.cleaned_data
@@ -29,7 +28,6 @@ class RegisterForm(forms.Form):
 class ProfileForm(forms.Form):
     sleeper_username = forms.CharField(max_length=100)
     email = forms.EmailField()
-    possible_commish = forms.BooleanField(required=False)
 
     def clean_sleeper_username(self):
         data = self.cleaned_data

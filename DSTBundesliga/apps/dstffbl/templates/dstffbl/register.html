@@ -32,14 +32,6 @@
                         </div>
                         <div class="fields">
                             <div class="ten wide field">
-                                <div class="ui checkbox {% if form.possible_commish.value == True %}checked{% endif %}">
-                                    <input type="checkbox" {% if form.possible_commish.value == True %}checked=""{% endif %} name="possible_commish">
-                                    <label>Ich kann mir vorstellen in meiner Liga die Rolle des Comissioners zu übernehmen</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="fields">
-                            <div class="ten wide field">
                                 {% if form.errors %}
                                 {% for field in form %}
                                 {% for error in field.errors %}
