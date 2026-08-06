@@ -243,7 +243,9 @@ class SeasonInvitation(models.Model, EmailCreationMixin):
     In deine Liga kommst du über diesen Link: {league_link}
 
     Weitere Informationen findest du als angepinnte Nachricht in deiner Liga.
-    Bitte beachte, dass du die Einladung in deine Liga bis zum 20. August 2022 um 24:00 Uhr angenommen haben musst. Ansonsten müssen wir deinen Platz leider an eine(n) andere(n) Mitspieler(in) vergeben. Da wir aber davon ausgehen, dass dies nicht erfolgen muss, wünschen wir dir viel Erfolg und vor allem Spaß in der kommenden Fantasy-Saison.
+    Bitte beachte, dass du die Einladung in deine Liga bis zum 28.8.2026 um 23:59 Uhr angenommen haben musst. Ansonsten müssen wir deinen Platz leider an eine(n) andere(n) Mitspieler(in) vergeben. Da wir aber davon ausgehen, dass dies nicht erfolgen muss, wünschen wir dir viel Erfolg und vor allem Spaß in der kommenden Fantasy-Saison.
+
+    Achtung: Es gibt derzeit teils Probleme sleeper-links über die Mobile App anzunehmen. Sollte dies bei dir der Fall sein, so öffne den Link bitte in einem Browser deiner Wahl um über https://sleeper.com/ beizutreten.
 
     Beste Grüße von
     Michael und dem gesamten Organisationsteam der DSTFanFooBL
@@ -260,7 +262,9 @@ class SeasonInvitation(models.Model, EmailCreationMixin):
     In deine Liga kommst du über diesen Link: <a href="{league_link}">{league_link}</a></p>
 
     <p>Weitere Informationen findest du als angepinnte Nachricht in deiner Liga.
-    Bitte beachte, dass du die Einladung in deine Liga bis zum <b>20. August 2022 um 24:00 Uhr</b> angenommen haben musst. Ansonsten müssen wir deinen Platz leider an eine(n) andere(n) Mitspieler(in) vergeben. Da wir aber davon ausgehen, dass dies nicht erfolgen muss, wünschen wir dir viel Erfolg und vor allem Spaß in der kommenden Fantasy-Saison.</p>
+    Bitte beachte, dass du die Einladung in deine Liga bis zum <b>28.8.2026 um 23:59 Uhr</b> angenommen haben musst. Ansonsten müssen wir deinen Platz leider an eine(n) andere(n) Mitspieler(in) vergeben. Da wir aber davon ausgehen, dass dies nicht erfolgen muss, wünschen wir dir viel Erfolg und vor allem Spaß in der kommenden Fantasy-Saison.</p>
+
+    <p>Achtung: Es gibt derzeit teils Probleme sleeper-links über die Mobile App anzunehmen. Sollte dies bei dir der Fall sein, so öffne den Link bitte in einem Browser deiner Wahl um über https://sleeper.com/ beizutreten.</p>
 
     <p>Beste Grüße von<br>
     Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>

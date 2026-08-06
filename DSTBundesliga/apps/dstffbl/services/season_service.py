@@ -26,8 +26,8 @@ EMAIL_SUBJECT = "Anmeldung erfolgreich!"
 EMAIL_TEXT = """'
     Hallo {sleeper_name},
     
-    Du bist für die Saison {current_season} angemeldet! Weitere Infos folgen in einigen Tagen per Mail und über unsere 
-    Social Media Seiten.
+    Du bist für die Saison {current_season} angemeldet! 
+    Die Einladungen zu den Ligen werden spätestens ab dem 24.08. versendet. Bitte melde dich bei uns unter probleme@fantasybundesliga.de falls du bis zum 26.8. um 10 Uhr keine Einladung erhalten hast.
     
     Beste Grüße von
     Michael und dem gesamten Organisationsteam der DSTFanFooBL
@@ -36,8 +36,8 @@ EMAIL_TEXT = """'
 EMAIL_HTML = """
     <p>Hallo {sleeper_name},</p>
     
-    <p>Du bist für die Saison {current_season} angemeldet! Weitere Infos folgen in einigen Tagen per Mail und über 
-    unsere Social Media Seiten.</p>
+    <p>Du bist für die Saison {current_season} angemeldet!</p>
+    <p>Die Einladungen zu den Ligen werden spätestens ab dem 24.08. versendet. Bitte melde dich bei uns unter probleme@fantasybundesliga.de falls du bis zum 26.8. um 10 Uhr keine Einladung erhalten hast.</p>
     
     <p>Beste Grüße von<br>
     Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
