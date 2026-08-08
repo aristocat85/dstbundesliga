@@ -180,7 +180,6 @@ def send_email_chunk(batch_size=200):
 
             mails = []
             send_mails = []
-            time.sleep(60)
 
         except Exception as e:
             has_error = True
