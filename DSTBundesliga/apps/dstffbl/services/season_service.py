@@ -7,6 +7,7 @@ from django.db.models import Window, F
 from django.db.models.functions import RowNumber
 from django.core.mail import get_connection
 from django.utils import timezone
+from django.core.mail.message import EmailMultiAlternatives
 
 from DSTBundesliga.apps.dstffbl.models import (
     SeasonUser,
@@ -148,8 +149,17 @@ def send_email_chunk(batch_size=200):
 
 def send_mail_batch(mail_batch: list):
     connection = get_connection(fail_silently=False)
-    connection.send_messages(mail_batch)
+    mails_to_send = []
+
     for mail in mail_batch:
+        mail_to_send = EmailMultiAlternatives(mail.subject, mail.text, None, [mail.recipient], connection=connection)
+        mail_to_send.attach_alternative(mail.html, 'text/html')
+        counter += 1
+        mails_to_send.append(mail)
+
+    connection.send_messages(mails_to_send)
+
+    for mail in mails_to_send:
         mail.send_ts = timezone.now()
         mail.save()
 
