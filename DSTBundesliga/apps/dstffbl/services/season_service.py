@@ -1,5 +1,6 @@
 import csv
 import datetime
+import time
 
 import sleeper_wrapper
 from django.contrib.auth.models import User
@@ -143,67 +144,93 @@ def create_season_users(users):
 
 # Rate limit is 60/h
 def send_email_chunk(batch_size=200):
+    open_mails = list(DSTEmail.objects.filter(send_ts=None))[:batch_size]
+    total_open_mails = len(open_mails)
+    print(f"Insgesamt zu versendende E-Mails: {total_open_mails}\n")
+
+    connection = get_connection(fail_silently=False)
+    total_sent = 0
+    has_error = False
+    error_message = None
+
+    mails = []
+    send_mails = []
+
+    # ---------------------------------------------------------
+    # 3. Batch-Versand mit Fehlerabfangung
+    # ---------------------------------------------------------
+    for m in open_mails:
+        mail = EmailMultiAlternatives(
+            m.subject, m.text, None, [m.recipient], connection=connection
+        )
+        mail.attach_alternative(m.html, "text/html")
+
+        mails.append(mail)
+        send_mails.append(m)
+
+        try:
+            send_mail_batch(mails, send_mails)
+            total_sent += len(mails)
+
+            remaining = total_open_mails - total_sent
+            print(
+                f"[Batch Erfolgreich] Versendet: {total_sent}/{total_open_mails} | "
+                f"Noch nicht versendet: {remaining}"
+            )
+
+            mails = []
+            send_mails = []
+            time.sleep(60)
+
+        except Exception as e:
+            has_error = True
+            error_message = str(e)
+            print(f"\n[FEHLER] Fehler beim Senden des Batches: {e}")
+            print("Versand wird abgebrochen...\n")
+            break
+
+    # ---------------------------------------------------------
+    # 4. Zusammenfassung des Status
+    # ---------------------------------------------------------
+    remaining_unsent = total_open_mails - total_sent
+
+    print("\n" + "=" * 45)
+    print("             ZUSAMMENFASSUNG STATUS             ")
+    print("=" * 45)
+    print(f"Zu Beginn offene Mails gesamt:   {total_open_mails}")
+    print(f"Erfolgreich versendet:           {total_sent}")
+    print(f"Verblieben (nicht versendet):    {remaining_unsent}")
+    print(
+        f"Endstatus:                       "
+        f"{'ABGEBROCHEN (Fehler)' if has_error else 'ERFOLGREICH ABGESCHLOSSEN'}"
+    )
+    if has_error:
+        print(f"Fehlermeldung:                   {error_message}")
+    print("=" * 45)
     open_mails = DSTEmail.objects.filter(send_ts=None)[:batch_size]
     send_mail_batch(open_mails)
 
 
-def send_mail_batch(mail_batch: list):
+def send_mail_batch(mails_to_send, db_objects):
+    """Hilfsfunktion zum Senden und Aktualisieren der DB-Einträge."""
     connection = get_connection(fail_silently=False)
-    mails_to_send = []
-
-    for mail in mail_batch:
-        mail_to_send = EmailMultiAlternatives(mail.subject, mail.text, None, [mail.recipient], connection=connection)
-        mail_to_send.attach_alternative(mail.html, 'text/html')
-        mails_to_send.append(mail)
-
     connection.send_messages(mails_to_send)
+    now = timezone.now()
+    for sm in db_objects:
+        sm.send_ts = now
+        sm.save()
 
-    for mail in mails_to_send:
-        mail.send_ts = timezone.now()
-        mail.save()
 
-
-def resend_error_email_chunk(batch_size=200):
+def resend_error_email_chunk():
     # 1. Fehlerhafte Mails zu Beginn ermitteln und ausgeben
     invalid_emails = DSTEmail.objects.filter(has_erros=True, send_ts__gte=datetime.date(year=2026, month=8, day=6))
     print(f"Anzahl fehlerhafter E-Mails zu Beginn: {len(invalid_emails)}\n")
     
-    sent_count = 0
-    has_error = False
-    error_details = None
-
-    # 2. Batch-Verarbeitung
-    for i in range(0, len(invalid_emails), batch_size):
-        current_batch = invalid_emails[i:i + batch_size]
-        
-        # 3. Fehler beim Versenden abfangen
-        try:
-            send_mail_batch(current_batch)
-            sent_count += len(current_batch)
-        except Exception as e:
-            has_error = True
-            error_details = str(e)
-            print(f"[WARNUNG] Fehler beim Versenden aufgetreten: {e}")
-            print("Versand wird abgebrochen...\n")
-            break  # 4. Schleife bei Fehler beenden
-
-        # Nach jedem Batch die verbleibende Anzahl ausgeben
-        remaining = len(invalid_emails) - sent_count
-        print(f"Batch erfolgreich verarbeitet. Noch nicht versendete E-Mails: {remaining}")
-
-    # 5. Abschließende Zusammenfassung des Status
-    remaining_unsent = len(invalid_emails) - sent_count
-    
-    print("\n" + "="*35)
-    print("      ZUSAMMENFASSUNG STATUS      ")
-    print("="*35)
-    print(f"Initial fehlerhafte Mails:   {len(invalid_emails)}")
-    print(f"Erfolgreich versendet:       {sent_count}")
-    print(f"Verblieben (nicht versendet): {remaining_unsent}")
-    print(f"Endstatus:                   {'ABGEBROCHEN (Fehler)' if has_error else 'ERFOLGREICH'}")
-    if has_error:
-        print(f"Fehlerursache:               {error_details}")
-    print("="*35)
+    for m in invalid_emails:
+        m.send_ts=None  
+        m.has_erros=False   
+        m.error_message=""  
+        m.save()
 
 def import_invitations(filepath):
     with open(filepath, "r") as csv_file:
