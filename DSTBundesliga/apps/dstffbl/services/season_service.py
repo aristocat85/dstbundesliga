@@ -168,25 +168,25 @@ def send_email_chunk(batch_size=200):
         mails.append(mail)
         send_mails.append(m)
 
-        try:
-            send_mail_batch(mails, send_mails)
-            total_sent += len(mails)
+    try:
+        send_mail_batch(mails, send_mails)
+        total_sent += len(mails)
 
-            remaining = total_open_mails - total_sent
-            print(
-                f"[Batch Erfolgreich] Versendet: {total_sent}/{total_open_mails} | "
-                f"Noch nicht versendet: {remaining}"
-            )
+        remaining = total_open_mails - total_sent
+        print(
+            f"[Batch Erfolgreich] Versendet: {total_sent}/{total_open_mails} | "
+            f"Noch nicht versendet: {remaining}"
+        )
 
-            mails = []
-            send_mails = []
+        mails = []
+        send_mails = []
 
-        except Exception as e:
-            has_error = True
-            error_message = str(e)
-            print(f"\n[FEHLER] Fehler beim Senden des Batches: {e}")
-            print("Versand wird abgebrochen...\n")
-            break
+    except Exception as e:
+        has_error = True
+        error_message = str(e)
+        print(f"\n[FEHLER] Fehler beim Senden des Batches: {e}")
+        print("Versand wird abgebrochen...\n")
+
 
     # ---------------------------------------------------------
     # 4. Zusammenfassung des Status
