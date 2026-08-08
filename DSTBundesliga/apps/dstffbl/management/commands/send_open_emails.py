@@ -7,4 +7,4 @@ class Command(BaseCommand):
     help = "Send Open Invitations for the current Season."
 
     def handle(self, *args, **options):
-        send_email_chunk()
+        send_email_chunk(60)
