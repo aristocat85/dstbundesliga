@@ -154,7 +154,6 @@ def send_mail_batch(mail_batch: list):
     for mail in mail_batch:
         mail_to_send = EmailMultiAlternatives(mail.subject, mail.text, None, [mail.recipient], connection=connection)
         mail_to_send.attach_alternative(mail.html, 'text/html')
-        counter += 1
         mails_to_send.append(mail)
 
     connection.send_messages(mails_to_send)
