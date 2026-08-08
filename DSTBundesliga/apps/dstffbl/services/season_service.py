@@ -132,17 +132,32 @@ def create_season_users(users):
             sleeper_id=sleeper_id, defaults={"display_name": sleeper_username}
         )
 
-        _, _ = DSTEmail.objects.get_or_create(
-            recipient=su.user.email,
-            subject=EMAIL_SUBJECT,
-            text=EMAIL_TEXT.format(
+        email_kwargs = {
+            'recipient': su.user.email,
+            'subject': EMAIL_SUBJECT,
+            'text': EMAIL_TEXT.format(
                 sleeper_name=su.dst_player.display_name, current_season=su.season
             ),
-            html=EMAIL_HTML.format(
+            'html': EMAIL_HTML.format(
                 sleeper_name=su.dst_player.display_name, current_season=su.season
             ),
-            type=2,
-        )
+            'type': 2,
+        }
+
+        # 2. Alle passenden Objekte abfragen
+        qs = DSTEmail.objects.filter(**email_kwargs)
+
+        if not qs.exists():
+            # Fall 1: Keins vorhanden -> Neu anlegen
+            email = DSTEmail.objects.create(**email_kwargs)
+            created = True
+        else:
+            # Fall 2 & 3: Ein oder mehrere vorhanden -> Das erste behalten
+            email = qs.first()
+            created = False
+            
+            # Alle Duplikate außer dem ersten löschen
+            qs.exclude(pk=email.pk).delete()
 
         print("...done!")
 
