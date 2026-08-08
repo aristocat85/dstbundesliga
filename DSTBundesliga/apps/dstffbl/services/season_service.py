@@ -206,8 +206,6 @@ def send_email_chunk(batch_size=200):
     if has_error:
         print(f"Fehlermeldung:                   {error_message}")
     print("=" * 45)
-    open_mails = DSTEmail.objects.filter(send_ts=None)[:batch_size]
-    send_mail_batch(open_mails)
 
 
 def send_mail_batch(mails_to_send, db_objects):
