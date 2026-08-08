@@ -57,6 +57,11 @@ def get_last_years_league(player: DSTPlayer):
         ).get(type=League.BUNDESLIGA)
     except League.DoesNotExist:
         return None
+    except League.MultipleObjectsReturned:
+        return League.objects.filter(
+            season=Season.get_last(),
+            id__in=[r.league.id for r in player.roster_set.all()],
+        ).filter(type=League.BUNDESLIGA)[0]
 
 
 def update_last_years_leagues():
@@ -127,7 +132,7 @@ def create_season_users(users):
             sleeper_id=sleeper_id, defaults={"display_name": sleeper_username}
         )
 
-        DSTEmail.objects.create(
+        _, _ = DSTEmail.objects.get_or_create(
             recipient=su.user.email,
             subject=EMAIL_SUBJECT,
             text=EMAIL_TEXT.format(
@@ -316,3 +321,5 @@ def get_waiting_list():
         .filter(season=Season.get_active())
         .order_by("registration__registration_ts", "sleeper_id")
     )
+
+
