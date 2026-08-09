@@ -159,7 +159,7 @@ def confirm_registration(request, registration_id):
             season=Season.get_active()
         ).get(id=registration_id)
 
-        season_user, created = SeasonUser.objects.get_or_create(
+        season_user, _ = SeasonUser.objects.get_or_create(
             user=registration.user,
             registration=registration,
             dst_player=registration.dst_player,
@@ -171,19 +171,7 @@ def confirm_registration(request, registration_id):
             possible_commish=registration.possible_commish,
         )
 
-        DSTEmail.objects.create(
-            recipient=registration.user.email,
-            subject=EMAIL_SUBJECT,
-            text=EMAIL_TEXT.format(
-                sleeper_name=registration.dst_player.display_name,
-                current_season=registration.season,
-            ),
-            html=EMAIL_HTML.format(
-                sleeper_name=registration.dst_player.display_name,
-                current_season=registration.season,
-            ),
-            type=2,
-        )
+        season_service.create_registration_successful_email(season_user)
 
         return render(
             request,
