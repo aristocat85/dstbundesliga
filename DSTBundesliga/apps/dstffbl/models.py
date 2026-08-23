@@ -252,7 +252,7 @@ class SeasonInvitation(models.Model, EmailCreationMixin):
     Beste Grüße von
     Michael und dem gesamten Organisationsteam der DSTFanFooBL
 
-    PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei Twitter und Instagram unter @dstfanfoobl. Hört auch gerne mal in unseren Podcast zur DSTFanFooBL rein: https://anchor.fm/dstfanfoobl
+    PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei Twitter und Instagram unter @dstfanfoobl. 
     """
 
     EMAIL_HTML = """
@@ -274,7 +274,7 @@ class SeasonInvitation(models.Model, EmailCreationMixin):
     Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
 
     <br>
-    <p>PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei <a href="https://twitter.com/dstfanfoobl">Twitter</a> und <a href="https://www.instagram.com/dstfanfoobl/">Instagram</a> unter @dstfanfoobl. Hör auch gerne mal in unseren <a href="https://anchor.fm/dstfanfoobl">Podcast zur DSTFanFooBL</a> rein!</p>
+    <p>PS: Bei Fragen kannst du dich jederzeit gerne an uns wenden. Du findest uns bei <a href="https://twitter.com/dstfanfoobl">Twitter</a> und <a href="https://www.instagram.com/dstfanfoobl/">Instagram</a> unter @dstfanfoobl.</p>
     """
 
     season_user = models.ForeignKey(SeasonUser, on_delete=models.SET_NULL, null=True)
