@@ -247,6 +247,8 @@ class SeasonInvitation(models.Model, EmailCreationMixin):
 
     Achtung: Es gibt derzeit teils Probleme sleeper-links über die Mobile App anzunehmen. Sollte dies bei dir der Fall sein, so öffne den Link bitte in einem Browser deiner Wahl um über https://sleeper.com/ beizutreten.
 
+    Da die Anmeldefrist bereits am 24. August um 24 Uhr abläuft, möchten wir euch auf diesem Wege auch noch auf den German Charity Bowl Hinweisen. Wenn ihr eure Leidenschaft für Fantasy Football damit verbinden wollt, etwas Gutes zu tun, dann könnt ihr euch auf www.germancharitybowl.de an. 
+
     Beste Grüße von
     Michael und dem gesamten Organisationsteam der DSTFanFooBL
 
@@ -265,6 +267,8 @@ class SeasonInvitation(models.Model, EmailCreationMixin):
     Bitte beachte, dass du die Einladung in deine Liga bis zum <b>28.8.2026 um 23:59 Uhr</b> angenommen haben musst. Ansonsten müssen wir deinen Platz leider an eine(n) andere(n) Mitspieler(in) vergeben. Da wir aber davon ausgehen, dass dies nicht erfolgen muss, wünschen wir dir viel Erfolg und vor allem Spaß in der kommenden Fantasy-Saison.</p>
 
     <p>Achtung: Es gibt derzeit teils Probleme sleeper-links über die Mobile App anzunehmen. Sollte dies bei dir der Fall sein, so öffne den Link bitte in einem Browser deiner Wahl um über https://sleeper.com/ beizutreten.</p>
+
+    <p>Da die Anmeldefrist bereits am 24. August um 24 Uhr abläuft, möchten wir euch auf diesem Wege auch noch auf den German Charity Bowl Hinweisen. Wenn ihr eure Leidenschaft für Fantasy Football damit verbinden wollt, etwas Gutes zu tun, dann könnt ihr euch auf www.germancharitybowl.de an. </p>
 
     <p>Beste Grüße von<br>
     Michael und dem gesamten Organisationsteam der DSTFanFooBL</p>
